@@ -8,16 +8,22 @@ tags: [Ash free dry weight, physiology, Nucella, newly emerged]
 ---
 
 ## Ash Free Dry Weight - Newly Emerged offspring 2025
+
  
 ###Materials: 
+
 - Drying Oven (60°C) 
 - Muffle furnace (450°C) 
 - Aluminum micro weigh boats 
 - Analytical balance (0.0001 g) 
 
-####Goal: Determine shell (inorganic content) and tissue (organic content) weights  
+
+
+####Goal: Determine shell (inorganic content) and tissue (organic content) weights
+  
  
 ###Protocol: 
+
  
 
 1) From each tea infuser, collect 2 snails 
