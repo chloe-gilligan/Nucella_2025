@@ -40,15 +40,21 @@ In the case of summer 2025:
 3) Identify different batches of egg capsules 
 
 - Nucella are direct developers, so they only need to be at least 2 meters apart 
-- For summer 2025, collect from 4 batches per site with 8 egg capsules from each batch 
+- For summer 2025, collect from 6 batches per site with 8 egg capsules from each batch 
 
 4) Collect egg capsules 
 
 - Egg capsules that are collected need to be a creamy yellowish color 
 - Pull off at the base 
-- Make sure site code is written on a label on the jar 
+- Make sure site code is written on a label on the jar
 
-5) Deploy temperature loggers at each site 
+5) At the batch where egg capsules were collected 6 quadrats will be placed around sampled batches 
+ 
+- Place the batch in the middle of the quadrat 
+- Record total # egg capsule, # laying adults, #other Nucella, % cover barnacles, % cover Mussels, % cover Asco, % Fucus, % cover other, #Carcinus, # Hemi 
+
+
+6) Deploy temperature loggers at each site 
 
 - Set up hobo loggers prior to anchoring them with them labelled with each site name 
 - Using paint scraper and gloves clear a flat area  
@@ -61,7 +67,7 @@ In the case of summer 2025:
 - Attach 2 temp loggers along tide height where Nucella are found 
 
 
-6) Collect food snails for experimental crabs 
+7) Collect food snails for experimental crabs 
 
 - In the summer 2025 experiment, crabs are being used for stress cues and will eat Nucella once in the mesocosm  
 - Collect 500 Nucella to feed ~32 crabs 2 a week for 4-6 weeks 
