@@ -1,16 +1,16 @@
 ﻿Full Sample ID,Color,Site,Batch,Emergence Date 1,Emergence Date 2,"Total Emergence
- Number",,,,,,,
+ Number",Notes,,,,,,
 CRB1,Blue,,,,,,,,,,,,
 CRR1,Red,,,,,,,,,,,,
-CRG1,Green,,,,,,,,Treatment,Color,Site,Site abbr,Batch
-CRP1,Pink,,,,,,,,Crab Ambient,Blue,Castle Rock,CR,1
-CRB2,Blue,,,,,,,,Crab Warm,Red,Singing Beach,SB,2
-CRR2,Red,,,,,,,,No Crab Ambient,Green,Ram Island,RI,3
-CRG2,Green,,,,,,,,No Crab Warm,Pink,Bass Rock,BR,4
+CRG1,Green,,,,,,,,,,,,
+CRP1,Pink,,,,,,,,,,,,
+CRB2,Blue,,,,,,,,,,,,
+CRR2,Red,,,,,,,,,,,,
+CRG2,Green,,,,,,,,,,,,
 CRP2,Pink,,,,,,,,,,,,
 CRB3,Blue,,,,,,,,,,,,
 CRR3,Red,,,,,,,,,,,,
-CRG3,Green,,,,,,,,,,,,
+CRG3,Green,,,,,,Found empty and drained 20250609,,,,,,
 CRP3,Pink,,,,,,,,,,,,
 CRB4,Blue,,,,,,,,,,,,
 CRR4,Red,,,,,,,,,,,,
