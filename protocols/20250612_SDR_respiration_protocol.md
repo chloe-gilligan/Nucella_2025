@@ -94,7 +94,7 @@ Setting up the SDR sensor plates and accompanying system for the first time in a
 	- For crab water fill a measure X bucket with crabs and use that water to fill vials
 	- Heat accordingly in incubator 
 
-4. Create a platemap of the location 
+4. Create a platemap of the location of the EC full sample ID
 
 	
 4. Turn off lights or block incubator windows with tinfoil. Collect data under darkness for a period of time in which a stable signal is recorded that is different than the blanks and sustained, recommended to run for 1-2 hours. Look for a decrease in oxygen that is different from the blanks. 
