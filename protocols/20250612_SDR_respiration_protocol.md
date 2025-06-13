@@ -84,12 +84,27 @@ Setting up the SDR sensor plates and accompanying system for the first time in a
 
 <a name="Respiration"></a> **Respiration**
 
+1. Use snails that have just emerged and are around the same age (appx. within 18 hours).
 
-1. Turn off lights. Collect data under darkness for a period of time in which a stable signal is recorded that is different than the blanks and sustained, recommended to run for 30 minutes. Look for a decrease in oxygen that is different from the blanks. 
+
+2. Put each snail in a 2ml vial
+
+
+3. Fill all vials with their respective treatment water
+	- For crab water fill a measure X bucket with crabs and use that water to fill vials
+	- Heat accordingly in incubator 
+
+4. Create a platemap of the location 
+
+	
+4. Turn off lights or block incubator windows with tinfoil. Collect data under darkness for a period of time in which a stable signal is recorded that is different than the blanks and sustained, recommended to run for 1-2 hours. Look for a decrease in oxygen that is different from the blanks. 
 	- Oxygen measurements will appear “jumpy” under the light as the SDR plate readings are variable under light. For this reason, be sure to run respiration runs in dark and long enough to provide enough data for analysis to extract a representative slope.
-2.  Running 1 full plate will provide n=X samples. Run as many plates to obtain desired sample size or run all treatment conditions. During run, watch for bubbles and breakages in well sealing and note these issues on metadata sheet. These wells will need to be excluded from analyses. It is therefore important to ensure a quality seal before the run begins and re-seal any wells that show bubbles prior to running. 
-3.  Label the saved files with the following name format: “Date_RunID”. If more runs are needed, use Run2, Run3, etc. This file format is suggested - use file names that are informative and appropriate to the experiment. 
-4. Export data files in .xlsx format and convert to .csv for data analysis. 
+
+	
+5.  Running 1 full plate will provide n=X samples. Run as many plates to obtain desired sample size or run all treatment conditions. During run, watch for bubbles and breakages in well sealing and note these issues on metadata sheet. These wells will need to be excluded from analyses. It is therefore important to ensure a quality seal before the run begins and re-seal any wells that show bubbles prior to running. 
+6.  Label the saved files with the following name format: “Date_RunID”. If more runs are needed, use Run2, Run3, etc. This file format is suggested - use file names that are informative and appropriate to the experiment. 
+7. Export data files in .xlsx format and convert to .csv for data analysis. 
+
 
 
 <a name="Final_Checks"></a> **Final Checks**
