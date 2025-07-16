@@ -1,0 +1,52 @@
+﻿"Run1, 20250716",,,
+Position,Sample ID,Color,Date
+A1,BRP2,Pink,7/4/25
+A2,BRP3,Pink,7/4/25
+A3,RIG2,Green,7/4/25
+A4,RIR4,Red,7/2/25
+A5,RIP4,Pink,7/2/25
+A6,RIP3,Pink,7/4/25
+B1,RIR2,Red,6/30/25
+B2,BRP3,Pink,7/4/25
+B3,Blank,Blank,Blank
+B4,RIR4,Red,7/2/25
+B5,RIP3,Pink,7/4/25
+B6,RIP5,Pink,7/4/25
+C1,BRP4,Pink,7/4/25
+C2,RIR2,Red,6/30/25
+C3,RIP2,Pink,6/30/25
+C4,BRP4,Pink,7/4/25
+C5,RIP2,Pink,6/30/25
+C6,BRP2,Pink,7/4/25
+D1,RIP5,Pink,7/4/25
+D2,RIG2,Green,7/4/25
+D3,BRR4,Red,7/4/25
+D4,RIP4,Pink,7/2/25
+D5,BRR4,Red,7/4/25
+D6,Blank,Blank,Blank
+,,,
+Run 2 (with fillers),,,
+,,,
+Position,Sample ID,Color,Date
+1,RIR2,Red,6/30/25
+2,RIP5,Pink,7/4/25
+3,BRP4,Pink,7/4/25
+4,FILLER_1,Blue,Other
+5,RIR4,Red,7/2/25
+6,RIG2,Green,7/4/25
+7,BRP2,Pink,7/4/25
+8,FILLER_8,Green,Other
+9,FILLER_9,Blue,Other
+10,FILLER_3,Green,Other
+11,BRP3,Pink,7/4/25
+12,RIP4,Pink,7/2/25
+13,BRR4,Red,7/4/25
+14,FILLER_4,Green,Other
+15,RIP3,Pink,7/4/25
+16,FILLER_6,Green,Other
+17,FILLER_5,Pink,Other
+18,FILLER_7,Green,Other
+19,FILLER_2,Pink,Other
+20,FILLER_11,Green,Other
+21,FILLER_10,Pink,Other
+22,RIP2,Pink,6/30/25
