@@ -44,7 +44,7 @@ ggplot(df_clean, aes(x = Date, y = Temperature, color = Group)) +
   labs(title = "Temperature Over Time by Tank Group",
        x = "Date",
        y = "Temperature (°C)",
-       color = "Tank Group") +
+       color = "Tank Temperature") +
   theme_minimal()
 ```
 
