@@ -1,0 +1,99 @@
+---
+title: "Transect_2025_script"
+author: "Chloé Gilligan"
+date: "2025-07-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+#I set my working directory to Nucella 2025 and reading
+```{r}
+data <- read.csv("Data/2025_EC_Transect_Survey_data.csv")
+```
+
+#Loading packages
+```{r}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+```
+
+
+
+```{r}
+transect_data <- data %>%
+  group_by(Site, Date) %>%
+  summarise(Total_Nucella = sum(Total...ec, na.rm = TRUE)) %>%
+  ungroup()
+```
+
+```{r}
+cover_long <- data %>%
+  select(Site, Date, B = X..cover.B, M = X..cover.M, Asco = X..cover.Asco, Fucus = X..cover.Fucus, Other = X..cover.other) %>%
+  pivot_longer(cols = B:Other, names_to = "CoverType", values_to = "PercentCover")
+```
+
+```{r}
+cover_summary <- cover_long %>%
+  group_by(Site, Date, CoverType) %>%
+  summarise(MeanCover = mean(PercentCover, na.rm = TRUE)) %>%
+  ungroup()
+```
+
+```{r}
+cover_long <- cover_long %>%
+  mutate(CoverType = recode(CoverType,
+    "B" = "Semibalanus balanoides",
+    "M" = "Mytilus edulis",
+    "Asco" = "Ascophyllum nodosum",
+    "Fucus" = "Fucus vesiculosus"
+  ))
+```
+
+
+```{r}
+cover_summary <- cover_long %>%
+  group_by(Site, Date, CoverType) %>%
+  summarise(MeanCover = mean(PercentCover, na.rm = TRUE)) %>%
+  ungroup()
+
+
+ggplot(cover_summary, aes(x = Site, y = MeanCover, fill = CoverType)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Date) +
+  labs(title = "% Cover by Site, Date, and Type", y = "Mean % Cover", fill = "Species") +
+  scale_fill_manual(values = c(
+    "Semibalanus balanoides" = "#E0FFFF",
+    "Mytilus edulis" = "#36648B",
+    "Ascophyllum nodosum" = "#9ACD32",
+    "Fucus vesiculosus" = "#556B2F",
+    "Other" = "#708090"  # Optional: assign color to "Other"
+  )) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
