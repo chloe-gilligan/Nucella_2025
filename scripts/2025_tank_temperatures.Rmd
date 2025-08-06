@@ -14,7 +14,7 @@ library(ggplot2)
 
 
 ```{r}
-temp_data <- read.csv("Data/2025_Tank_Temp_Data.csv")
+temp_data <- read.csv("../Data/2025_Tank_Temp_Data.csv")
 ```
 
 #Cleaning up data to only use data that is from used tanks
@@ -44,7 +44,7 @@ ggplot(df_clean, aes(x = Date, y = Temperature, color = Group)) +
   labs(title = "Temperature Over Time by Tank Group",
        x = "Date",
        y = "Temperature (°C)",
-       color = "Tank Temperature") +
+       color = "Tank Group") +
   theme_minimal()
 ```
 

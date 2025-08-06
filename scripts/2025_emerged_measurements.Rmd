@@ -19,5 +19,16 @@ When you click the **Knit** button a document will be generated that includes bo
 library(tidyr)
 library(dplyr)
 library(ggplot2)
+install.packages("readxl")
+library(readxl)
+```
+
+```{r}
+excel_measurements <- list.files("data/2025_measurements_excel", pattern = "\\.xlsx$", full.names = TRUE)
+```
+
+#Reading in measurement data
+```{r}
+
 ```
 
