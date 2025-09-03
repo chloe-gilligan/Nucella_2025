@@ -32,6 +32,7 @@ Revised by Chloé Gilligan for Nucella respiration
 - 2 PreSens SDR SensorDish® Reader Basic Set [(SDR Specs)](https://www.presens.de/products/detail/sdr-sensordish-reader-basic-set) [(SDR User Manual)](https://github.com/Putnam-Lab/Lab_Management/blob/master/Lab_Resources/Equipment_Protocols/Respirometry_Protocol/Images/SDR_UserManual.pdf) 
 - 2 PreSens SDR QuickStart Guide [PreSens Getting Started](https://github.com/Putnam-Lab/Lab_Management/blob/master/Lab_Resources/Equipment_Protocols/Respirometry_Protocol/Images/SDR_GettingStarted_GS_SDR-16-01_dv2.pdf)    
 - Loligo Glass 24 well microplate with Presens Oxygen spots [Loligo 80µl well size plate Cat #CH25000](https://loligosystems.com/products/microplate/accessories/24-well-glass-microplate-80-ul/)
+- OR plastic 24 well plate with Loligo glass vials 2ml (or other appropriate size)
 - LoligoⓇ MicroResp™ Software [(Software Download)](https://www.loligosystems.com/downloads)
 - [> 48 pieces of 12mm Microscope Cover Glass](https://www.amazon.com/gp/product/B00XZP7XMU/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1)
 - Windows Computer 
@@ -68,6 +69,10 @@ Setting up the SDR sensor plates and accompanying system for the first time in a
 7. After the calibration, click "Single Scan" in the upper left hand corner. This will run a single measurement scan on all of the wells to double check the calibration. The values should be around 98-105% air saturation. The plate is now calibrated! **It is strongly recommended to run the calibration before every plate/run, especially if different temperatures are being measured.** 
 
 <a name="Sample_Preparation"></a> **Sample Preparation**
+
+
+
+
 
 1. Set up SDR respirometry equipment (see [**Initial Setup**](#Initial_Setup) for details). Set oxygen concentration in units of µmol/L, indicate temperature and salinity.    
 2. Load samples (coral larvae, fragments, recruits) into wells, loading desired wells with samples and at least 2 with 0.2 µm filtered sea water (FSW) as blanks. Randomize the location of blanks for each run to limit well-specific differences in blank samples. If possible, run titration trials to determine optimal sample size/density (e.g., fragment size, number of larvae) to obtain signals that differentiate from blanks and don't quickly go hypoxic. If running respirometry on swimming larvae, a general benchmark for spawning species (*M. capitata*, *A. hyacinthus*) is to use 6-8 larvae per well and brooding larvae 3-6 per well. Record the number of larvae, size of samples, and add to each well in a metadata sheet. 
