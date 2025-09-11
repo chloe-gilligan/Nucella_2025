@@ -14,7 +14,7 @@ library(ggplot2)
 
 
 ```{r}
-temp_data <- read.csv("../Data/2025_Tank_Temp_Data.csv")
+temp_data <- read.csv("../data/2025_Tank_Temp_Data.csv")
 ```
 
 #Cleaning up data to only use data that is from used tanks

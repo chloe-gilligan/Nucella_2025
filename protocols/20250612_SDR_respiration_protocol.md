@@ -1,7 +1,7 @@
 ---
 layout: post
 title: SDR Respirometry Protocol
-date: '2025-06-12'
+date: '2025-09-11'
 categories: Protocols
 tags: respirometry, Nucella, physiology
 projects: Nucella
@@ -17,22 +17,21 @@ Revised by Chloé Gilligan for Nucella respiration
 - [**PresensⓇ SDR™ V4.0.0**](#Presens_SDR_Software)
 - [**LoligoⓇ MicroResp™ Software**](#Loligo_MicroResp_Software)
 - [**Initial Setup**](#Initial_Setup)
+- [**Water Preparation**](#Water Preparation)
 - [**Sample Preparation**](#Sample_Preparation)
-- [**Photosynthesis**](#Photosynthesis)
 - [**Respiration**](#Respiration)
-- [**pH**](#pH)
 - [**Final Checks**](#Final_Checks)
 - [**Data Analysis**](#Data_Analysis)
 - [**Take-Down and Clean Up**](#Take-Down)
-- PI curves under different temperatures
-- Thermal performance curves
+
 
 <a name="Supplies"></a> **Supplies**
 
 - 2 PreSens SDR SensorDish® Reader Basic Set [(SDR Specs)](https://www.presens.de/products/detail/sdr-sensordish-reader-basic-set) [(SDR User Manual)](https://github.com/Putnam-Lab/Lab_Management/blob/master/Lab_Resources/Equipment_Protocols/Respirometry_Protocol/Images/SDR_UserManual.pdf) 
 - 2 PreSens SDR QuickStart Guide [PreSens Getting Started](https://github.com/Putnam-Lab/Lab_Management/blob/master/Lab_Resources/Equipment_Protocols/Respirometry_Protocol/Images/SDR_GettingStarted_GS_SDR-16-01_dv2.pdf)    
 - Loligo Glass 24 well microplate with Presens Oxygen spots [Loligo 80µl well size plate Cat #CH25000](https://loligosystems.com/products/microplate/accessories/24-well-glass-microplate-80-ul/)
-- OR plastic 24 well plate with Loligo glass vials 2ml (or other appropriate size)
+OR 
+- Plastic 24 well plate with Loligo glass vials 2ml (or other appropriate size)
 - LoligoⓇ MicroResp™ Software [(Software Download)](https://www.loligosystems.com/downloads)
 - [> 48 pieces of 12mm Microscope Cover Glass](https://www.amazon.com/gp/product/B00XZP7XMU/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1)
 - Windows Computer 
@@ -40,7 +39,7 @@ Revised by Chloé Gilligan for Nucella respiration
 - Kimwipes
 - DI Water
 - Squeeze Bottle
-- Large Towel
+- Towels
 - Isopropanol wipes
 - Air-saturated filtered seawater (100% FSW)
 - Zero percent oxygen calibration solution (FSW saturated with sodium sulfite)
@@ -64,51 +63,64 @@ or if LoligoⓇ MicroResp™ Software was purchased with Loligo Plate
 Setting up the SDR sensor plates and accompanying system for the first time in a new place:
 
 1.  Assemble SDR reader following the [(SDR SensorDish Reader Installation Video)](https://www.youtube.com/watch?v=F0_b4Ws6Eow&feature=youtu.be). Connect the SDR plate readers to the USB port on the computer and open the LoligoⓇ MicroResp™ Software. Load the correct calibration file for the instrumentation used. For the Loligo 1624 Microplate the calibration files can be found here: [(Calibration Files)](https://www.loligosystems.com/microplate-data)
-2. If possible, assemble and run the equipment in a temperaure-controlled environment, such as an incubator. Fluctuations in room temperature and increases in temperature due to the use of LED lighting can influence measurements. Temperature control using an incubator will allow for respiration measurements in treatment conditions if desired.  
-6. Run a one-point calibration with 100% oxygen saturated filtered seawater (FSW) for each plate before each run. To do this, bubble FSW for 15 minutes or vigoursly shake in a falcon tube to fully aerate the water. Load the plate with the 100% saturated FSW and place the plate in the incubator on the SDR. In the software, select oxygen levels be measured at % air saturation. Click "Calibration" and then "One-point adjustment". A box will pop up with the % air saturation values for each well. These should be between 90-120%. At the box at the bottom, enter "100" for % air saturation. Click OK. Repeat these steps for both plates.
-7. After the calibration, click "Single Scan" in the upper left hand corner. This will run a single measurement scan on all of the wells to double check the calibration. The values should be around 98-105% air saturation. The plate is now calibrated! **It is strongly recommended to run the calibration before every plate/run, especially if different temperatures are being measured.** 
+
+
+2. Assemble and run the equipment in a temperaure-controlled environment, such as an incubator. Fluctuations in room temperature and increases in temperature due to the use of LED lighting can influence measurements. Temperature control using an incubator will allow for respiration measurements in treatment conditions if desired.  
+
+
+3. Run a one-point calibration with 100% oxygen saturated filtered seawater (FSW) for each plate before each run. To do this, bubble FSW for 15 minutes or vigoursly shake in a falcon tube to fully aerate the water. Load the plate with the 100% saturated FSW and place the plate in the incubator on the SDR. In the software, select oxygen levels be measured at % air saturation. Click "Calibration" and then "One-point adjustment". A box will pop up with the % air saturation values for each well. These should be between 90-120%. At the box at the bottom, enter "100" for % air saturation. Click OK. Repeat these steps for both plates.
+
+
+4. After the calibration, click "Single Scan" in the upper left hand corner. This will run a single measurement scan on all of the wells to double check the calibration. The values should be around 98-105% air saturation. The plate is now calibrated! **It is strongly recommended to run the calibration before every plate/run, especially if different temperatures are being measured.** 
+
+5. On the software in the top tool bar, input the salinity of the water being used in the vials or glass plate as well as the desired temperature. You will monitor the temperature with a thermometer that stays in the incubator for the entirety of the respiration run.
+6. Set the parameter to oxygen
+7. Set the batch number to PSt-2408-01
+8. Set log interval, I reccomend 2 minutes to limit static
+9. Select log measurement and save files to desired location
+10. DO NOT let computer go to sleep, make sure screen will not turn off during run
+
+<a name="Water_Preparation"></a> **Water Preparation**
+
+1. Filter Sea Water to 10 mm with a sock filter. Run water through 2 times.
+
+2. Calibrate refractometer with DI water around 20ºC and record the salinity each time you run the SDR program.
+
 
 <a name="Sample_Preparation"></a> **Sample Preparation**
 
 
-
-
-
 1. Set up SDR respirometry equipment (see [**Initial Setup**](#Initial_Setup) for details). Set oxygen concentration in units of µmol/L, indicate temperature and salinity.    
-2. Load samples (coral larvae, fragments, recruits) into wells, loading desired wells with samples and at least 2 with 0.2 µm filtered sea water (FSW) as blanks. Randomize the location of blanks for each run to limit well-specific differences in blank samples. If possible, run titration trials to determine optimal sample size/density (e.g., fragment size, number of larvae) to obtain signals that differentiate from blanks and don't quickly go hypoxic. If running respirometry on swimming larvae, a general benchmark for spawning species (*M. capitata*, *A. hyacinthus*) is to use 6-8 larvae per well and brooding larvae 3-6 per well. Record the number of larvae, size of samples, and add to each well in a metadata sheet. 
-3. Once all samples are loaded in the plate, including blanks, seal each well with a glass coverslip. See video example of sealing wells here: [(Sealing Wells Video)](https://github.com/urol-e5/protocols/blob/master/images/Well_Loading_Example_Resp.mov) 
-4. Make sure that the OxoDish or HydroDish are correctly aligned over the middle of the lasers on the SDR SensorDish Readers. 
-5. The SensorDishes can easily be positioned on the SDR due to a groove in the housing of the SDR.
-
-6. Please be sure that the SensorDishes rest in the groove properly, otherwise the measurement signal will not be sufficient, which results in a bad resolution or even the message “NO SENSOR”.
-7. Be sure to put the SensorDish® aligned correctly onto the SDR (well numeration) to be able to associate the software values with your samples.
-
-
-
-8. Run [**Photosynthesis**](#Photosynthesis) or [**Respiration**](#Respiration) trials.
-
-<a name="Respiration"></a> **Respiration**
-
-1. Use snails that have just emerged and are around the same age (appx. within 18 hours).
-
-
-2. Put each snail in a 2ml vial
-
-
-3. Fill all vials with their respective treatment water
+2. Use snails that have just emerged and are around the same age (appx. within 18 hours).
+3. Using calipers record the length of at least one snail from each tea infuser.
+3. Put each snail in a 2ml vial or if using the 250 ml glass plate, load samples into wells, loading desired wells with samples and at least 2 with 0.2 µm filtered sea water (FSW) as blanks. Randomize the location of blanks for each run to limit well-specific differences in blank samples. 
+4. Fill all vials with their respective treatment water
 	- For crab water fill a measure X bucket with crabs and use that water to fill vials
 	- Heat accordingly in incubator 
+     ##### Glass plate
+         - Once all samples are loaded in the plate, including blanks, seal each well with a glass coverslip. See video example of sealing wells here: [(Sealing Wells Video)](https://github.com/urol-e5/protocols/blob/master/images/Well_Loading_Example_Resp.mov) 
+         - If using a waterbath, cover with [(Microsealing film)](https://www.loligosystems.com/products/microplate/accessories/microplate-sealing-film-100-pcs/), [(Silicon pad)](https://www.loligosystems.com/products/microplate/accessories/silicone-pad/) and a [(Compression block)](https://www.loligosystems.com/products/microplate/accessories/compression-block-for-microplate/) and fill waterbath completely 
 
-4. Create a platemap of the location of the EC full sample ID
+     ##### 2ml vials
+         - To fill glass vials, fill a MeasureX container with filtered sea water and fully submerge vials with sample inside. Shake vial and rub fingers around lid of vial to ensure there are no bubbles present.
 
+5. Make sure that the OxoDish or HydroDish are correctly aligned over the middle of the lasers on the SDR SensorDish Readers. 
+6. The SensorDishes can easily be positioned on the SDR due to a groove in the housing of the SDR.
+7. Please be sure that the SensorDishes rest in the groove properly, otherwise the measurement signal will not be sufficient, which results in a bad resolution or even the message “NO SENSOR”.
+8. Be sure to put the SensorDish® aligned correctly onto the SDR (well numeration) to be able to associate the software values with your samples.
+9. Create a platemap of the location of the EC full sample ID
+10. Run [**Respiration**](#Respiration) trials.
+
+
+
+
+<a name="Respiration"></a> **Respiration**
 	
-4. Turn off lights or block incubator windows with tinfoil. Collect data under darkness for a period of time in which a stable signal is recorded that is different than the blanks and sustained, recommended to run for 1-2 hours. Look for a decrease in oxygen that is different from the blanks. 
-	- Oxygen measurements will appear “jumpy” under the light as the SDR plate readings are variable under light. For this reason, be sure to run respiration runs in dark and long enough to provide enough data for analysis to extract a representative slope.
-
-	
-5.  Running 1 full plate will provide n=X samples. Run as many plates to obtain desired sample size or run all treatment conditions. During run, watch for bubbles and breakages in well sealing and note these issues on metadata sheet. These wells will need to be excluded from analyses. It is therefore important to ensure a quality seal before the run begins and re-seal any wells that show bubbles prior to running. 
-6.  Label the saved files with the following name format: “Date_RunID”. If more runs are needed, use Run2, Run3, etc. This file format is suggested - use file names that are informative and appropriate to the experiment. 
-7. Export data files in .xlsx format and convert to .csv for data analysis. 
+1. Turn off lights or block incubator windows with tinfoil/ trash bag. Collect data under darkness for a period of time in which a stable signal is recorded that is different than the blanks and sustained, recommended to run for 1-2 hours. Look for a decrease in oxygen that is different from the blanks. 
+	- Oxygen measurements will appear “jumpy” under the light as the SDR plate readings are variable under light. For this reason, be sure to run respiration runs in dark and long enough to provide enough data for analysis to extract a representative slope.	
+2.  Running 1 full plate will provide n=22 samples and n=2 blanks. Run as many plates to obtain desired sample size or run all treatment conditions. During run, watch for bubbles and breakages in well sealing and note these issues on metadata sheet. These wells will need to be excluded from analyses. It is therefore important to ensure a quality seal before the run begins and re-seal any wells that show bubbles prior to running. 
+3.  Label the saved files with the following name format: “Date_RunID”. If more runs are needed, use Run2, Run3, etc. This file format is suggested - use file names that are informative and appropriate to the experiment. 
+4. Export data files in .xlsx format and convert to .csv for data analysis. 
 
 
 
@@ -146,23 +158,7 @@ Refer to these repositories and notebooks for data analysis and workflows for re
 13. **keep the spots covered to reduce light effects**
 
 
-### Example protocols: PI curves under different temperatures
-
-This section details the protocol for performing photosynthetic irradiance curves under different temperatures. In *M. capitata* 2023 experiments, Ariana Huffmyer and Jill Ashey performed several PI curves (dark respiration, low light, medium light, high light, light-enhanced respiration) at different temperatures (27, 30, 33, and 36°C). See Ariana's [GitHub respository from this project](https://github.com/AHuffmyer/larval_symbiont_TPC) for example metadata and file formats and scripts. The file format is critically important and it is highly recommended to replicate formats from existing repositories. 
-
-1. Follow the steps outlined above for initial set-up. 
-2. Set the incubator to the desired temperature for measurements. 
-3. Set the light levels for low, medium and high light. In *M. capitata* 2023 experiments, AH and JA set low light at 50 PAR (5% on AI light app), medium light at 100 PAR (8% on AI light app), and high light at 500 PAR (26% on AI light app). Use the apogee to get precise PAR readings. The light levels should be set by first running a PI curve at ambient temperature across a wide range of light levels (0-1500 PAR). The PI curve can then be used to decide the appropriate light levels. 
-4. Perform a one-point calibration as detailed above. **Important**: perform a calibration at every temperature!!! This will ensure the plate is calibrated at the proper temperature for measurements. 
-5. Gather the larvae and incubate them in the dark for 20-30 minutes. The first measurement will be of dark respiration, so be sure to acclimate them to darkness before running. 
-6. Load the larvae (n=5 per well) in the plates as detailed above. Make sure to have plate maps prepared beforehand with a sufficient number of replicates and blanks. After the larvae are loaded into the plates, incubate the plates in the dark for 5 minutes.
-7. Load the plates onto the SDR in the incubators set to the desired temperatures. The first run will be dark respiration, so the lights will be off. Once both plates are on the SDR in the correct positions, start the SDR program. Let the program measure for 15-20 minutes or until a clear slope is observed.  
-8. Once the dark respiration run is done, pause the program. Turn the lights on to the low light setting (50 PAR in this project) and resume the program after a 2 minute period. 
-9. Repeat these steps to next run medium light (e.g., 100 PAR), and high light (500 PAR) phases, followed by the dark again at the end to measure light-enhanced respiration (0 PAR). 
-10. Export measurements once oxygen measurements for all light levels have been collected at a specific temperature. 
-11. Repeat for each temperature. **Important**: perform a calibration at every temperature!!! This will ensure the plate is calibrated at the proper temperature for measurements. 
-12. Follow the steps outlined above for take down and clean up.
-13. Be sure to export the data after each measurement and keep detailed time stamps for each light phase. See the GitHub respository linked above for example metadata.  
+### Future directions: Thermal performance curves
 
 ### Example protocol: Larval thermal performance curves 
 
