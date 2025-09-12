@@ -52,15 +52,15 @@ Castle Rock ,20250812,9:30,Sunny,1,3,0,0,5,95,0,0,0,5%,0,0,Bare stone,100
 Castle Rock ,20250812,9:30,Sunny,1,4,0,0,0,90,10,0,0,0%,0,0,,100
 Castle Rock ,20250812,9:30,Sunny,1,5,0,0,53,90,10,0,0,0%,0,0,,100
 Castle Rock ,20250812,9:30,Sunny,1,6,0,0,25,80,0,5,0,15%,0,0,10% Chondus; 5% Bare,100
-Bass Rock,20250810,7:00,Partly cloudy,1,1,0,0,0,0,0,0,0,100%,0,0,Bare Stone,
-Bass Rock,20250810,7:00,Partly cloudy,1,2,0,0,10,2,0,0,10,88%,0,0,"20% Cra, 68% bare stone",
-Bass Rock,20250810,7:00,Partly cloudy,1,3,0,0,5,1,0,0,20,79%,0,0,"40% Cra, 39% Bare stone",
-Bass Rock,20250810,7:00,Partly cloudy,1,4,0,0,29,15,0,0,0,85%,0,0,"5% Cra, 80% Bare stone",
-Bass Rock,20250810,7:00,Partly cloudy,1,5,0,0,3,10,0,0,5,85%,0,0,Bare stone,
-Bass Rock,20250810,7:00,Partly cloudy,1,6,0,0,26,30,0,0,0,70%,0,0,"50% Cra, 20% Bare, coral w/ algae",
-Ram Island ,20250810,8:00,Mostly Cloudy,1,1,0,0,0,0,0,0,0,100%,0,0,Bare stone,
-Ram Island ,20250810,8:00,Mostly Cloudy,1,2,25,0,17,30,2,10,5,63%,0,0,"10% bare stone, 53% Cra",
-Ram Island ,20250810,8:00,Mostly Cloudy,1,3,0,0,17,30,2,5,10,53%,0,0,"20% Cra, 3% lettuce, 30% bare",
-Ram Island ,20250810,8:00,Mostly Cloudy,1,4,0,0,72,50,5,5,10,30%,0,0,"15% Cra, 15% Bare stone",
-Ram Island ,20250810,8:00,Mostly Cloudy,1,5,0,0,0,80,2,10,8,NA,0,0,,
-Ram Island ,20250810,8:00,Mostly Cloudy,1,6,0,0,2,2,5,90,0,3%,0,0,Bare stone,
+Bass Rock,20250910,7:00,Partly cloudy,1,1,0,0,0,0,0,0,0,100%,0,0,Bare Stone,100
+Bass Rock,20250910,7:00,Partly cloudy,1,2,0,0,10,2,0,0,10,88%,0,0,"20% Cra, 68% bare stone",100
+Bass Rock,20250910,7:00,Partly cloudy,1,3,0,0,5,1,0,0,20,79%,0,0,"40% Cra, 39% Bare stone",100
+Bass Rock,20250910,7:00,Partly cloudy,1,4,0,0,29,15,0,0,0,85%,0,0,"5% Cra, 80% Bare stone",100
+Bass Rock,20250910,7:00,Partly cloudy,1,5,0,0,3,10,0,0,5,85%,0,0,Bare stone,100
+Bass Rock,20250910,7:00,Partly cloudy,1,6,0,0,26,30,0,0,0,70%,0,0,"50% Cra, 20% Bare, coral w/ algae",100
+Ram Island ,20250910,8:00,Mostly Cloudy,1,1,0,0,0,0,0,0,0,100%,0,0,Bare stone,100
+Ram Island ,20250910,8:00,Mostly Cloudy,1,2,25,0,17,25,2,10,5,63%,0,0,"10% bare stone, 43% Cra",100
+Ram Island ,20250910,8:00,Mostly Cloudy,1,3,0,0,17,30,2,5,10,53%,0,0,"20% Cra, 3% lettuce, 30% bare",100
+Ram Island ,20250910,8:00,Mostly Cloudy,1,4,0,0,72,50,5,5,10,30%,0,0,"15% Cra, 15% Bare stone",100
+Ram Island ,20250910,8:00,Mostly Cloudy,1,5,0,0,0,80,2,10,8,0,0,0,,100
+Ram Island ,20250910,8:00,Mostly Cloudy,1,6,0,0,2,2,5,90,0,3%,0,0,Bare stone,100
