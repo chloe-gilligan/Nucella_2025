@@ -15,7 +15,8 @@ tags: [Ash free dry weight, physiology, Nucella, newly emerged]
 - Drying Oven (60°C) 
 - Muffle furnace (450°C) 
 - Aluminum micro weigh boats 
-- Analytical balance (0.0001 g) 
+- Forceps
+- Analytical balance (0.0001 mg) 
 
 
 #### Goal: Determine shell (inorganic content) and tissue (organic content) weights
@@ -30,7 +31,7 @@ tags: [Ash free dry weight, physiology, Nucella, newly emerged]
 
 3) Freeze snails individually at -20ºC with measurements recorded in spreadsheet 
 
-4) When ready, thaw snails and rinse 5 times with deionized water 
+4) When ready, thaw snails and rinse 5 times with deionized water (rinsing is very difficult with the newly emerged snails so can dip in DI in and out 5 times using very sensitive forceps)
 
 5) Dry snails in drying oven (60ºC) for 5 days 
 
