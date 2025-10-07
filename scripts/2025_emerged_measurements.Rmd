@@ -19,16 +19,224 @@ When you click the **Knit** button a document will be generated that includes bo
 library(tidyr)
 library(dplyr)
 library(ggplot2)
-install.packages("readxl")
 library(readxl)
+library(tidyverse) 
 ```
 
 ```{r}
-excel_measurements <- list.files("data/2025_measurements_excel", pattern = "\\.xlsx$", full.names = TRUE)
+
+# Getting to folder with CSVs
+path <- "~/Desktop/repositories/Nucella_2025/data/NL_2025_measurements_csv"
+files <- list.files(path, pattern = "\\.csv$", full.names = TRUE)
 ```
 
-#Reading in measurement data
 ```{r}
+process_file <- function(file) {
+  # Extract metadata from filename
+  fname <- basename(file)
+  parts <- strsplit(fname, "_")[[1]]
+  emergence_date <- parts[1]
+  sample_name <- parts[2]
+  photo_number <- gsub("\\.csv", "", parts[3])
+  
+  # Read CSV and keep only Length and Comment
+  df <- read_csv(file, show_col_types = FALSE) %>%
+    select(`Length [mm]`, Comment) %>%
+    filter(!is.na(Comment)) %>%
+    mutate(`Length [mm]` = as.numeric(`Length [mm]`))
+  
+  # Separate length vs width and extract snail_number
+  df <- df %>%
+    mutate(
+      type = ifelse(grepl("_L_", Comment), "length", "width"),
+      snail_number = as.numeric(str_extract(Comment, "\\d+$"))
+    ) %>%
+    select(snail_number, type, value = `Length [mm]`)
+  
+  # Resolve duplicates: keep only first measurement per snail_number & type
+  df <- df %>%
+    group_by(snail_number, type) %>%
+    slice(1) %>%
+    ungroup()
+  
+  # Pivot wider so each snail has length & width in one row
+  df_wide <- df %>%
+    pivot_wider(names_from = type, values_from = value)
+  
+  # Add metadata columns
+  df_wide <- df_wide %>%
+    mutate(
+      sample_name = sample_name,
+      emergence_date = emergence_date,
+      photo_number = photo_number
+    ) %>%
+    select(sample_name, emergence_date, photo_number, snail_number, length, width)
+  
+  return(df_wide)
+}
+
+# Combine all CSVs
+master <- purrr::map_dfr(files, process_file)
+
+# Save master CSV
+write_csv(master, "~/Desktop/repositories/Nucella_2025/data/NL_2025_master_measurements.csv")
 
 ```
+
+
+```{r}
+fname <- basename(files[1])
+parts <- strsplit(fname, "_")[[1]]
+emergence_date <- parts[1]
+sample_name <- parts[2]   # e.g. "RIP4"
+photo_number <- gsub("\\.csv", "", parts[3])
+```
+
+```{r}
+site_code <- substr(sample_name, 1, 2)    # RI, CR, BR
+color_code <- substr(sample_name, 3, 3)   # P, R, B, G
+replicate <- as.numeric(substr(sample_name, 4, 4))
+
+```
+
+```{r}
+site <- case_when(
+  site_code == "RI" ~ "Ram Island",
+  site_code == "CR" ~ "Castle Rock",
+  site_code == "BR" ~ "Bass Rock"
+)
+```
+
+```{r}
+color <- case_when(
+  color_code == "P" ~ "Pink",
+  color_code == "R" ~ "Red",
+  color_code == "B" ~ "Blue",
+  color_code == "G" ~ "Green"
+)
+```
+
+```{r}
+treatment <- case_when(
+  color_code == "P" ~ "No crab",
+  color_code == "R" ~ "Crab",
+  color_code == "B" ~ "Crab",
+  color_code == "G" ~ "No crab"
+)
+```
+
+```{r}
+temperature <- case_when(
+  color_code %in% c("P", "R") ~ "Heated",
+  color_code %in% c("B", "G") ~ "Ambient"
+)
+```
+
+```{r}
+cat(emergence_date, sample_name, photo_number, site, color, replicate, treatment, temperature)
+```
+
+```{r}
+ library(tidyverse)
+
+files <- list.files("data", pattern = "\\.csv$", full.names = TRUE)
+files
+```
+```{r}
+rlang::last_trace()
+```
+
+
+
+
+
+
+
+
+```{r}
+df <- read_csv(files[1], show_col_types = FALSE) %>%
+  select(`Length [mm]`, Comment) %>%
+  filter(!is.na(Comment)) %>%
+  mutate(`Length [mm]` = as.numeric(`Length [mm]`))
+
+df <- df %>%
+  mutate(
+    type = ifelse(grepl("_L_", Comment), "length", "width"),
+    snail_number = as.numeric(str_extract(Comment, "\\d+$"))
+  ) %>%
+  select(snail_number, type, value = `Length [mm]`)
+
+df <- df %>%
+  group_by(snail_number, type) %>%
+  slice(1) %>%
+  ungroup()
+
+df_wide <- df %>%
+  pivot_wider(names_from = type, values_from = value)
+
+df_wide <- df_wide %>%
+  mutate(
+    sample_name = sample_name,
+    emergence_date = emergence_date,
+    photo_number = photo_number,
+    site = site,
+    color = color,
+    replicate = replicate,
+    treatment = treatment,
+    temperature = temperature
+  )
+
+```
+
+```{r}
+# Lookup metadata for each sample_name
+metadata <- tribble(
+  ~sample_name, ~site,        ~color, ~replicate, ~treatment, ~temperature,
+  "RIP2",       "Ram Island", "Pink", 2,          "No crab",  "Heated",
+  "RIP1",       "Ram Island", "Blue", 1,          "Crab",     "Ambient",
+  "CAS1",       "Castle Rock","Green",1,          "No crab",  "Ambient"
+  # keep adding for all your samples
+)
+
+process_file <- function(file) {
+  fname <- basename(file)
+  parts <- strsplit(fname, "_")[[1]]
+  emergence_date <- parts[1]
+  sample_name <- parts[2]
+  photo_number <- gsub("\\.csv", "", parts[3])
+  
+  df <- read_csv(file, show_col_types = FALSE) %>%
+    select(`Length [mm]`, Comment) %>%
+    filter(!is.na(Comment)) %>%
+    mutate(`Length [mm]` = as.numeric(`Length [mm]`)) %>%
+    mutate(
+      type = ifelse(grepl("_L_", Comment), "length", "width"),
+      snail_number = as.numeric(str_extract(Comment, "\\d+$"))
+    ) %>%
+    select(snail_number, type, value = `Length [mm]`) %>%
+    group_by(snail_number, type) %>%
+    slice(1) %>%
+    ungroup() %>%
+    pivot_wider(names_from = type, values_from = value) %>%
+    mutate(
+      sample_name = sample_name,
+      emergence_date = emergence_date,
+      photo_number = photo_number
+    )
+  
+  # Join with metadata
+  df <- df %>%
+    left_join(metadata, by = "sample_name") %>%
+    select(sample_name, emergence_date, photo_number, snail_number, length, width,
+           site, color, replicate, treatment, temperature)
+  
+  return(df)
+}
+
+# Run across all files
+master <- purrr::map_dfr(files, process_file)
+
+```
+
+
 

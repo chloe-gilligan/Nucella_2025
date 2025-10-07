@@ -53,6 +53,6 @@ tags: [Ash free dry weight, physiology, Nucella, newly emerged]
 
  A  | B  | C  | D  | E  | F  |
 ----|----|----|----|----|----|
-Full Sample ID  | Ashed/Burned pan (g) | Dry Snail Initial mass (g) | Ashed pan + ashed snail (g)| Tissue Mass| Shell Mass |
+Full Sample ID  | Ashed/Burned pan (mg) | Dry Snail Initial mass (mg) | Ashed pan + ashed snail (mg)| Tissue Mass| Shell Mass |
 Calculations | | | | C-D |  D-B||
 
