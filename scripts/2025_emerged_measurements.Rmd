@@ -23,14 +23,20 @@ library(readxl)
 library(tidyverse) 
 ```
 
+#What worked for the first half of the table
 ```{r}
+# Load libraries
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(readxl)
+library(tidyverse)
 
 # Getting to folder with CSVs
 path <- "~/Desktop/repositories/Nucella_2025/data/NL_2025_measurements_csv"
 files <- list.files(path, pattern = "\\.csv$", full.names = TRUE)
-```
 
-```{r}
+# Function to process each CSV
 process_file <- function(file) {
   # Extract metadata from filename
   fname <- basename(file)
@@ -81,7 +87,271 @@ master <- purrr::map_dfr(files, process_file)
 # Save master CSV
 write_csv(master, "~/Desktop/repositories/Nucella_2025/data/NL_2025_master_measurements.csv")
 
+# Example filename breakdown
+fname <- basename(files[1])
+parts <- strsplit(fname, "_")[[1]]
+emergence_date <- parts[1]
+sample_name <- parts[2]   # e.g. "RIP4"
+photo_number <- gsub("\\.csv", "", parts[3])
+
+# Parse metadata from sample name
+site_code <- substr(sample_name, 1, 2)    # RI, CR, BR
+color_code <- substr(sample_name, 3, 3)   # P, R, B, G
+replicate <- as.numeric(substr(sample_name, 4, 4))
+
+# Decode site
+site <- case_when(
+  site_code == "RI" ~ "Ram Island",
+  site_code == "CR" ~ "Castle Rock",
+  site_code == "BR" ~ "Bass Rock"
+)
+
+# Decode color
+color <- case_when(
+  color_code == "P" ~ "Pink",
+  color_code == "R" ~ "Red",
+  color_code == "B" ~ "Blue",
+  color_code == "G" ~ "Green"
+)
+
+# Decode treatment
+treatment <- case_when(
+  color_code == "P" ~ "No crab",
+  color_code == "R" ~ "Crab",
+  color_code == "B" ~ "Crab",
+  color_code == "G" ~ "No crab"
+)
+
+# Decode temperature
+temperature <- case_when(
+  color_code %in% c("P", "R") ~ "Heated",
+  color_code %in% c("B", "G") ~ "Ambient"
+)
+
+# Print extracted metadata
+cat(emergence_date, sample_name, photo_number, site, color, treatment, temperature, replicate, "\n")
+
+write_csv(master, "~/Desktop/repositories/Nucella_2025/data/NL_2025_master_measurements.csv")
+
+
+
 ```
+
+```{r}
+master <- master %>%
+  mutate(
+    # Parse site, color, and replicate from sample_name
+    site_code = substr(sample_name, 1, 2),
+    color_code = substr(sample_name, 3, 3),
+    replicate = as.numeric(substr(sample_name, 4, 4)),
+
+    # Map codes to full labels
+    site = case_when(
+      site_code == "RI" ~ "Ram Island",
+      site_code == "CR" ~ "Castle Rock",
+      site_code == "BR" ~ "Bass Rock",
+      TRUE ~ NA_character_
+    ),
+    color = case_when(
+      color_code == "P" ~ "Pink",
+      color_code == "R" ~ "Red",
+      color_code == "B" ~ "Blue",
+      color_code == "G" ~ "Green",
+      TRUE ~ NA_character_
+    ),
+    treatment = case_when(
+      color_code %in% c("R", "B") ~ "Crab",
+      color_code %in% c("P", "G") ~ "No crab",
+      TRUE ~ NA_character_
+    ),
+    temperature = case_when(
+      color_code %in% c("P", "R") ~ "Heated",
+      color_code %in% c("B", "G") ~ "Ambient",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  select(sample_name, emergence_date, site, color, replicate,
+         treatment, temperature, photo_number, snail_number, length, width)
+```
+
+
+```{r}
+head(master)
+```
+#Exporting complete table with all measurements
+```{r}
+main_path <- "~/Desktop/repositories/Nucella_2025/data"
+write_csv(master, file.path(main_path, "NL_2025_master_measurements_with_metadata.csv"))
+```
+
+
+#Trying to plot
+```{r}
+library(ggplot2)
+
+ggplot(master, aes(x = length, y = width, color = treatment)) +
+  geom_point(size = 2, alpha = 0.7) +
+  labs(
+    title = "Snail Length vs Width by Treatment",
+    x = "Length (mm)",
+    y = "Width (mm)"
+  ) +
+  theme_minimal()
+```
+```{r}
+library(ggplot2)
+
+ggplot(master, aes(x = length, y = width)) +
+  geom_point(aes(color = temperature, shape = treatment), size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("Ambient" = "blue", "Heated" = "red")) +
+  labs(
+    x = "Length (mm)",
+    y = "Width (mm)",
+    color = "Temperature",
+    shape = "Treatment"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16),
+    axis.title = element_text(size = 14),
+    legend.title = element_text(size = 12)
+  )
+```
+
+```{r}
+ggplot(master, aes(x = length, y = width)) +
+  geom_point(aes(color = temperature), size = 2.5, alpha = 0.7) +
+  facet_wrap(~ treatment) +
+  labs(
+    title = "Snail Length vs Width by Treatment",
+    x = "Length (mm)",
+    y = "Width (mm)"
+  ) +
+  theme_minimal()
+```
+
+
+
+
+
+#Old code Trying to add site, color, replicate, treatment, temperature
+
+```{r}
+
+# Getting to folder with CSVs
+path <- "~/Desktop/repositories/Nucella_2025/data/NL_2025_measurements_csv"
+files <- list.files(path, pattern = "\\.csv$", full.names = TRUE)
+```
+
+```{r}
+process_file <- function(file) {
+  # Extract metadata from filename
+  fname <- basename(file)
+  parts <- strsplit(fname, "_")[[1]]
+  emergence_date <- parts[1]
+  sample_name <- parts[2]
+  photo_number <- gsub("\\.csv", "", parts[3])
+  
+  # New section Trying to add site, color, replicate, treatment, temperature
+# Extract site, color, replicate from sample_name
+  site_code <- substr(sample_name, 1, 2)    # RI, CR, BR
+  color_code <- substr(sample_name, 3, 3)   # P, R, B, G
+  replicate <- as.numeric(substr(sample_name, 4, 4))  # 1–6
+  
+    site <- case_when(
+    site_code == "RI" ~ "Ram Island",
+    site_code == "CR" ~ "Castle Rock",
+    site_code == "BR" ~ "Bass Rock",
+    TRUE ~ NA_character_
+  )
+
+  color <- case_when(
+    color_code == "P" ~ "Pink",
+    color_code == "R" ~ "Red",
+    color_code == "B" ~ "Blue",
+    color_code == "G" ~ "Green",
+    TRUE ~ NA_character_
+  )
+
+  treatment <- case_when(
+    color_code %in% c("R", "B") ~ "Crab",
+    color_code %in% c("P", "G") ~ "No crab",
+    TRUE ~ NA_character_
+  )
+
+  temperature <- case_when(
+    color_code %in% c("P", "R") ~ "Heated",
+    color_code %in% c("B", "G") ~ "Ambient",
+    TRUE ~ NA_character_
+  )
+  
+  #End of new section
+  
+  
+  
+  # Read CSV and keep only Length and Comment
+  df <- read_csv(file, show_col_types = FALSE) %>%
+    select(`Length [mm]`, Comment) %>%
+    filter(!is.na(Comment)) %>%
+    mutate(`Length [mm]` = as.numeric(`Length [mm]`))
+  
+  # Separate length vs width and extract snail_number
+  df <- df %>%
+    mutate(
+      type = ifelse(grepl("_L_", Comment), "length", "width"),
+      snail_number = as.numeric(str_extract(Comment, "\\d+$"))
+    ) %>%
+    select(snail_number, type, value = `Length [mm]`)
+  
+  # Resolve duplicates: keep only first measurement per snail_number & type
+  df <- df %>%
+    group_by(snail_number, type) %>%
+    slice(1) %>%
+    ungroup()
+  
+  # Pivot wider so each snail has length & width in one row
+  df_wide <- df %>%
+    pivot_wider(names_from = type, values_from = value)
+  
+  # Add metadata columns
+  df_wide <- df_wide %>%
+    mutate(
+      sample_name = sample_name,
+      emergence_date = emergence_date,
+      photo_number = photo_number
+    ) %>%
+    select(sample_name, emergence_date, photo_number, snail_number, length, width)
+  
+  return(df_wide)
+}
+
+# Combine all CSVs
+master <- purrr::map_dfr(files, process_file)
+
+# Save master CSV
+write_csv(master, "~/Desktop/repositories/Nucella_2025/data/NL_2025_master_measurements.csv")
+
+```
+
+```{r}
+path <- "~/Desktop/repositories/Nucella_2025/data/NL_2025_measurements_csv"
+files <- list.files(path, pattern = "\\.csv$", full.names = TRUE)
+basename(files)[1:10]
+```
+
+```{r}
+read_csv(files[1], show_col_types = FALSE) %>% names()
+```
+
+
+
+
+
+
+
+
+
+
 
 
 ```{r}
@@ -152,7 +422,7 @@ rlang::last_trace()
 
 
 
-
+#Sucessful table with everything but it is only one row
 ```{r}
 df <- read_csv(files[1], show_col_types = FALSE) %>%
   select(`Length [mm]`, Comment) %>%
@@ -187,56 +457,4 @@ df_wide <- df_wide %>%
   )
 
 ```
-
-```{r}
-# Lookup metadata for each sample_name
-metadata <- tribble(
-  ~sample_name, ~site,        ~color, ~replicate, ~treatment, ~temperature,
-  "RIP2",       "Ram Island", "Pink", 2,          "No crab",  "Heated",
-  "RIP1",       "Ram Island", "Blue", 1,          "Crab",     "Ambient",
-  "CAS1",       "Castle Rock","Green",1,          "No crab",  "Ambient"
-  # keep adding for all your samples
-)
-
-process_file <- function(file) {
-  fname <- basename(file)
-  parts <- strsplit(fname, "_")[[1]]
-  emergence_date <- parts[1]
-  sample_name <- parts[2]
-  photo_number <- gsub("\\.csv", "", parts[3])
-  
-  df <- read_csv(file, show_col_types = FALSE) %>%
-    select(`Length [mm]`, Comment) %>%
-    filter(!is.na(Comment)) %>%
-    mutate(`Length [mm]` = as.numeric(`Length [mm]`)) %>%
-    mutate(
-      type = ifelse(grepl("_L_", Comment), "length", "width"),
-      snail_number = as.numeric(str_extract(Comment, "\\d+$"))
-    ) %>%
-    select(snail_number, type, value = `Length [mm]`) %>%
-    group_by(snail_number, type) %>%
-    slice(1) %>%
-    ungroup() %>%
-    pivot_wider(names_from = type, values_from = value) %>%
-    mutate(
-      sample_name = sample_name,
-      emergence_date = emergence_date,
-      photo_number = photo_number
-    )
-  
-  # Join with metadata
-  df <- df %>%
-    left_join(metadata, by = "sample_name") %>%
-    select(sample_name, emergence_date, photo_number, snail_number, length, width,
-           site, color, replicate, treatment, temperature)
-  
-  return(df)
-}
-
-# Run across all files
-master <- purrr::map_dfr(files, process_file)
-
-```
-
-
 

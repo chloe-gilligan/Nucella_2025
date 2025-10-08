@@ -1,0 +1,762 @@
+sample_name,emergence_date,site,color,replicate,treatment,temperature,photo_number,snail_number,length,width
+RIP2,20250630,Ram Island,Pink,2,No crab,Heated,1,1,1.23,0.81
+RIP2,20250630,Ram Island,Pink,2,No crab,Heated,1,2,1.1,0.88
+RIP2,20250630,Ram Island,Pink,2,No crab,Heated,1,3,1.1,0.98
+RIP2,20250630,Ram Island,Pink,2,No crab,Heated,1,4,1.17,0.81
+RIP2,20250630,Ram Island,Pink,2,No crab,Heated,1,5,1.21,0.8
+RIP2,20250630,Ram Island,Pink,2,No crab,Heated,1,6,1.02,0.79
+RIP2,20250630,Ram Island,Pink,2,No crab,Heated,1,7,0.85,0.67
+RIP2,20250630,Ram Island,Pink,2,No crab,Heated,1,8,1.21,0.93
+RIP2,20250630,Ram Island,Pink,2,No crab,Heated,1,9,1.09,0.85
+RIP2,20250630,Ram Island,Pink,2,No crab,Heated,1,10,1.01,0.84
+RIR2,20250630,Ram Island,Red,2,Crab,Heated,3,1,1.27,0.99
+RIR2,20250630,Ram Island,Red,2,Crab,Heated,3,2,1.31,0.95
+RIR2,20250630,Ram Island,Red,2,Crab,Heated,3,3,1.3,0.97
+RIR2,20250630,Ram Island,Red,2,Crab,Heated,3,4,1.21,0.9
+RIR2,20250630,Ram Island,Red,2,Crab,Heated,3,5,1.01,0.78
+RIR2,20250630,Ram Island,Red,2,Crab,Heated,3,6,1.41,1.01
+RIR2,20250630,Ram Island,Red,2,Crab,Heated,3,7,1.04,0.82
+RIR2,20250630,Ram Island,Red,2,Crab,Heated,3,8,1.3,0.97
+RIR2,20250630,Ram Island,Red,2,Crab,Heated,3,9,1.18,1.08
+RIR2,20250630,Ram Island,Red,2,Crab,Heated,3,10,0.86,0.64
+RIR4,20250702,Ram Island,Red,4,Crab,Heated,4,1,1.43,1.01
+RIR4,20250702,Ram Island,Red,4,Crab,Heated,4,2,1.42,0.96
+RIR4,20250702,Ram Island,Red,4,Crab,Heated,4,3,1.42,1.1
+RIR4,20250702,Ram Island,Red,4,Crab,Heated,4,4,0.93,0.71
+RIR4,20250702,Ram Island,Red,4,Crab,Heated,4,5,1.08,0.73
+RIR4,20250702,Ram Island,Red,4,Crab,Heated,4,6,1.1,0.87
+RIR4,20250702,Ram Island,Red,4,Crab,Heated,4,7,1.33,1.01
+RIR4,20250702,Ram Island,Red,4,Crab,Heated,4,8,1.41,1.06
+RIR4,20250702,Ram Island,Red,4,Crab,Heated,4,9,1.45,1
+RIR4,20250702,Ram Island,Red,4,Crab,Heated,4,10,1.14,1.02
+BRP2,20250704,Bass Rock,Pink,2,No crab,Heated,12,1,1,0.64
+BRP2,20250704,Bass Rock,Pink,2,No crab,Heated,12,2,1,0.73
+BRP2,20250704,Bass Rock,Pink,2,No crab,Heated,12,3,0.99,0.7
+BRP2,20250704,Bass Rock,Pink,2,No crab,Heated,12,4,1.12,0.82
+BRP2,20250704,Bass Rock,Pink,2,No crab,Heated,12,5,0.97,0.71
+BRP2,20250704,Bass Rock,Pink,2,No crab,Heated,12,6,1.08,0.73
+BRP2,20250704,Bass Rock,Pink,2,No crab,Heated,12,7,0.97,0.7
+BRP2,20250704,Bass Rock,Pink,2,No crab,Heated,12,8,0.88,0.75
+BRP2,20250704,Bass Rock,Pink,2,No crab,Heated,12,9,1.1,0.81
+BRP2,20250704,Bass Rock,Pink,2,No crab,Heated,12,10,1.06,0.76
+BRP3,20250704,Bass Rock,Pink,3,No crab,Heated,9,1,1.31,0.81
+BRP3,20250704,Bass Rock,Pink,3,No crab,Heated,9,2,1,0.79
+BRP3,20250704,Bass Rock,Pink,3,No crab,Heated,9,3,1.26,0.7
+BRP3,20250704,Bass Rock,Pink,3,No crab,Heated,9,4,1.34,0.89
+BRP3,20250704,Bass Rock,Pink,3,No crab,Heated,9,5,1.07,0.67
+BRP3,20250704,Bass Rock,Pink,3,No crab,Heated,9,6,1.07,0.81
+BRP3,20250704,Bass Rock,Pink,3,No crab,Heated,9,7,1.22,0.86
+BRP3,20250704,Bass Rock,Pink,3,No crab,Heated,9,8,1.23,0.84
+BRP3,20250704,Bass Rock,Pink,3,No crab,Heated,9,9,1.17,0.75
+BRP3,20250704,Bass Rock,Pink,3,No crab,Heated,9,10,1.31,0.84
+BRP4,20250704,Bass Rock,Pink,4,No crab,Heated,6,1,1.23,0.84
+BRP4,20250704,Bass Rock,Pink,4,No crab,Heated,6,2,1.2,0.96
+BRP4,20250704,Bass Rock,Pink,4,No crab,Heated,6,3,1.04,0.75
+BRP4,20250704,Bass Rock,Pink,4,No crab,Heated,6,4,1.3,1.03
+BRP4,20250704,Bass Rock,Pink,4,No crab,Heated,6,5,1.16,0.66
+BRP4,20250704,Bass Rock,Pink,4,No crab,Heated,6,6,1.07,0.8
+BRP4,20250704,Bass Rock,Pink,4,No crab,Heated,6,7,1,0.8
+BRP4,20250704,Bass Rock,Pink,4,No crab,Heated,6,8,1.25,0.73
+BRP4,20250704,Bass Rock,Pink,4,No crab,Heated,6,9,1.14,0.78
+BRP4,20250704,Bass Rock,Pink,4,No crab,Heated,6,10,1.2,0.84
+BRR4,20250704,Bass Rock,Red,4,Crab,Heated,7,1,1.23,0.79
+BRR4,20250704,Bass Rock,Red,4,Crab,Heated,7,2,1.16,0.7
+BRR4,20250704,Bass Rock,Red,4,Crab,Heated,7,3,1.05,0.73
+BRR4,20250704,Bass Rock,Red,4,Crab,Heated,7,4,1.16,0.83
+BRR4,20250704,Bass Rock,Red,4,Crab,Heated,7,5,1.23,0.68
+BRR4,20250704,Bass Rock,Red,4,Crab,Heated,7,6,1.22,0.78
+BRR4,20250704,Bass Rock,Red,4,Crab,Heated,7,7,1.09,0.74
+BRR4,20250704,Bass Rock,Red,4,Crab,Heated,7,8,1,0.72
+BRR4,20250704,Bass Rock,Red,4,Crab,Heated,7,9,1.14,0.83
+BRR4,20250704,Bass Rock,Red,4,Crab,Heated,7,10,1.12,0.89
+RIG2,20250704,Ram Island,Green,2,No crab,Ambient,8,1,1.15,0.92
+RIG2,20250704,Ram Island,Green,2,No crab,Ambient,8,2,1.43,0.96
+RIG2,20250704,Ram Island,Green,2,No crab,Ambient,8,3,1.34,0.92
+RIG2,20250704,Ram Island,Green,2,No crab,Ambient,8,4,1.1,1.07
+RIG2,20250704,Ram Island,Green,2,No crab,Ambient,8,5,1.1,0.94
+RIG2,20250704,Ram Island,Green,2,No crab,Ambient,8,6,1.25,0.7
+RIG2,20250704,Ram Island,Green,2,No crab,Ambient,8,7,1.24,0.83
+RIG2,20250704,Ram Island,Green,2,No crab,Ambient,8,8,1.34,0.98
+RIG2,20250704,Ram Island,Green,2,No crab,Ambient,8,9,1.25,0.89
+RIG2,20250704,Ram Island,Green,2,No crab,Ambient,8,10,1.27,0.86
+RIP3,20250704,Ram Island,Pink,3,No crab,Heated,5,1,1.18,0.88
+RIP3,20250704,Ram Island,Pink,3,No crab,Heated,5,2,1.06,0.87
+RIP3,20250704,Ram Island,Pink,3,No crab,Heated,5,3,1.12,0.88
+RIP3,20250704,Ram Island,Pink,3,No crab,Heated,5,4,1.04,0.76
+RIP3,20250704,Ram Island,Pink,3,No crab,Heated,5,5,1.16,0.74
+RIP3,20250704,Ram Island,Pink,3,No crab,Heated,5,6,1.08,0.84
+RIP3,20250704,Ram Island,Pink,3,No crab,Heated,5,7,1.02,0.7
+RIP3,20250704,Ram Island,Pink,3,No crab,Heated,5,8,0.99,0.79
+RIP3,20250704,Ram Island,Pink,3,No crab,Heated,5,9,1.11,0.73
+RIP3,20250704,Ram Island,Pink,3,No crab,Heated,5,10,1.01,0.71
+RIP4,20250704,Ram Island,Pink,4,No crab,Heated,11,1,1.13,0.78
+RIP4,20250704,Ram Island,Pink,4,No crab,Heated,11,2,1.01,0.69
+RIP4,20250704,Ram Island,Pink,4,No crab,Heated,11,3,1.08,0.72
+RIP4,20250704,Ram Island,Pink,4,No crab,Heated,11,4,1.07,0.77
+RIP4,20250704,Ram Island,Pink,4,No crab,Heated,11,5,0.85,0.52
+RIP4,20250704,Ram Island,Pink,4,No crab,Heated,11,6,1.21,0.85
+RIP4,20250704,Ram Island,Pink,4,No crab,Heated,11,7,1.12,0.71
+RIP4,20250704,Ram Island,Pink,4,No crab,Heated,11,8,0.95,0.67
+RIP4,20250704,Ram Island,Pink,4,No crab,Heated,11,9,0.86,0.8
+RIP4,20250704,Ram Island,Pink,4,No crab,Heated,11,10,1.18,0.68
+RIP5,20250704,Ram Island,Pink,5,No crab,Heated,10,1,0.83,0.54
+RIP5,20250704,Ram Island,Pink,5,No crab,Heated,10,2,0.81,0.53
+RIP5,20250704,Ram Island,Pink,5,No crab,Heated,10,3,0.89,0.53
+RIP5,20250704,Ram Island,Pink,5,No crab,Heated,10,4,0.86,0.68
+RIP5,20250704,Ram Island,Pink,5,No crab,Heated,10,5,0.86,0.54
+RIP5,20250704,Ram Island,Pink,5,No crab,Heated,10,6,0.87,0.66
+RIP5,20250704,Ram Island,Pink,5,No crab,Heated,10,7,0.9,0.6
+RIP5,20250704,Ram Island,Pink,5,No crab,Heated,10,8,0.94,0.63
+RIP5,20250704,Ram Island,Pink,5,No crab,Heated,10,9,0.85,0.52
+RIP5,20250704,Ram Island,Pink,5,No crab,Heated,10,10,0.86,0.65
+BRP1,20250707,Bass Rock,Pink,1,No crab,Heated,19,1,1.28,0.86
+BRP1,20250707,Bass Rock,Pink,1,No crab,Heated,19,2,1.33,0.94
+BRP1,20250707,Bass Rock,Pink,1,No crab,Heated,19,3,1.28,0.95
+BRP1,20250707,Bass Rock,Pink,1,No crab,Heated,19,4,1.28,0.89
+BRP1,20250707,Bass Rock,Pink,1,No crab,Heated,19,5,1.23,0.92
+BRP1,20250707,Bass Rock,Pink,1,No crab,Heated,19,6,1.31,0.98
+BRP1,20250707,Bass Rock,Pink,1,No crab,Heated,19,7,1.23,0.85
+BRP1,20250707,Bass Rock,Pink,1,No crab,Heated,19,8,1.33,0.94
+BRP1,20250707,Bass Rock,Pink,1,No crab,Heated,19,9,1.36,1.01
+BRP1,20250707,Bass Rock,Pink,1,No crab,Heated,19,10,1.3,0.88
+BRP6,20250707,Bass Rock,Pink,6,No crab,Heated,13,1,1.12,0.9
+BRP6,20250707,Bass Rock,Pink,6,No crab,Heated,13,2,1.26,0.93
+BRP6,20250707,Bass Rock,Pink,6,No crab,Heated,13,3,1.15,0.92
+BRP6,20250707,Bass Rock,Pink,6,No crab,Heated,13,4,1.25,0.91
+BRP6,20250707,Bass Rock,Pink,6,No crab,Heated,13,5,1.15,0.93
+BRP6,20250707,Bass Rock,Pink,6,No crab,Heated,13,6,1.21,0.98
+BRP6,20250707,Bass Rock,Pink,6,No crab,Heated,13,7,1.09,1.02
+BRP6,20250707,Bass Rock,Pink,6,No crab,Heated,13,8,1.14,0.98
+BRP6,20250707,Bass Rock,Pink,6,No crab,Heated,13,9,1.15,0.88
+BRP6,20250707,Bass Rock,Pink,6,No crab,Heated,13,10,1.06,NA
+BRR2,20250707,Bass Rock,Red,2,Crab,Heated,16,1,1.05,0.92
+BRR2,20250707,Bass Rock,Red,2,Crab,Heated,16,2,1.2,0.95
+BRR2,20250707,Bass Rock,Red,2,Crab,Heated,16,3,1.24,0.86
+BRR2,20250707,Bass Rock,Red,2,Crab,Heated,16,4,1.16,0.81
+BRR2,20250707,Bass Rock,Red,2,Crab,Heated,16,5,1.12,0.84
+BRR2,20250707,Bass Rock,Red,2,Crab,Heated,16,6,1.18,0.89
+BRR2,20250707,Bass Rock,Red,2,Crab,Heated,16,7,1.26,0.88
+BRR2,20250707,Bass Rock,Red,2,Crab,Heated,16,8,1.24,0.81
+BRR2,20250707,Bass Rock,Red,2,Crab,Heated,16,9,1.11,0.93
+BRR2,20250707,Bass Rock,Red,2,Crab,Heated,16,10,1.04,0.79
+BRR3,20250707,Bass Rock,Red,3,Crab,Heated,17,1,1.36,1.06
+BRR3,20250707,Bass Rock,Red,3,Crab,Heated,17,2,1.27,0.88
+BRR3,20250707,Bass Rock,Red,3,Crab,Heated,17,3,1.29,1.07
+BRR3,20250707,Bass Rock,Red,3,Crab,Heated,17,4,1.35,1.05
+BRR3,20250707,Bass Rock,Red,3,Crab,Heated,17,5,1.08,0.91
+BRR3,20250707,Bass Rock,Red,3,Crab,Heated,17,6,1.29,0.98
+BRR3,20250707,Bass Rock,Red,3,Crab,Heated,17,7,1.26,0.85
+BRR3,20250707,Bass Rock,Red,3,Crab,Heated,17,8,1.3,1
+BRR3,20250707,Bass Rock,Red,3,Crab,Heated,17,9,1.28,1.07
+BRR3,20250707,Bass Rock,Red,3,Crab,Heated,17,10,1.06,0.8
+RIB2,20250707,Ram Island,Blue,2,Crab,Ambient,15,1,1.31,0.93
+RIB2,20250707,Ram Island,Blue,2,Crab,Ambient,15,2,1.25,0.94
+RIB2,20250707,Ram Island,Blue,2,Crab,Ambient,15,3,1.24,1
+RIB2,20250707,Ram Island,Blue,2,Crab,Ambient,15,4,1.27,1.01
+RIB2,20250707,Ram Island,Blue,2,Crab,Ambient,15,5,1.19,0.75
+RIB2,20250707,Ram Island,Blue,2,Crab,Ambient,15,6,1.3,0.99
+RIB2,20250707,Ram Island,Blue,2,Crab,Ambient,15,7,1.32,1.06
+RIB2,20250707,Ram Island,Blue,2,Crab,Ambient,15,8,1.24,1
+RIB2,20250707,Ram Island,Blue,2,Crab,Ambient,15,9,1.32,0.97
+RIB2,20250707,Ram Island,Blue,2,Crab,Ambient,15,10,1.33,1.02
+RIB4,20250707,Ram Island,Blue,4,Crab,Ambient,14,1,0.91,0.72
+RIB4,20250707,Ram Island,Blue,4,Crab,Ambient,14,2,0.87,0.67
+RIB4,20250707,Ram Island,Blue,4,Crab,Ambient,14,3,0.84,0.61
+RIB4,20250707,Ram Island,Blue,4,Crab,Ambient,14,4,0.95,0.64
+RIB4,20250707,Ram Island,Blue,4,Crab,Ambient,14,5,0.89,0.65
+RIB4,20250707,Ram Island,Blue,4,Crab,Ambient,14,6,0.84,0.63
+RIB4,20250707,Ram Island,Blue,4,Crab,Ambient,14,7,0.83,0.68
+RIB4,20250707,Ram Island,Blue,4,Crab,Ambient,14,8,0.83,0.7
+RIB4,20250707,Ram Island,Blue,4,Crab,Ambient,14,9,0.77,0.64
+RIB4,20250707,Ram Island,Blue,4,Crab,Ambient,14,10,0.84,0.61
+RIG4,20250707,Ram Island,Green,4,No crab,Ambient,18,1,1.16,1
+RIG4,20250707,Ram Island,Green,4,No crab,Ambient,18,2,1.16,0.9
+RIG4,20250707,Ram Island,Green,4,No crab,Ambient,18,3,1.07,0.97
+RIG4,20250707,Ram Island,Green,4,No crab,Ambient,18,4,1.23,0.97
+RIG4,20250707,Ram Island,Green,4,No crab,Ambient,18,5,1.15,0.8
+RIG4,20250707,Ram Island,Green,4,No crab,Ambient,18,6,1.14,0.95
+RIG4,20250707,Ram Island,Green,4,No crab,Ambient,18,7,1.03,0.96
+RIG4,20250707,Ram Island,Green,4,No crab,Ambient,18,8,1.1,0.97
+RIG4,20250707,Ram Island,Green,4,No crab,Ambient,18,9,1.23,1.01
+RIG4,20250707,Ram Island,Green,4,No crab,Ambient,18,10,1.14,0.95
+BRB2,20250709,Bass Rock,Blue,2,Crab,Ambient,27,1,1.17,0.95
+BRB2,20250709,Bass Rock,Blue,2,Crab,Ambient,27,2,1.12,0.89
+BRB2,20250709,Bass Rock,Blue,2,Crab,Ambient,27,3,1.25,0.86
+BRB2,20250709,Bass Rock,Blue,2,Crab,Ambient,27,4,1.25,0.89
+BRB2,20250709,Bass Rock,Blue,2,Crab,Ambient,27,5,1,0.82
+BRB2,20250709,Bass Rock,Blue,2,Crab,Ambient,27,6,1.14,0.88
+BRB2,20250709,Bass Rock,Blue,2,Crab,Ambient,27,7,1.07,0.77
+BRB2,20250709,Bass Rock,Blue,2,Crab,Ambient,27,8,1.14,0.95
+BRB2,20250709,Bass Rock,Blue,2,Crab,Ambient,27,9,1.18,0.84
+BRB2,20250709,Bass Rock,Blue,2,Crab,Ambient,27,10,1.11,0.86
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,22,1,1.17,0.84
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,22,2,1.29,0.9
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,22,3,1.32,0.81
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,22,4,1.11,0.79
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,22,5,1.28,0.91
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,22,6,1.26,0.89
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,22,7,1.22,0.91
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,22,8,1.23,0.81
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,22,9,1.2,0.79
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,22,10,1.13,0.78
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,36,1,1.19,1.05
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,36,2,1.16,1.04
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,36,3,1.37,0.9
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,36,4,1.32,1.04
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,36,5,1.23,1.1
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,36,6,1.06,0.91
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,36,7,1.24,1.18
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,36,8,1.24,1.11
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,36,9,1.26,1.15
+BRG4,20250709,Bass Rock,Green,4,No crab,Ambient,36,10,1.28,1.1
+CRB3,20250709,Castle Rock,Blue,3,Crab,Ambient,29,1,1.38,1.06
+CRB3,20250709,Castle Rock,Blue,3,Crab,Ambient,29,2,1.17,0.91
+CRB3,20250709,Castle Rock,Blue,3,Crab,Ambient,29,3,1.29,0.96
+CRB3,20250709,Castle Rock,Blue,3,Crab,Ambient,29,4,1.18,0.9
+CRB3,20250709,Castle Rock,Blue,3,Crab,Ambient,29,5,1.33,1.08
+CRB3,20250709,Castle Rock,Blue,3,Crab,Ambient,29,6,1.1,0.85
+CRB3,20250709,Castle Rock,Blue,3,Crab,Ambient,29,7,1.19,0.99
+CRB3,20250709,Castle Rock,Blue,3,Crab,Ambient,29,8,1.24,0.97
+CRB3,20250709,Castle Rock,Blue,3,Crab,Ambient,29,9,1.11,0.78
+CRB3,20250709,Castle Rock,Blue,3,Crab,Ambient,29,10,1.18,NA
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,24,1,1.34,1.02
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,24,2,1.14,0.8
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,24,3,1.04,0.78
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,24,4,1.19,0.98
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,24,5,1.18,0.9
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,24,6,1.16,0.92
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,24,7,1.08,0.91
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,24,8,1.1,0.73
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,24,9,1.1,0.78
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,24,10,1.12,1.01
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,35,1,1.33,0.97
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,35,2,1.16,0.96
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,35,3,1.13,1.03
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,35,4,1.07,0.98
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,35,5,1.2,0.95
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,35,6,1.09,1.02
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,35,7,1.1,0.88
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,35,8,1.12,0.93
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,35,9,1.2,1.02
+CRP1,20250709,Castle Rock,Pink,1,No crab,Heated,35,10,1.16,0.89
+CRP3,20250709,Castle Rock,Pink,3,No crab,Heated,28,1,1.14,0.83
+CRP3,20250709,Castle Rock,Pink,3,No crab,Heated,28,2,1.24,1
+CRP3,20250709,Castle Rock,Pink,3,No crab,Heated,28,3,1.28,0.99
+CRP3,20250709,Castle Rock,Pink,3,No crab,Heated,28,4,1.29,0.93
+CRP3,20250709,Castle Rock,Pink,3,No crab,Heated,28,5,1.15,1.01
+CRP3,20250709,Castle Rock,Pink,3,No crab,Heated,28,6,1.17,0.91
+CRP3,20250709,Castle Rock,Pink,3,No crab,Heated,28,7,1.17,0.87
+CRP3,20250709,Castle Rock,Pink,3,No crab,Heated,28,8,1.13,0.95
+CRP3,20250709,Castle Rock,Pink,3,No crab,Heated,28,9,1.16,0.87
+CRP3,20250709,Castle Rock,Pink,3,No crab,Heated,28,10,1.15,0.89
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,20,1,0.99,0.77
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,20,2,1.23,0.85
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,20,3,1,0.66
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,20,4,0.96,0.7
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,20,5,1.22,0.8
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,20,6,1.22,0.85
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,20,7,1.11,0.82
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,20,8,1.08,0.76
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,20,9,1.17,0.78
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,20,10,1.02,0.91
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,38,1,1.12,0.99
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,38,2,1.01,0.92
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,38,3,1.17,1.13
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,38,4,1.17,1.04
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,38,5,1.15,1.03
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,38,6,1.3,1.06
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,38,7,1.26,1.03
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,38,8,1.27,1.14
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,38,9,1.13,1.02
+CRP4,20250709,Castle Rock,Pink,4,No crab,Heated,38,10,0.97,0.76
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,26,1,1.24,0.89
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,26,2,1.17,1.01
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,26,3,1.27,0.77
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,26,4,1.28,0.86
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,26,5,1.2,0.91
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,26,6,0.94,0.7
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,26,7,1.29,0.76
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,26,8,1.1,0.69
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,26,9,1.17,0.86
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,26,10,1.32,0.74
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,32,1,1.15,0.89
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,32,2,1.15,0.85
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,32,3,1.24,1.06
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,32,4,1.11,0.84
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,32,5,1.15,0.96
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,32,6,1.27,0.98
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,32,7,1.28,0.94
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,32,8,0.86,0.74
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,32,9,1.24,1.01
+CRR3,20250709,Castle Rock,Red,3,Crab,Heated,32,10,1.23,0.82
+CRR4,20250709,Castle Rock,Red,4,Crab,Heated,31,1,1.24,0.97
+CRR4,20250709,Castle Rock,Red,4,Crab,Heated,31,2,1.22,0.9
+CRR4,20250709,Castle Rock,Red,4,Crab,Heated,31,3,1.16,0.91
+CRR4,20250709,Castle Rock,Red,4,Crab,Heated,31,4,1.1,0.9
+CRR4,20250709,Castle Rock,Red,4,Crab,Heated,31,5,1.27,0.95
+CRR4,20250709,Castle Rock,Red,4,Crab,Heated,31,6,1.02,0.75
+CRR4,20250709,Castle Rock,Red,4,Crab,Heated,31,7,1.17,0.82
+CRR4,20250709,Castle Rock,Red,4,Crab,Heated,31,8,1.2,0.81
+CRR4,20250709,Castle Rock,Red,4,Crab,Heated,31,9,1.25,0.9
+CRR4,20250709,Castle Rock,Red,4,Crab,Heated,31,10,1.12,0.88
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,23,1,1.14,0.77
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,23,2,1.17,0.94
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,23,3,1.19,0.85
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,23,4,1.19,0.89
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,23,5,1.15,0.76
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,23,6,1.12,0.84
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,23,7,1.17,0.85
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,23,8,1.11,0.87
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,23,9,0.99,0.73
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,23,10,1.18,0.83
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,33,1,1.09,0.91
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,33,2,1.11,0.88
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,33,3,1.09,0.8
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,33,4,1.16,0.95
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,33,5,1.14,0.88
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,33,6,1.15,0.91
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,33,7,1.14,0.89
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,33,8,0.97,0.81
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,33,9,1.13,0.88
+RIB3,20250709,Ram Island,Blue,3,Crab,Ambient,33,10,0.95,0.76
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,25,1,0.97,0.73
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,25,2,0.99,0.75
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,25,3,0.94,0.74
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,25,4,0.91,0.71
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,25,5,0.87,0.75
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,25,6,0.9,0.64
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,25,7,0.95,0.69
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,25,8,0.9,0.7
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,25,9,1.01,0.87
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,25,10,0.96,0.7
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,37,1,0.86,0.74
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,37,2,0.89,0.86
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,37,3,0.88,0.71
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,37,4,0.93,0.84
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,37,5,0.94,0.85
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,37,6,0.94,0.87
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,37,7,0.81,0.73
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,37,8,0.97,0.88
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,37,9,0.83,0.77
+RIG3,20250709,Ram Island,Green,3,No crab,Ambient,37,10,0.98,0.82
+RIR3,20250709,Ram Island,Red,3,Crab,Heated,30,1,1.24,0.97
+RIR3,20250709,Ram Island,Red,3,Crab,Heated,30,2,1.22,0.9
+RIR3,20250709,Ram Island,Red,3,Crab,Heated,30,3,1.16,0.91
+RIR3,20250709,Ram Island,Red,3,Crab,Heated,30,4,1.1,0.9
+RIR3,20250709,Ram Island,Red,3,Crab,Heated,30,5,1.27,0.95
+RIR3,20250709,Ram Island,Red,3,Crab,Heated,30,6,1.02,0.75
+RIR3,20250709,Ram Island,Red,3,Crab,Heated,30,7,1.17,0.82
+RIR3,20250709,Ram Island,Red,3,Crab,Heated,30,8,1.2,0.81
+RIR3,20250709,Ram Island,Red,3,Crab,Heated,30,9,1.25,0.9
+RIR3,20250709,Ram Island,Red,3,Crab,Heated,30,10,1.12,NA
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,21,1,1.03,0.7
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,21,2,0.87,0.67
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,21,3,0.86,0.65
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,21,4,0.68,0.47
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,21,5,0.85,0.64
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,21,6,0.94,0.57
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,21,7,0.92,0.74
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,21,8,0.94,0.64
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,21,9,0.92,0.75
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,34,1,1.1,0.9
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,34,2,0.79,0.75
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,34,3,0.99,0.95
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,34,4,0.96,0.83
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,34,5,0.85,0.76
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,34,6,1.03,0.98
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,34,7,0.81,0.73
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,34,8,0.74,0.66
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,34,9,0.81,0.6
+RIR5,20250709,Ram Island,Red,5,Crab,Heated,34,10,0.87,0.84
+BRB1,20250711,Bass Rock,Blue,1,Crab,Ambient,39,1,0.97,0.88
+BRB1,20250711,Bass Rock,Blue,1,Crab,Ambient,39,2,0.96,0.82
+BRB1,20250711,Bass Rock,Blue,1,Crab,Ambient,39,3,1.05,0.93
+BRB1,20250711,Bass Rock,Blue,1,Crab,Ambient,39,4,0.95,0.86
+BRB1,20250711,Bass Rock,Blue,1,Crab,Ambient,39,5,1.01,0.89
+BRB1,20250711,Bass Rock,Blue,1,Crab,Ambient,39,6,1.06,0.88
+BRB1,20250711,Bass Rock,Blue,1,Crab,Ambient,39,7,1,0.86
+BRB1,20250711,Bass Rock,Blue,1,Crab,Ambient,39,8,1.02,0.9
+BRB1,20250711,Bass Rock,Blue,1,Crab,Ambient,39,9,0.94,0.84
+BRB1,20250711,Bass Rock,Blue,1,Crab,Ambient,39,10,1.04,0.95
+BRB4,20250711,Bass Rock,Blue,4,Crab,Ambient,43,1,1.13,0.87
+BRB4,20250711,Bass Rock,Blue,4,Crab,Ambient,43,2,1.02,0.81
+BRB4,20250711,Bass Rock,Blue,4,Crab,Ambient,43,3,1.18,0.88
+BRB4,20250711,Bass Rock,Blue,4,Crab,Ambient,43,4,1.03,0.82
+BRB4,20250711,Bass Rock,Blue,4,Crab,Ambient,43,5,0.98,0.76
+BRB4,20250711,Bass Rock,Blue,4,Crab,Ambient,43,6,1.08,0.82
+BRB4,20250711,Bass Rock,Blue,4,Crab,Ambient,43,7,1.06,0.74
+BRB4,20250711,Bass Rock,Blue,4,Crab,Ambient,43,8,1.07,0.83
+BRB4,20250711,Bass Rock,Blue,4,Crab,Ambient,43,9,1.03,0.77
+BRB4,20250711,Bass Rock,Blue,4,Crab,Ambient,43,10,1.13,0.77
+BRB6,20250711,Bass Rock,Blue,6,Crab,Ambient,47,1,1.36,1.11
+BRB6,20250711,Bass Rock,Blue,6,Crab,Ambient,47,2,1.25,1.03
+BRB6,20250711,Bass Rock,Blue,6,Crab,Ambient,47,3,1.15,0.91
+BRB6,20250711,Bass Rock,Blue,6,Crab,Ambient,47,4,1.26,1
+BRB6,20250711,Bass Rock,Blue,6,Crab,Ambient,47,5,1.13,0.91
+BRB6,20250711,Bass Rock,Blue,6,Crab,Ambient,47,6,1.32,1.02
+BRB6,20250711,Bass Rock,Blue,6,Crab,Ambient,47,7,1.26,1.02
+BRB6,20250711,Bass Rock,Blue,6,Crab,Ambient,47,8,1.31,1.03
+BRB6,20250711,Bass Rock,Blue,6,Crab,Ambient,47,9,1.03,0.89
+BRB6,20250711,Bass Rock,Blue,6,Crab,Ambient,47,10,1.05,0.85
+BRR6,20250711,Bass Rock,Red,6,Crab,Heated,45,1,1.1,0.84
+BRR6,20250711,Bass Rock,Red,6,Crab,Heated,45,2,1.09,0.79
+BRR6,20250711,Bass Rock,Red,6,Crab,Heated,45,3,1.22,0.89
+BRR6,20250711,Bass Rock,Red,6,Crab,Heated,45,4,1.13,0.84
+BRR6,20250711,Bass Rock,Red,6,Crab,Heated,45,5,0.96,0.8
+BRR6,20250711,Bass Rock,Red,6,Crab,Heated,45,6,1.13,0.9
+BRR6,20250711,Bass Rock,Red,6,Crab,Heated,45,7,1.05,0.85
+BRR6,20250711,Bass Rock,Red,6,Crab,Heated,45,8,1.09,0.86
+BRR6,20250711,Bass Rock,Red,6,Crab,Heated,45,9,1.02,0.81
+BRR6,20250711,Bass Rock,Red,6,Crab,Heated,45,10,1.12,0.86
+CRG3,20250711,Castle Rock,Green,3,No crab,Ambient,46,1,1.16,0.88
+CRG3,20250711,Castle Rock,Green,3,No crab,Ambient,46,2,1.03,0.73
+CRG3,20250711,Castle Rock,Green,3,No crab,Ambient,46,3,1.21,0.95
+CRG3,20250711,Castle Rock,Green,3,No crab,Ambient,46,4,1.22,1.03
+CRG3,20250711,Castle Rock,Green,3,No crab,Ambient,46,5,1.17,0.9
+CRG3,20250711,Castle Rock,Green,3,No crab,Ambient,46,6,1.18,0.91
+CRG3,20250711,Castle Rock,Green,3,No crab,Ambient,46,7,1.21,0.92
+CRG3,20250711,Castle Rock,Green,3,No crab,Ambient,46,8,1.21,1
+CRG3,20250711,Castle Rock,Green,3,No crab,Ambient,46,9,1.18,0.94
+CRG3,20250711,Castle Rock,Green,3,No crab,Ambient,46,10,1.05,0.81
+CRP2,20250711,Castle Rock,Pink,2,No crab,Heated,44,1,1.48,1.05
+CRP2,20250711,Castle Rock,Pink,2,No crab,Heated,44,2,1.53,1
+CRP2,20250711,Castle Rock,Pink,2,No crab,Heated,44,3,1.46,1.08
+CRP2,20250711,Castle Rock,Pink,2,No crab,Heated,44,4,1.18,0.77
+CRP2,20250711,Castle Rock,Pink,2,No crab,Heated,44,5,1.22,0.93
+CRP2,20250711,Castle Rock,Pink,2,No crab,Heated,44,6,1.17,0.87
+CRP2,20250711,Castle Rock,Pink,2,No crab,Heated,44,7,1.37,1
+CRP2,20250711,Castle Rock,Pink,2,No crab,Heated,44,8,1.31,1.09
+CRP2,20250711,Castle Rock,Pink,2,No crab,Heated,44,9,1.06,0.86
+CRP2,20250711,Castle Rock,Pink,2,No crab,Heated,44,10,1.18,0.89
+RIB1,20250711,Ram Island,Blue,1,Crab,Ambient,48,1,1.44,1.13
+RIB1,20250711,Ram Island,Blue,1,Crab,Ambient,48,2,1.31,0.98
+RIB1,20250711,Ram Island,Blue,1,Crab,Ambient,48,3,1.51,1.15
+RIB1,20250711,Ram Island,Blue,1,Crab,Ambient,48,4,1.39,1.1
+RIB1,20250711,Ram Island,Blue,1,Crab,Ambient,48,5,1.34,1
+RIB1,20250711,Ram Island,Blue,1,Crab,Ambient,48,6,1.39,1.17
+RIB1,20250711,Ram Island,Blue,1,Crab,Ambient,48,7,1.41,1.1
+RIB1,20250711,Ram Island,Blue,1,Crab,Ambient,48,8,1.25,1
+RIB1,20250711,Ram Island,Blue,1,Crab,Ambient,48,9,1.4,1.02
+RIB1,20250711,Ram Island,Blue,1,Crab,Ambient,48,10,1.41,1.19
+RIB5,20250711,Ram Island,Blue,5,Crab,Ambient,41,1,0.95,0.75
+RIB5,20250711,Ram Island,Blue,5,Crab,Ambient,41,2,0.76,0.71
+RIB5,20250711,Ram Island,Blue,5,Crab,Ambient,41,3,0.95,0.8
+RIB5,20250711,Ram Island,Blue,5,Crab,Ambient,41,4,1.09,0.87
+RIB5,20250711,Ram Island,Blue,5,Crab,Ambient,41,5,1.08,0.82
+RIB5,20250711,Ram Island,Blue,5,Crab,Ambient,41,6,1.05,0.98
+RIB5,20250711,Ram Island,Blue,5,Crab,Ambient,41,7,1.09,0.87
+RIB5,20250711,Ram Island,Blue,5,Crab,Ambient,41,8,0.92,0.78
+RIB5,20250711,Ram Island,Blue,5,Crab,Ambient,41,9,0.92,0.76
+RIB5,20250711,Ram Island,Blue,5,Crab,Ambient,41,10,0.96,0.82
+RIP6,20250711,Ram Island,Pink,6,No crab,Heated,40,1,0.89,0.8
+RIP6,20250711,Ram Island,Pink,6,No crab,Heated,40,2,1.07,0.93
+RIP6,20250711,Ram Island,Pink,6,No crab,Heated,40,3,1.06,0.91
+RIP6,20250711,Ram Island,Pink,6,No crab,Heated,40,4,1.03,0.88
+RIP6,20250711,Ram Island,Pink,6,No crab,Heated,40,5,1.06,0.8
+RIP6,20250711,Ram Island,Pink,6,No crab,Heated,40,6,1.09,0.85
+RIP6,20250711,Ram Island,Pink,6,No crab,Heated,40,7,1.04,0.84
+RIP6,20250711,Ram Island,Pink,6,No crab,Heated,40,8,0.95,0.86
+RIP6,20250711,Ram Island,Pink,6,No crab,Heated,40,9,0.87,0.76
+RIP6,20250711,Ram Island,Pink,6,No crab,Heated,40,10,0.8,0.73
+RIR1,20250711,Ram Island,Red,1,Crab,Heated,42,1,1.06,0.91
+RIR1,20250711,Ram Island,Red,1,Crab,Heated,42,2,1.07,0.81
+RIR1,20250711,Ram Island,Red,1,Crab,Heated,42,3,1.09,0.94
+RIR1,20250711,Ram Island,Red,1,Crab,Heated,42,4,0.85,0.73
+RIR1,20250711,Ram Island,Red,1,Crab,Heated,42,5,1,0.7
+RIR1,20250711,Ram Island,Red,1,Crab,Heated,42,6,1.13,0.86
+RIR1,20250711,Ram Island,Red,1,Crab,Heated,42,7,1.11,0.88
+RIR1,20250711,Ram Island,Red,1,Crab,Heated,42,8,0.97,0.85
+RIR1,20250711,Ram Island,Red,1,Crab,Heated,42,9,1.08,0.89
+RIR1,20250711,Ram Island,Red,1,Crab,Heated,42,10,1.14,0.91
+BRG1,20250714,Bass Rock,Green,1,No crab,Ambient,49,1,1.24,0.94
+BRG1,20250714,Bass Rock,Green,1,No crab,Ambient,49,2,0.97,0.85
+BRG1,20250714,Bass Rock,Green,1,No crab,Ambient,49,3,1.29,1.13
+BRG1,20250714,Bass Rock,Green,1,No crab,Ambient,49,4,1.27,1.05
+BRG1,20250714,Bass Rock,Green,1,No crab,Ambient,49,5,1.24,1.02
+BRG1,20250714,Bass Rock,Green,1,No crab,Ambient,49,6,1.13,1
+BRG1,20250714,Bass Rock,Green,1,No crab,Ambient,49,7,1.2,0.97
+BRG1,20250714,Bass Rock,Green,1,No crab,Ambient,49,8,1.24,1.02
+BRG1,20250714,Bass Rock,Green,1,No crab,Ambient,49,9,1.14,1.07
+BRG1,20250714,Bass Rock,Green,1,No crab,Ambient,49,10,1.2,1.06
+BRG2,20250714,Bass Rock,Green,2,No crab,Ambient,59,1,1.09,0.85
+BRG2,20250714,Bass Rock,Green,2,No crab,Ambient,59,2,1.02,0.91
+BRG2,20250714,Bass Rock,Green,2,No crab,Ambient,59,3,1.07,0.92
+BRG2,20250714,Bass Rock,Green,2,No crab,Ambient,59,4,1.03,0.89
+BRG2,20250714,Bass Rock,Green,2,No crab,Ambient,59,5,1.07,0.94
+BRG2,20250714,Bass Rock,Green,2,No crab,Ambient,59,6,1.01,0.88
+BRG2,20250714,Bass Rock,Green,2,No crab,Ambient,59,7,1.25,0.95
+BRG2,20250714,Bass Rock,Green,2,No crab,Ambient,59,8,0.91,0.8
+BRG2,20250714,Bass Rock,Green,2,No crab,Ambient,59,9,1.16,1.08
+BRG2,20250714,Bass Rock,Green,2,No crab,Ambient,59,10,1.05,0.93
+BRG6,20250714,Bass Rock,Green,6,No crab,Ambient,50,1,1.03,0.89
+BRG6,20250714,Bass Rock,Green,6,No crab,Ambient,50,2,1.09,0.92
+BRG6,20250714,Bass Rock,Green,6,No crab,Ambient,50,3,1.03,0.83
+BRG6,20250714,Bass Rock,Green,6,No crab,Ambient,50,4,1.18,0.89
+BRG6,20250714,Bass Rock,Green,6,No crab,Ambient,50,5,1.14,1.04
+BRG6,20250714,Bass Rock,Green,6,No crab,Ambient,50,6,1.13,0.91
+BRG6,20250714,Bass Rock,Green,6,No crab,Ambient,50,7,1.06,0.94
+BRG6,20250714,Bass Rock,Green,6,No crab,Ambient,50,8,1.12,0.96
+BRG6,20250714,Bass Rock,Green,6,No crab,Ambient,50,9,1.03,0.88
+BRG6,20250714,Bass Rock,Green,6,No crab,Ambient,50,10,0.99,0.75
+BRP5,20250714,Bass Rock,Pink,5,No crab,Heated,53,1,0.82,0.66
+BRP5,20250714,Bass Rock,Pink,5,No crab,Heated,53,2,0.98,0.84
+BRP5,20250714,Bass Rock,Pink,5,No crab,Heated,53,3,0.78,0.65
+BRP5,20250714,Bass Rock,Pink,5,No crab,Heated,53,4,0.92,0.75
+BRP5,20250714,Bass Rock,Pink,5,No crab,Heated,53,5,0.97,0.83
+BRP5,20250714,Bass Rock,Pink,5,No crab,Heated,53,6,0.97,0.79
+BRP5,20250714,Bass Rock,Pink,5,No crab,Heated,53,7,0.89,0.71
+BRP5,20250714,Bass Rock,Pink,5,No crab,Heated,53,8,0.96,0.82
+BRP5,20250714,Bass Rock,Pink,5,No crab,Heated,53,9,0.89,0.79
+BRP5,20250714,Bass Rock,Pink,5,No crab,Heated,53,10,0.91,0.76
+CRB4,20250714,Castle Rock,Blue,4,Crab,Ambient,58,1,1.29,1.03
+CRB4,20250714,Castle Rock,Blue,4,Crab,Ambient,58,2,1.26,1.16
+CRB4,20250714,Castle Rock,Blue,4,Crab,Ambient,58,3,1.45,1.19
+CRB4,20250714,Castle Rock,Blue,4,Crab,Ambient,58,4,1.34,1.03
+CRB4,20250714,Castle Rock,Blue,4,Crab,Ambient,58,5,1.33,1.08
+CRB4,20250714,Castle Rock,Blue,4,Crab,Ambient,58,6,1.16,0.98
+CRB4,20250714,Castle Rock,Blue,4,Crab,Ambient,58,7,1.27,1.13
+CRB4,20250714,Castle Rock,Blue,4,Crab,Ambient,58,8,1.1,0.88
+CRB4,20250714,Castle Rock,Blue,4,Crab,Ambient,58,9,1.44,1.21
+CRB4,20250714,Castle Rock,Blue,4,Crab,Ambient,58,10,1.32,0.98
+CRB5,20250714,Castle Rock,Blue,5,Crab,Ambient,57,1,1.34,1.01
+CRB5,20250714,Castle Rock,Blue,5,Crab,Ambient,57,2,1.25,1.05
+CRB5,20250714,Castle Rock,Blue,5,Crab,Ambient,57,3,1.41,1.15
+CRB5,20250714,Castle Rock,Blue,5,Crab,Ambient,57,4,1.4,0.99
+CRB5,20250714,Castle Rock,Blue,5,Crab,Ambient,57,5,1.4,1.12
+CRB5,20250714,Castle Rock,Blue,5,Crab,Ambient,57,6,1.41,1.03
+CRB5,20250714,Castle Rock,Blue,5,Crab,Ambient,57,7,1.45,1.13
+CRB5,20250714,Castle Rock,Blue,5,Crab,Ambient,57,8,1.35,1.08
+CRB5,20250714,Castle Rock,Blue,5,Crab,Ambient,57,9,1.39,1.13
+CRB5,20250714,Castle Rock,Blue,5,Crab,Ambient,57,10,1.37,1.18
+CRG1,20250714,Castle Rock,Green,1,No crab,Ambient,52,1,0.91,0.82
+CRG1,20250714,Castle Rock,Green,1,No crab,Ambient,52,2,1.18,1.04
+CRG1,20250714,Castle Rock,Green,1,No crab,Ambient,52,3,0.99,0.79
+CRG1,20250714,Castle Rock,Green,1,No crab,Ambient,52,4,1.14,0.96
+CRG1,20250714,Castle Rock,Green,1,No crab,Ambient,52,5,1.14,1
+CRG1,20250714,Castle Rock,Green,1,No crab,Ambient,52,6,1.19,1.08
+CRG1,20250714,Castle Rock,Green,1,No crab,Ambient,52,7,0.88,0.8
+CRG1,20250714,Castle Rock,Green,1,No crab,Ambient,52,8,1.11,0.94
+CRG1,20250714,Castle Rock,Green,1,No crab,Ambient,52,9,1.1,0.96
+CRG1,20250714,Castle Rock,Green,1,No crab,Ambient,52,10,1.04,0.92
+CRG5,20250714,Castle Rock,Green,5,No crab,Ambient,54,1,1.21,1.05
+CRG5,20250714,Castle Rock,Green,5,No crab,Ambient,54,2,0.92,0.83
+CRG5,20250714,Castle Rock,Green,5,No crab,Ambient,54,3,1.12,0.96
+CRG5,20250714,Castle Rock,Green,5,No crab,Ambient,54,4,1.19,1.01
+CRG5,20250714,Castle Rock,Green,5,No crab,Ambient,54,5,1.19,0.9
+CRG5,20250714,Castle Rock,Green,5,No crab,Ambient,54,6,1.07,0.88
+CRG5,20250714,Castle Rock,Green,5,No crab,Ambient,54,7,0.99,0.74
+CRG5,20250714,Castle Rock,Green,5,No crab,Ambient,54,8,0.8,0.67
+CRG5,20250714,Castle Rock,Green,5,No crab,Ambient,54,9,1.23,1.08
+CRG5,20250714,Castle Rock,Green,5,No crab,Ambient,54,10,1,0.88
+CRP6,20250714,Castle Rock,Pink,6,No crab,Heated,51,1,1.13,0.94
+CRP6,20250714,Castle Rock,Pink,6,No crab,Heated,51,2,1.12,0.93
+CRP6,20250714,Castle Rock,Pink,6,No crab,Heated,51,3,1.34,1.04
+CRP6,20250714,Castle Rock,Pink,6,No crab,Heated,51,4,1.19,1.07
+CRP6,20250714,Castle Rock,Pink,6,No crab,Heated,51,5,1,0.86
+CRP6,20250714,Castle Rock,Pink,6,No crab,Heated,51,6,1.15,0.99
+CRP6,20250714,Castle Rock,Pink,6,No crab,Heated,51,7,1.24,0.99
+CRP6,20250714,Castle Rock,Pink,6,No crab,Heated,51,8,1.2,0.96
+CRP6,20250714,Castle Rock,Pink,6,No crab,Heated,51,9,1.17,1
+CRP6,20250714,Castle Rock,Pink,6,No crab,Heated,51,10,1.18,0.96
+CRR2,20250714,Castle Rock,Red,2,Crab,Heated,55,1,1.02,0.8
+CRR2,20250714,Castle Rock,Red,2,Crab,Heated,55,2,1.02,0.84
+CRR2,20250714,Castle Rock,Red,2,Crab,Heated,55,3,1.17,0.86
+CRR2,20250714,Castle Rock,Red,2,Crab,Heated,55,4,1.28,0.99
+CRR2,20250714,Castle Rock,Red,2,Crab,Heated,55,5,0.88,0.74
+CRR2,20250714,Castle Rock,Red,2,Crab,Heated,55,6,0.93,0.79
+CRR2,20250714,Castle Rock,Red,2,Crab,Heated,55,7,1.06,0.85
+CRR2,20250714,Castle Rock,Red,2,Crab,Heated,55,8,1.01,0.83
+CRR2,20250714,Castle Rock,Red,2,Crab,Heated,55,9,1.11,0.85
+CRR2,20250714,Castle Rock,Red,2,Crab,Heated,55,10,1.06,0.84
+CRR4,20250714,Castle Rock,Red,4,Crab,Heated,56,1,1.21,0.91
+CRR4,20250714,Castle Rock,Red,4,Crab,Heated,56,2,1.14,1.02
+CRR4,20250714,Castle Rock,Red,4,Crab,Heated,56,3,1.08,0.82
+CRR4,20250714,Castle Rock,Red,4,Crab,Heated,56,4,1.27,0.94
+CRR4,20250714,Castle Rock,Red,4,Crab,Heated,56,5,1.03,0.81
+CRR4,20250714,Castle Rock,Red,4,Crab,Heated,56,6,1.16,0.97
+CRR4,20250714,Castle Rock,Red,4,Crab,Heated,56,7,1.22,0.95
+CRR4,20250714,Castle Rock,Red,4,Crab,Heated,56,8,1.15,0.87
+CRR4,20250714,Castle Rock,Red,4,Crab,Heated,56,9,1.48,1.11
+CRR4,20250714,Castle Rock,Red,4,Crab,Heated,56,10,1.26,1.08
+CRR6,20250714,Castle Rock,Red,6,Crab,Heated,60,1,1.31,1.15
+CRR6,20250714,Castle Rock,Red,6,Crab,Heated,60,2,1.33,1.11
+CRR6,20250714,Castle Rock,Red,6,Crab,Heated,60,3,1.19,0.97
+CRR6,20250714,Castle Rock,Red,6,Crab,Heated,60,4,1.28,1.06
+CRR6,20250714,Castle Rock,Red,6,Crab,Heated,60,5,1.24,0.87
+BRB5,20250716,Bass Rock,Blue,5,Crab,Ambient,69,1,1.17,0.9
+BRB5,20250716,Bass Rock,Blue,5,Crab,Ambient,69,2,1.15,0.98
+BRB5,20250716,Bass Rock,Blue,5,Crab,Ambient,69,3,1.19,0.94
+BRB5,20250716,Bass Rock,Blue,5,Crab,Ambient,69,4,1.33,0.96
+BRB5,20250716,Bass Rock,Blue,5,Crab,Ambient,69,5,1.1,0.87
+BRB5,20250716,Bass Rock,Blue,5,Crab,Ambient,69,6,1.13,0.95
+BRB5,20250716,Bass Rock,Blue,5,Crab,Ambient,69,7,1.25,0.93
+BRB5,20250716,Bass Rock,Blue,5,Crab,Ambient,69,8,1.3,1.03
+BRB5,20250716,Bass Rock,Blue,5,Crab,Ambient,69,9,0.92,0.8
+BRB5,20250716,Bass Rock,Blue,5,Crab,Ambient,69,10,1.08,0.87
+BRG5,20250716,Bass Rock,Green,5,No crab,Ambient,65,1,1.22,0.94
+BRG5,20250716,Bass Rock,Green,5,No crab,Ambient,65,2,1.28,0.97
+BRG5,20250716,Bass Rock,Green,5,No crab,Ambient,65,3,1.29,0.96
+BRG5,20250716,Bass Rock,Green,5,No crab,Ambient,65,4,1.25,1.03
+BRG5,20250716,Bass Rock,Green,5,No crab,Ambient,65,5,1.31,0.99
+BRG5,20250716,Bass Rock,Green,5,No crab,Ambient,65,6,1.25,0.97
+BRG5,20250716,Bass Rock,Green,5,No crab,Ambient,65,7,1.3,1.12
+BRG5,20250716,Bass Rock,Green,5,No crab,Ambient,65,8,1.29,1.09
+BRG5,20250716,Bass Rock,Green,5,No crab,Ambient,65,9,1.29,1.03
+BRG5,20250716,Bass Rock,Green,5,No crab,Ambient,65,10,1.17,0.93
+BRR5,20250716,Bass Rock,Red,5,Crab,Heated,64,1,1.03,0.82
+BRR5,20250716,Bass Rock,Red,5,Crab,Heated,64,2,0.9,0.73
+BRR5,20250716,Bass Rock,Red,5,Crab,Heated,64,3,0.84,0.7
+BRR5,20250716,Bass Rock,Red,5,Crab,Heated,64,4,0.83,0.69
+BRR5,20250716,Bass Rock,Red,5,Crab,Heated,64,5,0.97,0.85
+BRR5,20250716,Bass Rock,Red,5,Crab,Heated,64,6,0.9,0.7
+BRR5,20250716,Bass Rock,Red,5,Crab,Heated,64,7,0.77,0.7
+BRR5,20250716,Bass Rock,Red,5,Crab,Heated,64,8,0.94,0.72
+BRR5,20250716,Bass Rock,Red,5,Crab,Heated,64,9,0.77,0.64
+BRR5,20250716,Bass Rock,Red,5,Crab,Heated,64,10,0.84,0.77
+CRB1,20250716,Castle Rock,Blue,1,Crab,Ambient,70,1,1.14,0.93
+CRB1,20250716,Castle Rock,Blue,1,Crab,Ambient,70,2,1.13,0.91
+CRB1,20250716,Castle Rock,Blue,1,Crab,Ambient,70,3,1.1,0.83
+CRB1,20250716,Castle Rock,Blue,1,Crab,Ambient,70,4,1.18,1.04
+CRB1,20250716,Castle Rock,Blue,1,Crab,Ambient,70,5,1.1,0.77
+CRB1,20250716,Castle Rock,Blue,1,Crab,Ambient,70,6,1.01,0.82
+CRB1,20250716,Castle Rock,Blue,1,Crab,Ambient,70,7,1.06,0.71
+CRB1,20250716,Castle Rock,Blue,1,Crab,Ambient,70,8,1,0.79
+CRB1,20250716,Castle Rock,Blue,1,Crab,Ambient,70,9,1.09,0.89
+CRB1,20250716,Castle Rock,Blue,1,Crab,Ambient,70,10,1.27,1.03
+CRG2,20250716,Castle Rock,Green,2,No crab,Ambient,67,1,1.09,0.94
+CRG2,20250716,Castle Rock,Green,2,No crab,Ambient,67,2,1.08,0.89
+CRG2,20250716,Castle Rock,Green,2,No crab,Ambient,67,3,1.19,0.97
+CRG2,20250716,Castle Rock,Green,2,No crab,Ambient,67,4,1.19,0.89
+CRG2,20250716,Castle Rock,Green,2,No crab,Ambient,67,5,1.23,0.99
+CRG2,20250716,Castle Rock,Green,2,No crab,Ambient,67,6,0.89,0.72
+CRG2,20250716,Castle Rock,Green,2,No crab,Ambient,67,7,1.14,0.96
+CRG2,20250716,Castle Rock,Green,2,No crab,Ambient,67,8,1.3,0.97
+CRG2,20250716,Castle Rock,Green,2,No crab,Ambient,67,9,1.18,0.98
+CRG2,20250716,Castle Rock,Green,2,No crab,Ambient,67,10,1.11,0.88
+CRG4,20250716,Castle Rock,Green,4,No crab,Ambient,63,1,1.57,1.22
+CRG4,20250716,Castle Rock,Green,4,No crab,Ambient,63,2,1.29,1.02
+CRG4,20250716,Castle Rock,Green,4,No crab,Ambient,63,3,1.35,1.18
+CRG4,20250716,Castle Rock,Green,4,No crab,Ambient,63,4,1.62,1.24
+CRG4,20250716,Castle Rock,Green,4,No crab,Ambient,63,5,1.47,1.16
+CRG4,20250716,Castle Rock,Green,4,No crab,Ambient,63,6,1.48,1.17
+CRG4,20250716,Castle Rock,Green,4,No crab,Ambient,63,7,1.37,1.1
+CRG4,20250716,Castle Rock,Green,4,No crab,Ambient,63,8,1.23,1
+CRG4,20250716,Castle Rock,Green,4,No crab,Ambient,63,9,1.58,1.26
+CRG4,20250716,Castle Rock,Green,4,No crab,Ambient,63,10,1.44,1.05
+CRR1,20250716,Castle Rock,Red,1,Crab,Heated,66,1,1.43,1.17
+CRR1,20250716,Castle Rock,Red,1,Crab,Heated,66,2,1.21,1.04
+CRR1,20250716,Castle Rock,Red,1,Crab,Heated,66,3,1.22,0.97
+CRR1,20250716,Castle Rock,Red,1,Crab,Heated,66,4,1.4,1.04
+CRR1,20250716,Castle Rock,Red,1,Crab,Heated,66,5,0.88,0.73
+CRR1,20250716,Castle Rock,Red,1,Crab,Heated,66,6,1.23,1.03
+CRR1,20250716,Castle Rock,Red,1,Crab,Heated,66,7,1.05,0.84
+CRR1,20250716,Castle Rock,Red,1,Crab,Heated,66,8,1.12,0.97
+CRR1,20250716,Castle Rock,Red,1,Crab,Heated,66,9,1.1,0.78
+CRR1,20250716,Castle Rock,Red,1,Crab,Heated,66,10,1.35,1.02
+RIG5,20250716,Ram Island,Green,5,No crab,Ambient,62,1,0.99,0.84
+RIG5,20250716,Ram Island,Green,5,No crab,Ambient,62,2,1.22,0.94
+RIG5,20250716,Ram Island,Green,5,No crab,Ambient,62,3,1.24,0.91
+RIG5,20250716,Ram Island,Green,5,No crab,Ambient,62,4,1.27,0.99
+RIG5,20250716,Ram Island,Green,5,No crab,Ambient,62,5,1.05,0.87
+RIG5,20250716,Ram Island,Green,5,No crab,Ambient,62,6,1.24,0.9
+RIG5,20250716,Ram Island,Green,5,No crab,Ambient,62,7,1.07,0.86
+RIG5,20250716,Ram Island,Green,5,No crab,Ambient,62,8,1.14,0.98
+RIG5,20250716,Ram Island,Green,5,No crab,Ambient,62,9,1.08,0.86
+RIG5,20250716,Ram Island,Green,5,No crab,Ambient,62,10,1.18,0.98
+RIR6,20250716,Ram Island,Red,6,Crab,Heated,68,1,1.49,0.98
+RIR6,20250716,Ram Island,Red,6,Crab,Heated,68,2,1.23,0.92
+RIR6,20250716,Ram Island,Red,6,Crab,Heated,68,3,1.33,1.06
+RIR6,20250716,Ram Island,Red,6,Crab,Heated,68,4,1.51,1.12
+RIR6,20250716,Ram Island,Red,6,Crab,Heated,68,5,1.45,1.09
+RIR6,20250716,Ram Island,Red,6,Crab,Heated,68,6,1.13,0.97
+RIR6,20250716,Ram Island,Red,6,Crab,Heated,68,7,1.42,1.12
+RIR6,20250716,Ram Island,Red,6,Crab,Heated,68,8,1.44,1.15
+BRG3,20250718,Bass Rock,Green,3,No crab,Ambient,77,1,1.24,0.96
+BRG3,20250718,Bass Rock,Green,3,No crab,Ambient,77,2,1.5,1.1
+BRG3,20250718,Bass Rock,Green,3,No crab,Ambient,77,3,1.51,1.08
+BRG3,20250718,Bass Rock,Green,3,No crab,Ambient,77,4,1.42,1.06
+BRG3,20250718,Bass Rock,Green,3,No crab,Ambient,77,5,1.28,1.05
+BRG3,20250718,Bass Rock,Green,3,No crab,Ambient,77,6,1.18,0.91
+BRG3,20250718,Bass Rock,Green,3,No crab,Ambient,77,7,1.57,1.2
+BRG3,20250718,Bass Rock,Green,3,No crab,Ambient,77,8,1.29,0.98
+BRG3,20250718,Bass Rock,Green,3,No crab,Ambient,77,9,1.49,1.12
+BRG3,20250718,Bass Rock,Green,3,No crab,Ambient,77,10,1.22,0.93
+CRB2,20250718,Castle Rock,Blue,2,Crab,Ambient,73,1,1.41,1.04
+CRB2,20250718,Castle Rock,Blue,2,Crab,Ambient,73,2,1.31,0.94
+CRB2,20250718,Castle Rock,Blue,2,Crab,Ambient,73,3,1.52,1.02
+CRB2,20250718,Castle Rock,Blue,2,Crab,Ambient,73,4,1.45,1.04
+CRB2,20250718,Castle Rock,Blue,2,Crab,Ambient,73,5,1.46,1.14
+CRB2,20250718,Castle Rock,Blue,2,Crab,Ambient,73,6,1.59,1.21
+CRB2,20250718,Castle Rock,Blue,2,Crab,Ambient,73,7,1.43,0.98
+CRB2,20250718,Castle Rock,Blue,2,Crab,Ambient,73,8,1.37,1.12
+CRB2,20250718,Castle Rock,Blue,2,Crab,Ambient,73,9,1.21,0.98
+CRB2,20250718,Castle Rock,Blue,2,Crab,Ambient,73,10,1.1,0.76
+CRG6,20250718,Castle Rock,Green,6,No crab,Ambient,76,1,1.4,1.13
+CRG6,20250718,Castle Rock,Green,6,No crab,Ambient,76,2,1.22,0.9
+CRG6,20250718,Castle Rock,Green,6,No crab,Ambient,76,3,1.36,0.96
+CRG6,20250718,Castle Rock,Green,6,No crab,Ambient,76,4,0.94,0.73
+CRG6,20250718,Castle Rock,Green,6,No crab,Ambient,76,5,0.96,0.69
+CRG6,20250718,Castle Rock,Green,6,No crab,Ambient,76,6,1.29,0.98
+CRG6,20250718,Castle Rock,Green,6,No crab,Ambient,76,7,1.31,1.06
+CRG6,20250718,Castle Rock,Green,6,No crab,Ambient,76,8,1.46,1.1
+CRG6,20250718,Castle Rock,Green,6,No crab,Ambient,76,9,1.44,1.14
+CRG6,20250718,Castle Rock,Green,6,No crab,Ambient,76,10,1.26,0.92
+CRR5,20250718,Castle Rock,Red,5,Crab,Heated,71,1,1.4,0.96
+CRR5,20250718,Castle Rock,Red,5,Crab,Heated,71,2,1.43,1.13
+CRR5,20250718,Castle Rock,Red,5,Crab,Heated,71,3,1.5,1.21
+CRR5,20250718,Castle Rock,Red,5,Crab,Heated,71,4,1.08,0.82
+CRR5,20250718,Castle Rock,Red,5,Crab,Heated,71,5,1.34,0.99
+CRR5,20250718,Castle Rock,Red,5,Crab,Heated,71,6,1.24,0.96
+CRR5,20250718,Castle Rock,Red,5,Crab,Heated,71,7,1.48,1.02
+CRR5,20250718,Castle Rock,Red,5,Crab,Heated,71,8,1.4,1.08
+CRR5,20250718,Castle Rock,Red,5,Crab,Heated,71,9,1.51,1.11
+CRR5,20250718,Castle Rock,Red,5,Crab,Heated,71,10,1.46,1.1
+RIG1,20250718,Ram Island,Green,1,No crab,Ambient,72,1,1.06,0.85
+RIG1,20250718,Ram Island,Green,1,No crab,Ambient,72,2,1.04,0.79
+RIG1,20250718,Ram Island,Green,1,No crab,Ambient,72,3,0.96,0.68
+RIG1,20250718,Ram Island,Green,1,No crab,Ambient,72,4,1.16,0.91
+RIG1,20250718,Ram Island,Green,1,No crab,Ambient,72,5,1.02,0.79
+RIG1,20250718,Ram Island,Green,1,No crab,Ambient,72,6,1.09,0.75
+RIG1,20250718,Ram Island,Green,1,No crab,Ambient,72,7,1.06,0.95
+RIG1,20250718,Ram Island,Green,1,No crab,Ambient,72,8,1.08,0.78
+RIG1,20250718,Ram Island,Green,1,No crab,Ambient,72,9,1,0.8
+RIG1,20250718,Ram Island,Green,1,No crab,Ambient,72,10,1.1,0.91
+RIG6,20250718,Ram Island,Green,6,No crab,Ambient,74,1,1.2,0.9
+RIG6,20250718,Ram Island,Green,6,No crab,Ambient,74,2,1.11,0.9
+RIG6,20250718,Ram Island,Green,6,No crab,Ambient,74,3,1.14,0.91
+RIG6,20250718,Ram Island,Green,6,No crab,Ambient,74,4,1.12,0.83
+RIG6,20250718,Ram Island,Green,6,No crab,Ambient,74,5,1.15,0.81
+RIG6,20250718,Ram Island,Green,6,No crab,Ambient,74,6,0.99,0.75
+RIG6,20250718,Ram Island,Green,6,No crab,Ambient,74,7,1.18,0.91
+RIG6,20250718,Ram Island,Green,6,No crab,Ambient,74,8,1.09,0.79
+RIG6,20250718,Ram Island,Green,6,No crab,Ambient,74,9,1.02,0.81
+RIG6,20250718,Ram Island,Green,6,No crab,Ambient,74,10,1.16,0.85
+RIP1,20250718,Ram Island,Pink,1,No crab,Heated,75,1,0.88,0.69
+RIP1,20250718,Ram Island,Pink,1,No crab,Heated,75,2,0.96,0.68
+RIP1,20250718,Ram Island,Pink,1,No crab,Heated,75,3,1.13,0.81
+RIP1,20250718,Ram Island,Pink,1,No crab,Heated,75,4,0.95,0.68
+RIP1,20250718,Ram Island,Pink,1,No crab,Heated,75,5,0.93,0.7
+RIP1,20250718,Ram Island,Pink,1,No crab,Heated,75,6,0.95,0.7
+RIP1,20250718,Ram Island,Pink,1,No crab,Heated,75,7,0.89,0.71
+RIP1,20250718,Ram Island,Pink,1,No crab,Heated,75,8,0.93,0.72
+RIP1,20250718,Ram Island,Pink,1,No crab,Heated,75,9,0.99,0.77
+RIP1,20250718,Ram Island,Pink,1,No crab,Heated,75,10,0.87,0.61
+RIB6,20250725,Ram Island,Blue,6,Crab,Ambient,78,1,1.54,1.19
+RIB6,20250725,Ram Island,Blue,6,Crab,Ambient,78,2,1.18,1.16
+RIB6,20250725,Ram Island,Blue,6,Crab,Ambient,78,3,1.66,1.27
+RIB6,20250725,Ram Island,Blue,6,Crab,Ambient,78,4,1.27,NA
+CRB6,20250730,Castle Rock,Blue,6,Crab,Ambient,79,1,0.91,0.64
+CRB6,20250730,Castle Rock,Blue,6,Crab,Ambient,79,2,0.73,0.58
+CRB6,20250730,Castle Rock,Blue,6,Crab,Ambient,79,3,0.97,0.72
+CRB6,20250730,Castle Rock,Blue,6,Crab,Ambient,79,4,0.93,0.69
+CRB6,20250804,Castle Rock,Blue,6,Crab,Ambient,80,1,1.6,1.08
+RIG5,20250818,Ram Island,Green,5,No crab,Ambient,61,1,4.27,2.41
+RIG5,20250818,Ram Island,Green,5,No crab,Ambient,61,2,4.14,2.5
+RIG5,20250818,Ram Island,Green,5,No crab,Ambient,61,3,3.21,2.08
+RIG5,20250818,Ram Island,Green,5,No crab,Ambient,61,4,3.57,2.23
+RIG5,20250818,Ram Island,Green,5,No crab,Ambient,61,5,3.71,2.37
+RIG5,20250818,Ram Island,Green,5,No crab,Ambient,61,6,3.69,2.35
+RIG5,20250818,Ram Island,Green,5,No crab,Ambient,61,7,3.61,2.45
+RIG5,20250818,Ram Island,Green,5,No crab,Ambient,61,8,3.23,2.05
+RIG5,20250818,Ram Island,Green,5,No crab,Ambient,61,9,3.62,2.39
+RIG5,20250818,Ram Island,Green,5,No crab,Ambient,61,10,4.37,2.62
