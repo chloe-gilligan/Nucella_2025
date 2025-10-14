@@ -23,7 +23,7 @@ library(readxl)
 library(tidyverse) 
 ```
 
-#What worked for the first half of the table
+#What worked for the first half of the table- creating the master spreadsheet 
 ```{r}
 # Load libraries
 library(tidyr)
@@ -84,7 +84,7 @@ process_file <- function(file) {
 # Combine all CSVs
 master <- purrr::map_dfr(files, process_file)
 
-# Save master CSV
+# Save initial master CSV
 write_csv(master, "~/Desktop/repositories/Nucella_2025/data/NL_2025_master_measurements.csv")
 
 # Example filename breakdown
@@ -97,7 +97,7 @@ photo_number <- gsub("\\.csv", "", parts[3])
 # Parse metadata from sample name
 site_code <- substr(sample_name, 1, 2)    # RI, CR, BR
 color_code <- substr(sample_name, 3, 3)   # P, R, B, G
-replicate <- as.numeric(substr(sample_name, 4, 4))
+batch <- as.numeric(substr(sample_name, 4, 4))  # renamed from replicate
 
 # Decode site
 site <- case_when(
@@ -114,12 +114,10 @@ color <- case_when(
   color_code == "G" ~ "Green"
 )
 
-# Decode treatment
-treatment <- case_when(
-  color_code == "P" ~ "No crab",
-  color_code == "R" ~ "Crab",
-  color_code == "B" ~ "Crab",
-  color_code == "G" ~ "No crab"
+# Decode Predator (formerly treatment)
+predation <- case_when(
+  color_code %in% c("R", "B") ~ "Crab",
+  color_code %in% c("P", "G") ~ "No crab"
 )
 
 # Decode temperature
@@ -129,21 +127,21 @@ temperature <- case_when(
 )
 
 # Print extracted metadata
-cat(emergence_date, sample_name, photo_number, site, color, treatment, temperature, replicate, "\n")
+cat(emergence_date, sample_name, photo_number, site, color, predation, temperature, batch, "\n")
 
 write_csv(master, "~/Desktop/repositories/Nucella_2025/data/NL_2025_master_measurements.csv")
 
 
-
 ```
 
+#Adding treatment and temperature 
 ```{r}
 master <- master %>%
   mutate(
-    # Parse site, color, and replicate from sample_name
+    # Parse site, color, and batch from sample_name
     site_code = substr(sample_name, 1, 2),
     color_code = substr(sample_name, 3, 3),
-    replicate = as.numeric(substr(sample_name, 4, 4)),
+    batch = as.numeric(substr(sample_name, 4, 4)),
 
     # Map codes to full labels
     site = case_when(
@@ -159,7 +157,7 @@ master <- master %>%
       color_code == "G" ~ "Green",
       TRUE ~ NA_character_
     ),
-    treatment = case_when(
+    predation = case_when(
       color_code %in% c("R", "B") ~ "Crab",
       color_code %in% c("P", "G") ~ "No crab",
       TRUE ~ NA_character_
@@ -170,14 +168,27 @@ master <- master %>%
       TRUE ~ NA_character_
     )
   ) %>%
-  select(sample_name, emergence_date, site, color, replicate,
-         treatment, temperature, photo_number, snail_number, length, width)
+  select(sample_name, emergence_date, site, color, batch,
+         predation, temperature, photo_number, snail_number, length, width)
+
+
+#trying to make replicate numbers
+master <- master %>%
+  distinct(sample_name, color, .keep_all = TRUE) %>%
+  arrange(color, sample_name) %>%
+  mutate(replicate = ave(seq_along(sample_name), color, FUN = seq_along)) %>%
+  select(sample_name, color, replicate) %>%
+  right_join(master, by = c("sample_name", "color")) %>%
+  relocate(replicate, .after = width)
+
+
 ```
 
 
 ```{r}
 head(master)
 ```
+
 #Exporting complete table with all measurements
 ```{r}
 main_path <- "~/Desktop/repositories/Nucella_2025/data"
@@ -189,12 +200,14 @@ write_csv(master, file.path(main_path, "NL_2025_master_measurements_with_metadat
 ```{r}
 library(ggplot2)
 
-ggplot(master, aes(x = length, y = width, color = treatment)) +
+# Plot with predation color
+ggplot(master, aes(x = length, y = width, color = predation)) +
   geom_point(size = 2, alpha = 0.7) +
   labs(
-    title = "Snail Length vs Width by Treatment",
+    title = "Snail Length vs Width by Predation Treatment",
     x = "Length (mm)",
-    y = "Width (mm)"
+    y = "Width (mm)",
+    color = "Predation"
   ) +
   theme_minimal()
 ```
@@ -202,13 +215,13 @@ ggplot(master, aes(x = length, y = width, color = treatment)) +
 library(ggplot2)
 
 ggplot(master, aes(x = length, y = width)) +
-  geom_point(aes(color = temperature, shape = treatment), size = 3, alpha = 0.8) +
+  geom_point(aes(color = temperature, shape = predation), size = 3, alpha = 0.8) +
   scale_color_manual(values = c("Ambient" = "blue", "Heated" = "red")) +
   labs(
     x = "Length (mm)",
     y = "Width (mm)",
     color = "Temperature",
-    shape = "Treatment"
+    shape = "Predation"
   ) +
   theme_minimal() +
   theme(
@@ -229,6 +242,42 @@ ggplot(master, aes(x = length, y = width)) +
   ) +
   theme_minimal()
 ```
+
+
+```{r}
+Growth_Data_forR <- read_csv("Desktop/Manuscripts 2019-/**1.PUBLISHED/Oyster Carryover19/Data for Figshare/3.OysterGrowth&Ncontent.csv", 
+                             
+                             col_types = cols(Year1DO = col_factor(), Year1Temp=col_factor(), Year2DO=col_factor(), Year2Temp=col_factor(), Year1Rep=col_factor(), Year2Rep=col_factor(), OverallTreatmentCombination=col_factor())) #changing to factor
+
+
+str(Growth_Data_forR) #looking at columns
+View(Growth_Data_forR)
+levels(Growth_Data_forR$Phase1DO) # checking levels
+levels(Growth_Data_forR$Phase1Temp)
+levels(Growth_Data_forR$Phase2DO)
+levels(Growth_Data_forR$Phase2temp)
+levels(Growth_Data_forR$NewPhase1Rep)
+```
+
+```{r}
+#LMMs and ANCOVAs for response variables
+#set contrasts
+options(contrasts = c("contr.sum","contr.poly"))
+getOption("contrasts")
+```
+
+```{r}
+m2 <- lmer(length~ crab*temp+(1|site)+(1|batch)+(1|replicate), data = Growth_Data_forR, REML=TRUE)
+Anova(m2, test="F", type="III")
+
+
+#take out replicate once averages of length and width are taken for each sample
+```
+
+
+
+
+
 
 
 
