@@ -16,6 +16,145 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r}
+library(dplyr)
+library(readr)
+```
+
+
+```{r}
+nucella_emergence_meas <- read_csv("~/Desktop/Repositories/Nucella_2025/data/NL_2025_master_measurements_with_metadata.csv")
+```
+
+
+```{r}
+#Convert all character columns to factors
+nucella_emergence_meas <- nucella_emergence_meas %>%
+  mutate(
+    across(where(is.character), as.factor),
+    length = as.numeric(length),
+    width = as.numeric(width)
+  )
+```
+
+```{r}
+# Calculate the average of snail 1–10 for each sample_name
+nucella_emergence_averages <- nucella_emergence_meas %>%
+  group_by(sample_name, color, emergence_date, site, replicate, batch, predation, temperature) %>%
+  summarise(
+    avg_length = mean(length, na.rm = TRUE),
+    avg_width = mean(width, na.rm = TRUE),
+    n_snails = n(),  # optional: shows how many snails per sample
+    .groups = "drop"
+  )
+```
+
+```{r}
+# Join the averages back to the main dataset
+#nucella_emergence_meas  <- nucella_emergence_meas  %>%
+  #left_join(snail_avg, by = "sample_name")
+```
+
+```{r}
+# new CSV
+write_csv(nucella_emergence_averages, "~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_average_measurements.csv")
+```
+
+
+
+#Running with reps
+```{r}
+nucella_averages_replicates <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_average_measurements.csv")
+```
+
+
+```{r}
+# Read your CSV — adjust the path
+nucella_averages_replicates <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_average_measurements.csv",
+                         col_types = cols(
+                           sample_name = col_factor(),
+                           color = col_factor(),
+                           site = col_factor(),
+                           predation = col_factor(),
+                           temperature = col_factor(),
+                           replicate_hand = col_factor(),
+                           batch = col_factor()
+                         ))
+```
+
+
+
+
+
+```{r}
+
+library(dplyr)
+library(readr)
+library(lme4)
+library(car)  # for Anova()
+
+# Read your CSV — adjust the path
+nucella_emergence_measurement <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_average_measurements.csv",
+                         col_types = cols(
+                           sample_name = col_factor(),
+                           color = col_factor(),
+                           site = col_factor(),
+                           predation = col_factor(),
+                           temperature = col_factor(),
+                           replicate = col_factor(),
+                           batch = col_factor()
+                         ))
+
+nucella_emergence_averages <- nucella_emergence_measurement %>%
+  group_by(sample_name, color, emergence_date, site, replicate, batch, predation, temperature) %>%
+  summarise(
+    avg_length = mean(length, na.rm = TRUE),
+    avg_width  = mean(width, na.rm = TRUE),
+    n_snails   = n(),
+    .groups = "drop"
+  )
+
+
+
+# Check structure
+str(nucella_emergence_measurement)
+View(nucella_emergence_measurement)
 
 ```
+
+```{r}
+library(lme4)
+library(car)
+str(nucella_emergence_measurement)
+
+
+m1 <- lmer(avg_length ~ predation * temperature + (1|site) + (1|batch), 
+           data = nucella_emergence_averages, REML=TRUE)
+
+Anova(m1, test="F", type="III")
+summary(m1)
+
+#site as factor instead of random
+m2 <- lmer(avg_length ~ predation * temperature * site + (1|batch), 
+           data = nucella_emergence_averages, REML=TRUE)
+
+Anova(m2, test="F", type="III")
+summary(m1)
+
+
+```
+```{r}
+plot <- ggplot(na.omit(avgs), aes(x=early_salinity, y=tot_avg,color = as.factor(late_salinity), shape=late_salinity, fill = late_salinity))
+plot2 <- plot+geom_errorbar(aes(ymin=tot_avg-SE, ymax=tot_avg+SE), width=0.1) +
+  geom_point(size=8, stroke=1) + theme_grey() +scale_color_manual(values=c("#660066", "#99CC99"))+scale_shape_manual(values=c(22, 21))+ scale_fill_manual(values=c("#660066", "#99CC99"))+
+  theme(legend.text=element_text(size=14),strip.text.x = element_text(size = 14), strip.background = element_blank(),panel.border = element_rect(fill= NA, colour = "black"),
+        axis.ticks = element_line(colour = "black", size = 1), axis.line = element_line(colour = "black", size=.25), axis.text.x = element_text(size=14, color="black"), axis.text.y = element_text(size=14, color="black"), axis.title=element_text(size=18, color="black")) +
+          scale_x_discrete(name="Early Salinity (psu)") + scale_y_continuous(name="No. total nauplii")+ guides(fill = FALSE)
+plot2
+```
+
+
+
+
+
+
 
