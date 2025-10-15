@@ -6,6 +6,6 @@ Item,Source,Length [mm],ND.T,ND.Z,ND.M,Time [s],Velocity [mm/s],Comment
 5,Captured 1,1.18,N/A,N/A,N/A,N/A,N/A,RIB6_L_2
 6,Captured 1,1.16,N/A,N/A,N/A,N/A,N/A,RIB6_W_2
 7,Captured 1,1.27,N/A,N/A,N/A,N/A,N/A,RIB6_L_4
-8,Captured 1,0.74,N/A,N/A,N/A,N/A,N/A,RIB6_L_4
+8,Captured 1,0.74,N/A,N/A,N/A,N/A,N/A,RIB6_W_4
 Feature,Mean,St.Dev,Minimum,Maximum,Sum,,,
 Length [mm],1.25,0.26,0.74,1.66,10.02,,,
