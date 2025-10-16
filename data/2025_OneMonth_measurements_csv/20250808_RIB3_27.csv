@@ -1,0 +1,13 @@
+Item,Source,Length [mm],ND.T,ND.Z,ND.M,Time [s],Velocity [mm/s],Comment
+1,20250808_RIB3_prettysnails.jpg,3.14,N/A,N/A,N/A,N/A,N/A,RIB3_L_1
+2,20250808_RIB3_prettysnails.jpg,2.05,N/A,N/A,N/A,N/A,N/A,RIB3_W_1
+3,20250808_RIB3_prettysnails.jpg,3.24,N/A,N/A,N/A,N/A,N/A,RIB3_L_2
+4,20250808_RIB3_prettysnails.jpg,2.11,N/A,N/A,N/A,N/A,N/A,RIB3_W_2
+5,20250808_RIB3_prettysnails.jpg,3.53,N/A,N/A,N/A,N/A,N/A,RIB3_L_3
+6,20250808_RIB3_prettysnails.jpg,2.18,N/A,N/A,N/A,N/A,N/A,RIB3_W_3
+7,20250808_RIB3_prettysnails.jpg,2.99,N/A,N/A,N/A,N/A,N/A,RIB3_L_4
+8,20250808_RIB3_prettysnails.jpg,2.16,N/A,N/A,N/A,N/A,N/A,RIB3_W_4
+9,20250808_RIB3_prettysnails.jpg,2.65,N/A,N/A,N/A,N/A,N/A,RIB3_L_5
+10,20250808_RIB3_prettysnails.jpg,1.73,N/A,N/A,N/A,N/A,N/A,RIB3_W_5
+Feature,Mean,St.Dev,Minimum,Maximum,Sum,,,
+Length [mm],2.58,0.58,1.73,3.53,25.77,,,

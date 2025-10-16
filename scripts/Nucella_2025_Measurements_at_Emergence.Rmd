@@ -126,6 +126,10 @@ library(lme4)
 library(car)
 str(nucella_emergence_measurement)
 
+#keep this every time
+options(contrasts = c("contr.sum","contr.poly"))
+getOption("contrasts")
+
 
 m1 <- lmer(avg_length ~ predation * temperature + (1|site) + (1|batch), 
            data = nucella_emergence_averages, REML=TRUE)

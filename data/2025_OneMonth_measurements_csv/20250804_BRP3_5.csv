@@ -1,0 +1,7 @@
+Item,Source,Length [mm],ND.T,ND.Z,ND.M,Time [s],Velocity [mm/s],Comment
+1,Captured,3.13,N/A,N/A,N/A,N/A,N/A,BRP3_L_1
+2,Captured,2.32,N/A,N/A,N/A,N/A,N/A,BRP3_W_1
+3,Captured,3.38,N/A,N/A,N/A,N/A,N/A,BRP3_L_2
+4,Captured,2.14,N/A,N/A,N/A,N/A,N/A,BRP_W_2
+Feature,Mean,St.Dev,Minimum,Maximum,Sum,,,
+Length [mm],2.74,0.52,2.14,3.38,10.97,,,

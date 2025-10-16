@@ -1,0 +1,21 @@
+Item,Source,Length [mm],ND.T,ND.Z,ND.M,Time [s],Velocity [mm/s],Comment
+1,Captured,3.85,N/A,N/A,N/A,N/A,N/A,RIR6_L_1
+2,Captured,2.36,N/A,N/A,N/A,N/A,N/A,RIR6_W_1
+3,Captured,4.11,N/A,N/A,N/A,N/A,N/A,RIR6_L_2
+4,Captured,2.57,N/A,N/A,N/A,N/A,N/A,RIR6_W_2
+5,Captured,4.29,N/A,N/A,N/A,N/A,N/A,RIR6_L_3
+6,Captured,2.71,N/A,N/A,N/A,N/A,N/A,RIR6_W_3
+7,Captured,4.11,N/A,N/A,N/A,N/A,N/A,RIR6_L_4
+8,Captured,2.56,N/A,N/A,N/A,N/A,N/A,RIR6_W_4
+9,Captured,4.33,N/A,N/A,N/A,N/A,N/A,RIR6_L_5
+10,Captured,2.72,N/A,N/A,N/A,N/A,N/A,RIR6_W_5
+11,Captured,4.22,N/A,N/A,N/A,N/A,N/A,RIR6_L_6
+12,Captured,2.61,N/A,N/A,N/A,N/A,N/A,RIR6_W_6
+13,Captured,4.12,N/A,N/A,N/A,N/A,N/A,RIR6_L_7
+14,Captured,2.55,N/A,N/A,N/A,N/A,N/A,RIR6_W_7
+15,Captured,4,N/A,N/A,N/A,N/A,N/A,RIR6_L_8
+16,Captured,2.64,N/A,N/A,N/A,N/A,N/A,RIR6_W_8
+17,Captured,1.89,N/A,N/A,N/A,N/A,N/A,RIR6_L_9
+18,Captured,1.29,N/A,N/A,N/A,N/A,N/A,RIR6_W_9
+Feature,Mean,St.Dev,Minimum,Maximum,Sum,,,
+Length [mm],3.16,0.93,1.29,4.33,56.93,,,

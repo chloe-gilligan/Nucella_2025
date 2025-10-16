@@ -1,0 +1,23 @@
+Item,Source,Length [mm],ND.T,ND.Z,ND.M,Time [s],Velocity [mm/s],Comment
+1,Captured,3.54,N/A,N/A,N/A,N/A,N/A,CRP2_L_1
+2,Captured,2.2,N/A,N/A,N/A,N/A,N/A,CRP2_W_1
+3,Captured,3.53,N/A,N/A,N/A,N/A,N/A,CRP2_L_2
+4,Captured,2.19,N/A,N/A,N/A,N/A,N/A,CRP2_W_2
+5,Captured,2.96,N/A,N/A,N/A,N/A,N/A,CRP2_L_3
+6,Captured,2.06,N/A,N/A,N/A,N/A,N/A,CRP2_W_3
+7,Captured,3.05,N/A,N/A,N/A,N/A,N/A,CRP2_L_4
+8,Captured,1.87,N/A,N/A,N/A,N/A,N/A,CRP2_W_4
+9,Captured,3.94,N/A,N/A,N/A,N/A,N/A,CRP2_L_5
+10,Captured,2.38,N/A,N/A,N/A,N/A,N/A,CRP2_W_5
+11,Captured,3.79,N/A,N/A,N/A,N/A,N/A,CRP2_L_6
+12,Captured,2.37,N/A,N/A,N/A,N/A,N/A,CRP2_W_6
+13,Captured,2.72,N/A,N/A,N/A,N/A,N/A,CRP2_L_7
+14,Captured,1.76,N/A,N/A,N/A,N/A,N/A,CRP2_W_7
+15,Captured,4.11,N/A,N/A,N/A,N/A,N/A,CRP2_L_8
+16,Captured,2.48,N/A,N/A,N/A,N/A,N/A,CRP2_W_8
+17,Captured,3.24,N/A,N/A,N/A,N/A,N/A,CRP2_L_9
+18,Captured,2.21,N/A,N/A,N/A,N/A,N/A,CRP2_W_9
+19,Captured,2.88,N/A,N/A,N/A,N/A,N/A,CRP2_L_10
+20,Captured,2.02,N/A,N/A,N/A,N/A,N/A,CRP2_W_10
+Feature,Mean,St.Dev,Minimum,Maximum,Sum,,,
+Length [mm],2.77,0.71,1.76,4.11,55.32,,,
