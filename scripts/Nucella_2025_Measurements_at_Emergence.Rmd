@@ -25,28 +25,46 @@ library(readr)
 nucella_emergence_meas <- read_csv("~/Desktop/Repositories/Nucella_2025/data/NL_2025_master_measurements_with_metadata.csv")
 ```
 
+```{r}
+# Trim whitespace and convert to factors
+nucella_emergence_meas <- nucella_emergence_meas %>%
+  mutate(across(where(is.character), ~ as.factor(trimws(.x))),
+         length = as.numeric(as.character(length)),
+         width  = as.numeric(as.character(width)))
+```
 
 ```{r}
-#Convert all character columns to factors
+table(nucella_emergence_meas$sample_name)
+```
+
+
+```{r}
 nucella_emergence_meas <- nucella_emergence_meas %>%
   mutate(
-    across(where(is.character), as.factor),
-    length = as.numeric(length),
-    width = as.numeric(width)
+    across(where(is.character), ~ as.factor(trimws(.x))),  # remove whitespace and convert to factor
+    length = as.numeric(as.character(length)),            # safely convert to numeric
+    width  = as.numeric(as.character(width))
   )
 ```
 
 ```{r}
 # Calculate the average of snail 1–10 for each sample_name
 nucella_emergence_averages <- nucella_emergence_meas %>%
-  group_by(sample_name, color, emergence_date, site, replicate, batch, predation, temperature) %>%
+  group_by(sample_name, color, emergence_date, site, batch, predation, temperature) %>%
   summarise(
     avg_length = mean(length, na.rm = TRUE),
-    avg_width = mean(width, na.rm = TRUE),
-    n_snails = n(),  # optional: shows how many snails per sample
-    .groups = "drop"
-  )
+    avg_width  = mean(width, na.rm = TRUE))
+    #n_snails   = n(),          # number of snails per sample
+    #.groups = "drop"
+  #)
 ```
+
+```{r}
+str(nucella_emergence_averages)
+head(nucella_emergence_averages)
+```
+
+
 
 ```{r}
 # Join the averages back to the main dataset
@@ -63,13 +81,13 @@ write_csv(nucella_emergence_averages, "~/Desktop/Repositories/Nucella_2025/data/
 
 #Running with reps
 ```{r}
-nucella_averages_replicates <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_average_measurements.csv")
+#nucella_averages_replicates <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_average_measurements.csv")
 ```
 
 
 ```{r}
 # Read your CSV — adjust the path
-nucella_averages_replicates <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_average_measurements.csv",
+#nucella_averages_replicates <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_average_measurements.csv",
                          col_types = cols(
                            sample_name = col_factor(),
                            color = col_factor(),
@@ -105,7 +123,7 @@ nucella_emergence_measurement <- read_csv("~/Desktop/Repositories/Nucella_2025/d
                          ))
 
 nucella_emergence_averages <- nucella_emergence_measurement %>%
-  group_by(sample_name, color, emergence_date, site, replicate, batch, predation, temperature) %>%
+  group_by(sample_name, color, emergence_date, site, batch, predation, temperature) %>%
   summarise(
     avg_length = mean(length, na.rm = TRUE),
     avg_width  = mean(width, na.rm = TRUE),
@@ -146,6 +164,9 @@ summary(m1)
 
 
 ```
+
+#Sarah code
+
 ```{r}
 plot <- ggplot(na.omit(avgs), aes(x=early_salinity, y=tot_avg,color = as.factor(late_salinity), shape=late_salinity, fill = late_salinity))
 plot2 <- plot+geom_errorbar(aes(ymin=tot_avg-SE, ymax=tot_avg+SE), width=0.1) +
@@ -155,6 +176,88 @@ plot2 <- plot+geom_errorbar(aes(ymin=tot_avg-SE, ymax=tot_avg+SE), width=0.1) +
           scale_x_discrete(name="Early Salinity (psu)") + scale_y_continuous(name="No. total nauplii")+ guides(fill = FALSE)
 plot2
 ```
+
+#Sophie code
+```{r}
+library(dplyr)
+library(ggplot2)
+library(Rmisc)
+
+std.error <- function(x, na.rm = TRUE) {
+  x <- if (na.rm) x[!is.na(x)] else x
+  sd(x) / sqrt(length(x))
+}
+
+#mean and SE by predation × temperature
+summary_stats_length <- nucella_emergence_averages %>%
+  group_by(predation, temperature) %>%
+  mutate(
+    mean_length = mean(avg_length, na.rm = TRUE),
+    se_length = std.error(avg_length, na.rm = TRUE)
+    #.groups = "drop"
+  )
+
+summary_stats_t <- Growth_Data_forR_full %>%
+  group_by(Phase_1_treat, Phase_2_treat) %>%
+  mutate(
+    mean_growth = mean((Actual_tissue_growth_mg/whole_growth_mg), na.rm = TRUE),
+    se_growth = std.error((Actual_tissue_growth_mg/whole_growth_mg), na.rm = TRUE))
+
+
+# reorder factors?
+#summary_stats_length$predation <- factor(summary_stats_length$predation,
+                                     #    levels = c("No crab", "Crab"))
+#summary_stats_length$temperature <- factor(summary_stats_length$temperature,
+                                         #  levels = c("Ambient", "Heated"))
+
+
+ggplot(summary_stats_length,
+       aes(x = predation, y = mean_length, color = temperature, shape = temperature, fill = temperature)) +
+  geom_errorbar(aes(ymin = mean_length - se_length, ymax = mean_length + se_length),
+                width = 0.1, position = position_dodge(0.3)) +
+  geom_point(size = 5, stroke = 1, position = position_dodge(0.3)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_fill_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_shape_manual(values = c(21, 22)) +
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Treatment",
+       y = "Mean Snail Length (mm)",
+       color = "Temperature",
+       shape = "Temperature") +
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+
+
+```
+
+```{r}
+ggplot(summary_stats_length,
+       aes(x = predation, y = mean_length, color = temperature, shape = temperature, fill = temperature)) +
+  geom_errorbar(aes(ymin = mean_length - se_length, ymax = mean_length + se_length),
+                width = 0.1, position = position_dodge(0.3)) +
+  geom_point(size = 5, stroke = 1, position = position_dodge(0.3)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  
+
+  scale_fill_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_shape_manual(values = c(21, 22)) +
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Treatment",
+       y = "Mean Snail Length (mm)",
+       color = "Temperature",
+       shape = "Temperature") +
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+```
+
 
 
 

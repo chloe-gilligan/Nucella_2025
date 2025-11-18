@@ -167,13 +167,13 @@ master <- master %>%
 
 
 #trying to make replicate numbers
-master <- master %>%
-  distinct(sample_name, color, .keep_all = TRUE) %>%
-  arrange(color, sample_name) %>%
-  mutate(replicate = ave(seq_along(sample_name), color, FUN = seq_along)) %>%
-  select(sample_name, color, replicate) %>%
-  right_join(master, by = c("sample_name", "color")) %>%
-  relocate(replicate, .after = width)
+#master <- master %>%
+ # distinct(sample_name, color, .keep_all = TRUE) %>%
+  #arrange(color, sample_name) %>%
+  #mutate(replicate = ave(seq_along(sample_name), color, FUN = seq_along)) %>%
+ # select(sample_name, color, replicate) %>%
+ # right_join(master, by = c("sample_name", "color")) %>%
+ # relocate(replicate, .after = width)
 
 
 ```
@@ -190,53 +190,7 @@ write_csv(master, file.path(main_path, "NL_2025_master_measurements_with_metadat
 ```
 
 
-#Trying to plot
-```{r}
-library(ggplot2)
-
-# Plot with predation color
-ggplot(master, aes(x = length, y = width, color = predation)) +
-  geom_point(size = 2, alpha = 0.7) +
-  labs(
-    title = "Snail Length vs Width by Predation Treatment",
-    x = "Length (mm)",
-    y = "Width (mm)",
-    color = "Predation"
-  ) +
-  theme_minimal()
-```
-```{r}
-library(ggplot2)
-
-ggplot(master, aes(x = length, y = width)) +
-  geom_point(aes(color = temperature, shape = predation), size = 3, alpha = 0.8) +
-  scale_color_manual(values = c("Ambient" = "blue", "Heated" = "red")) +
-  labs(
-    x = "Length (mm)",
-    y = "Width (mm)",
-    color = "Temperature",
-    shape = "Predation"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, size = 16),
-    axis.title = element_text(size = 14),
-    legend.title = element_text(size = 12)
-  )
-```
-
-```{r}
-ggplot(master, aes(x = length, y = width)) +
-  geom_point(aes(color = temperature), size = 2.5, alpha = 0.7) +
-  facet_wrap(~ treatment) +
-  labs(
-    title = "Snail Length vs Width by Treatment",
-    x = "Length (mm)",
-    y = "Width (mm)"
-  ) +
-  theme_minimal()
-```
-
+#Sarah code notes
 
 ```{r}
 Growth_Data_forR <- read_csv("Desktop/Manuscripts 2019-/**1.PUBLISHED/Oyster Carryover19/Data for Figshare/3.OysterGrowth&Ncontent.csv", 

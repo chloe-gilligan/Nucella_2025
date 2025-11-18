@@ -1,2 +1,70 @@
-avg_length,avg_width,.groups
-1.1439558823529412,0.8948529411764706,drop
+sample_name,color,emergence_date,site,batch,predation,temperature,avg_length,avg_width
+BRB1,Blue,20250711,Bass Rock,1,Crab,Ambient,1,0.881
+BRB2,Blue,20250709,Bass Rock,2,Crab,Ambient,1.143,0.871
+BRB4,Blue,20250711,Bass Rock,4,Crab,Ambient,1.071,0.8069999999999999
+BRB5,Blue,20250716,Bass Rock,5,Crab,Ambient,1.162,0.923
+BRB6,Blue,20250711,Bass Rock,6,Crab,Ambient,1.212,0.977
+BRG1,Green,20250714,Bass Rock,1,No crab,Ambient,1.192,1.011
+BRG2,Green,20250714,Bass Rock,2,No crab,Ambient,1.066,0.915
+BRG3,Green,20250718,Bass Rock,3,No crab,Ambient,1.37,1.0390000000000001
+BRG4,Green,20250709,Bass Rock,4,No crab,Ambient,1.235,1.058
+BRG5,Green,20250716,Bass Rock,5,No crab,Ambient,1.2650000000000001,1.0030000000000001
+BRG6,Green,20250714,Bass Rock,6,No crab,Ambient,1.08,0.901
+BRP1,Pink,20250707,Bass Rock,1,No crab,Heated,1.2930000000000001,0.9219999999999999
+BRP2,Pink,20250704,Bass Rock,2,No crab,Heated,1.0170000000000001,0.735
+BRP3,Pink,20250704,Bass Rock,3,No crab,Heated,1.198,0.796
+BRP4,Pink,20250704,Bass Rock,4,No crab,Heated,1.159,0.819
+BRP5,Pink,20250714,Bass Rock,5,No crab,Heated,0.909,0.76
+BRP6,Pink,20250707,Bass Rock,6,No crab,Heated,1.158,0.923
+BRR2,Red,20250707,Bass Rock,2,Crab,Heated,1.16,0.868
+BRR3,Red,20250707,Bass Rock,3,Crab,Heated,1.254,0.9670000000000001
+BRR4,Red,20250704,Bass Rock,4,Crab,Heated,1.14,0.769
+BRR5,Red,20250716,Bass Rock,5,Crab,Heated,0.879,0.732
+BRR6,Red,20250711,Bass Rock,6,Crab,Heated,1.091,0.844
+CRB1,Blue,20250716,Castle Rock,1,Crab,Ambient,1.108,0.872
+CRB2,Blue,20250718,Castle Rock,2,Crab,Ambient,1.385,1.023
+CRB3,Blue,20250709,Castle Rock,3,Crab,Ambient,1.217,0.9390000000000001
+CRB4,Blue,20250714,Castle Rock,4,Crab,Ambient,1.296,1.067
+CRB5,Blue,20250714,Castle Rock,5,Crab,Ambient,1.377,1.087
+CRB6,Blue,20250730,Castle Rock,6,Crab,Ambient,0.885,0.6575
+CRG1,Green,20250714,Castle Rock,1,No crab,Ambient,1.068,0.931
+CRG2,Green,20250716,Castle Rock,2,No crab,Ambient,1.14,0.919
+CRG3,Green,20250711,Castle Rock,3,No crab,Ambient,1.162,0.907
+CRG4,Green,20250716,Castle Rock,4,No crab,Ambient,1.44,1.14
+CRG5,Green,20250714,Castle Rock,5,No crab,Ambient,1.072,0.9
+CRG6,Green,20250718,Castle Rock,6,No crab,Ambient,1.264,0.961
+CRP1,Pink,20250709,Castle Rock,1,No crab,Heated,1.156,0.963
+CRP2,Pink,20250711,Castle Rock,2,No crab,Heated,1.296,0.9540000000000001
+CRP3,Pink,20250709,Castle Rock,3,No crab,Heated,1.188,0.925
+CRP4,Pink,20250709,Castle Rock,4,No crab,Heated,1.155,1.012
+CRP6,Pink,20250714,Castle Rock,6,No crab,Heated,1.172,0.974
+CRR1,Red,20250716,Castle Rock,1,Crab,Heated,1.199,0.959
+CRR2,Red,20250714,Castle Rock,2,Crab,Heated,1.054,0.839
+CRR3,Red,20250709,Castle Rock,3,Crab,Heated,1.168,0.909
+CRR4,Red,20250709,Castle Rock,4,Crab,Heated,1.175,0.879
+CRR5,Red,20250718,Castle Rock,5,Crab,Heated,1.384,1.038
+CRR6,Red,20250714,Castle Rock,6,Crab,Heated,1.27,1.032
+RIB1,Blue,20250711,Ram Island,1,Crab,Ambient,1.385,1.084
+RIB2,Blue,20250707,Ram Island,2,Crab,Ambient,1.2770000000000001,0.967
+RIB3,Blue,20250709,Ram Island,3,Crab,Ambient,1.093,0.867
+RIB4,Blue,20250707,Ram Island,4,Crab,Ambient,0.857,0.655
+RIB5,Blue,20250711,Ram Island,5,Crab,Ambient,0.977,0.816
+RIB6,Blue,20250725,Ram Island,6,Crab,Ambient,1.4125,1.0899999999999999
+RIG1,Green,20250718,Ram Island,1,No crab,Ambient,1.057,0.8210000000000001
+RIG2,Green,20250704,Ram Island,2,No crab,Ambient,1.247,0.907
+RIG3,Green,20250709,Ram Island,3,No crab,Ambient,0.903,0.8069999999999999
+RIG4,Green,20250707,Ram Island,4,No crab,Ambient,1.141,0.948
+RIG5,Green,20250716,Ram Island,5,No crab,Ambient,1.148,0.913
+RIG6,Green,20250718,Ram Island,6,No crab,Ambient,1.116,0.846
+RIP1,Pink,20250718,Ram Island,1,No crab,Heated,0.948,0.707
+RIP2,Pink,20250630,Ram Island,2,No crab,Heated,1.099,0.8360000000000001
+RIP3,Pink,20250704,Ram Island,3,No crab,Heated,1.077,0.79
+RIP4,Pink,20250704,Ram Island,4,No crab,Heated,1.046,0.719
+RIP5,Pink,20250704,Ram Island,5,No crab,Heated,0.867,0.5880000000000001
+RIP6,Pink,20250711,Ram Island,6,No crab,Heated,0.986,0.836
+RIR1,Red,20250711,Ram Island,1,Crab,Heated,1.05,0.848
+RIR2,Red,20250630,Ram Island,2,Crab,Heated,1.189,0.911
+RIR3,Red,20250709,Ram Island,3,Crab,Heated,1.175,0.879
+RIR4,Red,20250702,Ram Island,4,Crab,Heated,1.271,0.9470000000000001
+RIR5,Red,20250709,Ram Island,5,Crab,Heated,0.895,0.8
+RIR6,Red,20250716,Ram Island,6,Crab,Heated,1.375,1.05125

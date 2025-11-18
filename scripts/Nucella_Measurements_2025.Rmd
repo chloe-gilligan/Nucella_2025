@@ -1,0 +1,1955 @@
+---
+title: "Nucella_Measurements_2025"
+author: "Chloé Gilligan"
+date: "2025-10-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+```{r}
+library(readr)
+library(lme4)
+library(car) 
+library(ggplot2)
+library(tidyr)
+library(readxl)
+library(tidyverse) 
+library(dplyr)
+library(lmerTest)
+# Remove library(Rmisc) and library(plyr) unless you absolutely need them
+```
+
+```{r}
+# Detach plyr and Rmisc
+#detach("package:Rmisc", unload = TRUE)
+#detach("package:plyr", unload = TRUE)
+
+# Now reload dplyr to make sure it's on top
+#library(dplyr)
+```
+
+
+
+#Making master data
+```{r}
+#What worked for the first half of the table- creating the master spreadsheet 
+
+# Getting to folder with CSVs
+path <- "~/Desktop/repositories/Nucella_2025/data/NL_2025_measurements_csv"
+files <- list.files(path, pattern = "\\.csv$", full.names = TRUE)
+
+# Function to process each CSV
+process_file <- function(file) {
+  # Extract metadata from filename
+  fname <- basename(file)
+  parts <- strsplit(fname, "_")[[1]]
+  emergence_date <- parts[1]
+  sample_name <- parts[2]
+  photo_number <- gsub("\\.csv", "", parts[3])
+  
+  # Read CSV and keep only Length and Comment
+  df <- read_csv(file, show_col_types = FALSE) %>%
+    select(`Length [mm]`, Comment) %>%
+    filter(!is.na(Comment)) %>%
+    mutate(`Length [mm]` = as.numeric(`Length [mm]`))
+  
+  # Separate length vs width and extract snail_number
+  df <- df %>%
+    mutate(
+      type = ifelse(grepl("_L_", Comment), "length", "width"),
+      snail_number = as.numeric(str_extract(Comment, "\\d+$"))
+    ) %>%
+    select(snail_number, type, value = `Length [mm]`)
+  
+  # Resolve duplicates: keep only first measurement per snail_number & type
+  df <- df %>%
+    group_by(snail_number, type) %>%
+    slice(1) %>%
+    ungroup()
+  
+  # Pivot wider so each snail has length & width in one row
+  df_wide <- df %>%
+    pivot_wider(names_from = type, values_from = value)
+  
+  # Add metadata columns
+  df_wide <- df_wide %>%
+    mutate(
+      sample_name = sample_name,
+      emergence_date = emergence_date,
+      photo_number = photo_number
+    ) %>%
+    select(sample_name, emergence_date, photo_number, snail_number, length, width)
+  
+  return(df_wide)
+}
+
+# Combine all CSVs
+master <- purrr::map_dfr(files, process_file)
+
+# Save initial master CSV
+write_csv(master, "~/Desktop/repositories/Nucella_2025/data/NL_2025_master_measurements.csv")
+
+# Example filename breakdown
+fname <- basename(files[1])
+parts <- strsplit(fname, "_")[[1]]
+emergence_date <- parts[1]
+sample_name <- parts[2]   # e.g. "RIP4"
+photo_number <- gsub("\\.csv", "", parts[3])
+
+# Parse metadata from sample name
+site_code <- substr(sample_name, 1, 2)    # RI, CR, BR
+color_code <- substr(sample_name, 3, 3)   # P, R, B, G
+batch <- as.numeric(substr(sample_name, 4, 4))  # renamed from replicate
+
+# Decode site
+site <- case_when(
+  site_code == "RI" ~ "Ram Island",
+  site_code == "CR" ~ "Castle Rock",
+  site_code == "BR" ~ "Bass Rock"
+)
+
+# Decode color
+color <- case_when(
+  color_code == "P" ~ "Pink",
+  color_code == "R" ~ "Red",
+  color_code == "B" ~ "Blue",
+  color_code == "G" ~ "Green"
+)
+
+# Decode Predator (formerly treatment)
+predation <- case_when(
+  color_code %in% c("R", "B") ~ "Crab",
+  color_code %in% c("P", "G") ~ "No crab"
+)
+
+# Decode temperature
+temperature <- case_when(
+  color_code %in% c("P", "R") ~ "Heated",
+  color_code %in% c("B", "G") ~ "Ambient"
+)
+
+# Print extracted metadata
+cat(emergence_date, sample_name, photo_number, site, color, predation, temperature, batch, "\n")
+
+write_csv(master, "~/Desktop/repositories/Nucella_2025/data/NL_2025_master_measurements.csv")
+
+
+```
+
+#Adding treatment and temperature 
+```{r}
+master <- master %>%
+  mutate(
+    # Parse site, color, and batch from sample_name
+    site_code = substr(sample_name, 1, 2),
+    color_code = substr(sample_name, 3, 3),
+    batch = as.numeric(substr(sample_name, 4, 4)),
+
+    # Map codes to full labels
+    site = case_when(
+      site_code == "RI" ~ "Ram Island",
+      site_code == "CR" ~ "Castle Rock",
+      site_code == "BR" ~ "Bass Rock",
+      TRUE ~ NA_character_
+    ),
+    color = case_when(
+      color_code == "P" ~ "Pink",
+      color_code == "R" ~ "Red",
+      color_code == "B" ~ "Blue",
+      color_code == "G" ~ "Green",
+      TRUE ~ NA_character_
+    ),
+    predation = case_when(
+      color_code %in% c("R", "B") ~ "Crab",
+      color_code %in% c("P", "G") ~ "No crab",
+      TRUE ~ NA_character_
+    ),
+    temperature = case_when(
+      color_code %in% c("P", "R") ~ "Heated",
+      color_code %in% c("B", "G") ~ "Ambient",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  select(sample_name, emergence_date, site, color, batch,
+         predation, temperature, photo_number, snail_number, length, width)
+
+
+#trying to make replicate numbers
+#master <- master %>%
+ # distinct(sample_name, color, .keep_all = TRUE) %>%
+  #arrange(color, sample_name) %>%
+  #mutate(replicate = ave(seq_along(sample_name), color, FUN = seq_along)) %>%
+ # select(sample_name, color, replicate) %>%
+ # right_join(master, by = c("sample_name", "color")) %>%
+ # relocate(replicate, .after = width)
+
+```
+
+
+#Exporting complete table with all measurements
+```{r}
+main_path <- "~/Desktop/repositories/Nucella_2025/data"
+write_csv(master, file.path(main_path, "NL_2025_master_measurements_with_metadata.csv"))
+# Re-save the master file properly
+write_csv(master, "~/Desktop/repositories/Nucella_2025/data/NL_2025_master_measurements_with_metadata.csv")
+```
+
+
+
+#Loading Emergence csv total metadata and measurements
+
+```{r}
+# Load the raw data fresh
+nucella_emergence_meas <- read_csv("~/Desktop/Repositories/Nucella_2025/data/NL_2025_master_measurements_with_metadata.csv")
+
+# Check the structure
+str(nucella_emergence_meas)
+head(nucella_emergence_meas, 20)
+
+# Convert character columns to factors BUT keep length and width as numeric
+nucella_emergence_meas <- nucella_emergence_meas %>%
+  mutate(
+    sample_name = as.factor(sample_name),
+    emergence_date = as.factor(emergence_date),
+    site = as.factor(site),
+    color = as.factor(color),
+    batch = as.factor(batch),
+    predation = as.factor(predation),
+    temperature = as.factor(temperature),
+    photo_number = as.factor(photo_number),
+    length = as.numeric(length),
+    width = as.numeric(width)
+  )
+
+# Now calculate averages - group by sample_name (and other metadata)
+nucella_emergence_averages <- nucella_emergence_meas %>%
+  group_by(sample_name, color, emergence_date, site, batch, predation, temperature) %>%
+  summarise(
+    avg_length = mean(length, na.rm = TRUE),
+    avg_width  = mean(width, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# new CSV
+write_csv(nucella_emergence_averages, "~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_average_measurements.csv")
+```
+
+
+#Stats for Averaged Emerged Nucella length
+
+```{r}
+
+# Read your CSV — adjust the path
+nucella_emergence_measurement <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_average_measurements.csv",
+                         col_types = cols(
+                           sample_name = col_factor(),
+                           color = col_factor(),
+                           site = col_factor(),
+                           predation = col_factor(),
+                           temperature = col_factor(),
+                           batch = col_factor()
+                         ))
+
+# Check structure
+str(nucella_emergence_measurement)
+View(nucella_emergence_measurement)
+
+#keep this every time
+options(contrasts = c("contr.sum","contr.poly"))
+getOption("contrasts")
+
+
+m1 <- lmer(avg_length ~ predation * temperature + (1|site) + (1|batch), 
+           data = nucella_emergence_averages, REML=TRUE)
+
+Anova(m1, test="F", type="III")
+summary(m1)
+
+#site as factor instead of random
+m2 <- lmer(avg_length ~ predation * temperature * site + (1|batch), 
+           data = nucella_emergence_averages, REML=TRUE)
+
+Anova(m2, test="F", type="III")
+summary(m1)
+
+
+```
+
+
+#Plotting Nucella emerged length averages
+```{r}
+nucella_emergence_averages <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_average_measurements.csv")
+
+# Define standard error 
+std.error <- function(x, na.rm = TRUE) {
+  x <- if (na.rm) x[!is.na(x)] else x
+  sd(x) / sqrt(length(x))
+}
+
+# Ensure factors are properly set
+nucella_emergence_averages <- nucella_emergence_averages %>%
+  mutate(
+    predation = factor(predation, levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated"))
+  )
+
+#summary statistics
+summary_stats_length <- nucella_emergence_averages %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_length = mean(avg_length, na.rm = TRUE),
+    se_length = std.error(avg_length, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Check the summary - should have 4 rows
+print(summary_stats_length)
+
+# Plotting
+ggplot(summary_stats_length,
+       aes(x = predation, y = mean_length, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_length - se_length, ymax = mean_length + se_length),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 5, position = position_dodge(width = 0.4)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = c(0.05, 0.05))) +
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Risk",
+       y = "Emergence Length (mm)",
+       color = "Temperature") +
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+
+
+```
+
+```{r}
+# Saving
+ggsave(filename = "~/Desktop/Repositories/Nucella_2025/figures/Emerged_length.jpeg",
+       width = 8, 
+       height = 6, 
+       dpi = 300)
+```
+
+
+#Stats for emerged Nucella width
+```{r}
+# Width statistics - using the same model structure as length
+m1_width <- lmer(avg_width ~ predation * temperature + (1|site) + (1|batch), 
+                 data = nucella_emergence_averages, REML=TRUE)
+
+Anova(m1_width, test="F", type="III")
+summary(m1_width)
+
+# Site as factor instead of random (if you want to compare)
+m2_width <- lmer(avg_width ~ predation * temperature * site + (1|batch), 
+                 data = nucella_emergence_averages, REML=TRUE)
+
+Anova(m2_width, test="F", type="III")
+summary(m2_width)
+```
+
+```{r}
+#posthocs
+install.packages("emmeans")
+library(emmeans)
+
+emm3 <- emmeans(m2_width,specs = pairwise ~ site, adjust="none")
+emm3$emmeans
+emm3$contrasts
+
+#predation by site
+emm3_pred_site <- emmeans(m2_width,specs = pairwise ~ site * predation, adjust="none")
+emm3_pred_site$emmeans
+emm3_pred_site$contrasts
+
+#temperature
+emm3_temp <- emmeans(m1_width,specs = pairwise ~ temperature, adjust="none")
+emm3_temp$emmeans
+emm3_temp$contrasts
+
+
+```
+
+
+
+#Plotting width emergence averages
+```{r}
+# summary statistics for width
+summary_stats_width <- nucella_emergence_averages %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_width = mean(avg_width, na.rm = TRUE),
+    se_width = std.error(avg_width, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Check the summary - should have 4 rows
+print(summary_stats_width)
+
+# Create the width plot
+#my_breaks <- seq(0.6, 1.4, by = 0.05)
+ggplot(summary_stats_width,
+       aes(x = predation, y = mean_width, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_width - se_width, ymax = mean_width + se_width),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 5, position = position_dodge(width = 0.4)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+scale_y_continuous(expand = expansion(add = 0.05))+  
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Risk",
+       y = "Emergence Width (mm)",
+       color = "Temperature") +
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+
+# Save the width figure
+ggsave(filename = "~/Desktop/Repositories/Nucella_2025/figures/Emerged_width.jpeg",
+       width = 8, 
+       height = 6, 
+       dpi = 300)
+```
+
+
+```{r}
+# Saving
+ggsave(filename = "~/Desktop/Repositories/Nucella_2025/figures/Emerged_length.jpeg",
+       width = 8, 
+       height = 6, 
+       dpi = 300)
+```
+
+
+
+#Length to width emergence
+
+```{r}
+# Load emergence data
+nucella_emergence_meas <- read_csv("~/Desktop/Repositories/Nucella_2025/data/NL_2025_master_measurements_with_metadata.csv")
+
+# Convert to factors
+nucella_emergence_meas <- nucella_emergence_meas %>%
+  mutate(
+    sample_name = as.factor(sample_name),
+    emergence_date = as.factor(emergence_date),
+    site = as.factor(site),
+    color = as.factor(color),
+    batch = as.factor(batch),
+    predation = as.factor(predation),
+    temperature = as.factor(temperature),
+    photo_number = as.factor(photo_number),
+    length = as.numeric(length),
+    width = as.numeric(width)
+  )
+
+# Calculate ratio averages by sample
+nucella_emergence_ratio <- nucella_emergence_meas %>%
+  filter(!is.na(length) & !is.na(width) & width != 0) %>%  # Remove missing/zero values
+  mutate(ratio = length / width) %>%  # Calculate ratio for each snail
+  group_by(sample_name, color, emergence_date, site, batch, predation, temperature) %>%
+  summarise(
+    avg_ratio = mean(ratio, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Save ratio data
+write_csv(nucella_emergence_ratio, "~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_ratio_measurements.csv")
+
+# View the data
+head(nucella_emergence_ratio)
+```
+
+```{r}
+# Stats for emergence ratio
+options(contrasts = c("contr.sum","contr.poly"))
+
+m1_ratio <- lmer(avg_ratio ~ predation * temperature + (1|site) + (1|batch), 
+                 data = nucella_emergence_ratio, REML=TRUE)
+
+Anova(m1_ratio, test="F", type="III")
+summary(m1_ratio)
+
+# Site as factor instead of random
+m2_ratio <- lmer(avg_ratio ~ predation * temperature * site + (1|batch), 
+                 data = nucella_emergence_ratio, REML=TRUE)
+
+Anova(m2_ratio, test="F", type="III")
+summary(m2_ratio)
+```
+
+
+```{r}
+#temperature
+emm3_temp_ratio_emerge <- emmeans(m1_ratio,specs = pairwise ~ temperature, adjust="none")
+emm3_temp_ratio_emerge$emmeans
+emm3_temp_ratio_emerge$contrasts
+```
+
+
+```{r}
+# Plotting emergence ratio
+nucella_emergence_ratio <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_ratio_measurements.csv")
+
+# Define standard error function
+std.error <- function(x, na.rm = TRUE) {
+  x <- if (na.rm) x[!is.na(x)] else x
+  sd(x) / sqrt(length(x))
+}
+
+# Ensure factors are properly set
+nucella_emergence_ratio <- nucella_emergence_ratio %>%
+  mutate(
+    predation = factor(predation, levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated"))
+  )
+
+# Summary statistics
+summary_stats_ratio <- nucella_emergence_ratio %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_ratio = mean(avg_ratio, na.rm = TRUE),
+    se_ratio = std.error(avg_ratio, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+print(summary_stats_ratio)
+
+# Plot
+ggplot(summary_stats_ratio,
+       aes(x = predation, y = mean_ratio, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_ratio - se_ratio, ymax = mean_ratio + se_ratio),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 5, position = position_dodge(width = 0.4)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Risk",
+       y = " Emergence Length : Width (mm)",
+       color = "Temperature") +
+  scale_y_continuous(expand = expansion(add = 0.05))+  
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+
+# Save figure
+ggsave(filename = "~/Desktop/Repositories/Nucella_2025/figures/Emerged_ratio.jpeg",
+       width = 8, 
+       height = 6, 
+       dpi = 300)
+```
+
+
+
+
+#One Month Analysis and plots
+
+
+#Making master data for one month
+```{r}
+# Getting to folder with CSVs
+path <- "~/Desktop/repositories/Nucella_2025/data/2025_OneMonth_measurements_csv"
+files <- list.files(path, pattern = "\\.csv$", full.names = TRUE)
+
+# Function to process each CSV
+process_file <- function(file) {
+  # Extract metadata from filename
+  fname <- basename(file)
+  parts <- strsplit(fname, "_")[[1]]
+  one_month_date <- parts[1]
+  sample_name <- parts[2]
+  photo_number <- gsub("\\.csv", "", parts[3])
+  
+  # Read CSV and keep only Length and Comment
+  df <- read_csv(file, show_col_types = FALSE) %>%
+    select(`Length [mm]`, Comment) %>%
+    filter(!is.na(Comment)) %>%
+    mutate(`Length [mm]` = as.numeric(`Length [mm]`))
+  
+  # Separate length vs width and extract snail_number
+  df <- df %>%
+    mutate(
+      type = ifelse(grepl("_L_", Comment), "length", "width"),
+      snail_number = as.numeric(str_extract(Comment, "\\d+$"))
+    ) %>%
+    select(snail_number, type, value = `Length [mm]`)
+  
+  # Resolve duplicates: keep only first measurement per snail_number & type
+  df <- df %>%
+    group_by(snail_number, type) %>%
+    slice(1) %>%
+    ungroup()
+  
+  # Pivot wider so each snail has length & width in one row
+  df_wide <- df %>%
+    pivot_wider(names_from = type, values_from = value)
+  
+  # Add metadata columns
+  df_wide <- df_wide %>%
+    mutate(
+      sample_name = sample_name,
+      one_month_date = one_month_date,
+      photo_number = photo_number
+    ) %>%
+    select(sample_name, one_month_date, photo_number, snail_number, length, width)
+  
+  return(df_wide)
+}
+
+# Combine all CSVs
+master_one_month <- purrr::map_dfr(files, process_file)
+
+# Save initial master CSV
+write_csv(master_one_month, "~/Desktop/repositories/Nucella_2025/data/NL_2025_one_month_master_measurements.csv")
+
+# Example filename breakdown
+fname <- basename(files[1])
+parts <- strsplit(fname, "_")[[1]]
+one_month_date <- parts[1]
+sample_name <- parts[2]   # e.g. "RIP4"
+photo_number <- gsub("\\.csv", "", parts[3])
+
+# Parse metadata from sample name
+site_code <- substr(sample_name, 1, 2)    # RI, CR, BR
+color_code <- substr(sample_name, 3, 3)   # P, R, B, G
+batch <- as.numeric(substr(sample_name, 4, 4))
+
+# Decode site
+site <- case_when(
+  site_code == "RI" ~ "Ram Island",
+  site_code == "CR" ~ "Castle Rock",
+  site_code == "BR" ~ "Bass Rock"
+)
+
+# Decode color
+color <- case_when(
+  color_code == "P" ~ "Pink",
+  color_code == "R" ~ "Red",
+  color_code == "B" ~ "Blue",
+  color_code == "G" ~ "Green"
+)
+
+# Decode Predator
+predation <- case_when(
+  color_code %in% c("R", "B") ~ "Crab",
+  color_code %in% c("P", "G") ~ "No crab"
+)
+
+# Decode temperature
+temperature <- case_when(
+  color_code %in% c("P", "R") ~ "Heated",
+  color_code %in% c("B", "G") ~ "Ambient"
+)
+
+# Print extracted metadata
+cat(one_month_date, sample_name, photo_number, site, color, predation, temperature, batch, "\n")
+
+write_csv(master_one_month, "~/Desktop/repositories/Nucella_2025/data/NL_2025_one_month_master_measurements.csv")
+```
+
+#Adding treatment and temperature for one month
+```{r}
+master_one_month <- master_one_month %>%
+  mutate(
+    # Parse site, color, and batch from sample_name
+    site_code = substr(sample_name, 1, 2),
+    color_code = substr(sample_name, 3, 3),
+    batch = as.numeric(substr(sample_name, 4, 4)),
+
+    # Map codes to full labels
+    site = case_when(
+      site_code == "RI" ~ "Ram Island",
+      site_code == "CR" ~ "Castle Rock",
+      site_code == "BR" ~ "Bass Rock",
+      TRUE ~ NA_character_
+    ),
+    color = case_when(
+      color_code == "P" ~ "Pink",
+      color_code == "R" ~ "Red",
+      color_code == "B" ~ "Blue",
+      color_code == "G" ~ "Green",
+      TRUE ~ NA_character_
+    ),
+    predation = case_when(
+      color_code %in% c("R", "B") ~ "Crab",
+      color_code %in% c("P", "G") ~ "No crab",
+      TRUE ~ NA_character_
+    ),
+    temperature = case_when(
+      color_code %in% c("P", "R") ~ "Heated",
+      color_code %in% c("B", "G") ~ "Ambient",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  select(sample_name, one_month_date, site, color, batch,
+         predation, temperature, photo_number, snail_number, length, width)
+```
+
+#Exporting complete table with all one month measurements
+```{r}
+main_path <- "~/Desktop/repositories/Nucella_2025/data"
+write_csv(master_one_month, file.path(main_path, "NL_2025_one_month_master_measurements_with_metadata.csv"))
+```
+
+#Loading one month csv total metadata and measurements
+```{r}
+# Load the raw data fresh
+nucella_one_month_meas <- read_csv("~/Desktop/Repositories/Nucella_2025/data/NL_2025_one_month_master_measurements_with_metadata.csv")
+
+# Check the structure
+str(nucella_one_month_meas)
+head(nucella_one_month_meas, 20)
+
+# Convert character columns to factors BUT keep length and width as numeric
+nucella_one_month_meas <- nucella_one_month_meas %>%
+  mutate(
+    sample_name = as.factor(sample_name),
+    one_month_date = as.factor(one_month_date),
+    site = as.factor(site),
+    color = as.factor(color),
+    batch = as.factor(batch),
+    predation = as.factor(predation),
+    temperature = as.factor(temperature),
+    photo_number = as.factor(photo_number),
+    length = as.numeric(length),
+    width = as.numeric(width)
+  )
+
+# Now calculate averages - group by sample_name (and other metadata)
+nucella_one_month_averages <- nucella_one_month_meas %>%
+  group_by(sample_name, color, one_month_date, site, batch, predation, temperature) %>%
+  summarise(
+    avg_length = mean(length, na.rm = TRUE),
+    avg_width  = mean(width, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# new CSV
+write_csv(nucella_one_month_averages, "~/Desktop/Repositories/Nucella_2025/data/nucella_one_month_average_measurements.csv")
+```
+
+#Stats for Averaged one month Nucella length
+```{r}
+# Read your CSV
+nucella_one_month_measurement <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_one_month_average_measurements.csv",
+                         col_types = cols(
+                           sample_name = col_factor(),
+                           color = col_factor(),
+                           site = col_factor(),
+                           predation = col_factor(),
+                           temperature = col_factor(),
+                           batch = col_factor()
+                         ))
+
+# Check structure
+str(nucella_one_month_measurement)
+View(nucella_one_month_measurement)
+
+#keep this every time
+options(contrasts = c("contr.sum","contr.poly"))
+getOption("contrasts")
+
+m1_one_month <- lmer(avg_length ~ predation * temperature + (1|site) + (1|batch), 
+           data = nucella_one_month_averages, REML=TRUE)
+
+Anova(m1_one_month, test="F", type="III")
+summary(m1_one_month)
+
+#site as factor instead of random
+m2_one_month <- lmer(avg_length ~ predation * temperature * site + (1|batch), 
+           data = nucella_one_month_averages, REML=TRUE)
+
+Anova(m2_one_month, test="F", type="III")
+```
+
+```{r}
+#temperature
+emm3_temp_one_length <- emmeans(m1_one_month,specs = pairwise ~ temperature, adjust="none")
+emm3_temp_one_length$emmeans
+emm3_temp_one_length$contrasts
+```
+
+
+
+#Plotting Nucella one month length averages
+```{r}
+nucella_one_month_averages <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_one_month_average_measurements.csv")
+
+# Define standard error 
+std.error <- function(x, na.rm = TRUE) {
+  x <- if (na.rm) x[!is.na(x)] else x
+  sd(x) / sqrt(length(x))
+}
+
+# Ensure factors are properly set
+nucella_one_month_averages <- nucella_one_month_averages %>%
+  mutate(
+    predation = factor(predation, levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated"))
+  )
+
+#summary statistics
+summary_stats_length_one_month <- nucella_one_month_averages %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_length = mean(avg_length, na.rm = TRUE),
+    se_length = std.error(avg_length, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Check the summary - should have 4 rows
+print(summary_stats_length_one_month)
+
+# Plotting
+ggplot(summary_stats_length_one_month,
+       aes(x = predation, y = mean_length, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_length - se_length, ymax = mean_length + se_length),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 5, position = position_dodge(width = 0.4)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = 0.1))+  
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Risk",
+       y = "One Month Length (mm)",
+       color = "Temperature") +
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+```
+
+```{r}
+# Saving
+ggsave(filename = "~/Desktop/Repositories/Nucella_2025/figures/One_month_length.jpeg",
+       width = 8, 
+       height = 6, 
+       dpi = 300)
+```
+
+#Stats for one month Nucella width
+```{r}
+# Width statistics - using the same model structure as length
+m1_width_one_month <- lmer(avg_width ~ predation * temperature + (1|site) + (1|batch), 
+                 data = nucella_one_month_averages, REML=TRUE)
+
+Anova(m1_width_one_month, test="F", type="III")
+summary(m1_width_one_month)
+
+# Site as factor instead of random (if you want to compare)
+m2_width_one_month <- lmer(avg_width ~ predation * temperature * site + (1|batch), 
+                 data = nucella_one_month_averages, REML=TRUE)
+
+Anova(m2_width_one_month, test="F", type="III")
+summary(m2_width_one_month)
+```
+
+```{r}
+emm3_temp_one_width <- emmeans(m1_width_one_month,specs = pairwise ~ temperature, adjust="none")
+emm3_temp_one_width$emmeans
+emm3_temp_one_width$contrasts
+```
+
+
+
+#Plotting width one month averages
+```{r}
+# summary statistics for width
+summary_stats_width_one_month <- nucella_one_month_averages %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_width = mean(avg_width, na.rm = TRUE),
+    se_width = std.error(avg_width, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Check the summary - should have 4 rows
+print(summary_stats_width_one_month)
+
+# Create the width plot
+ggplot(summary_stats_width_one_month,
+       aes(x = predation, y = mean_width, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_width - se_width, ymax = mean_width + se_width),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 5, position = position_dodge(width = 0.4)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Risk",
+       y = "One Month Width (mm)",
+       color = "Temperature") +
+  scale_y_continuous(expand = expansion(add = 0.2))+  
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+
+# Save the width figure
+ggsave(filename = "~/Desktop/Repositories/Nucella_2025/figures/One_month_width.jpeg",
+       width = 8, 
+       height = 6, 
+       dpi = 300)
+```
+
+```{r}
+# Saving
+ggsave(filename = "~/Desktop/Repositories/Nucella_2025/figures/One_month_width.jpeg",
+       width = 8, 
+       height = 6, 
+       dpi = 300)
+```
+
+
+
+
+
+# Length/width ration analysis - one month data
+```{r}
+# Load one month data
+nucella_one_month_meas <- read_csv("~/Desktop/Repositories/Nucella_2025/data/NL_2025_one_month_master_measurements_with_metadata.csv")
+
+# Convert to factors
+nucella_one_month_meas <- nucella_one_month_meas %>%
+  mutate(
+    sample_name = as.factor(sample_name),
+    one_month_date = as.factor(one_month_date),
+    site = as.factor(site),
+    color = as.factor(color),
+    batch = as.factor(batch),
+    predation = as.factor(predation),
+    temperature = as.factor(temperature),
+    photo_number = as.factor(photo_number),
+    length = as.numeric(length),
+    width = as.numeric(width)
+  )
+
+# Calculate ratio averages by sample
+nucella_one_month_ratio <- nucella_one_month_meas %>%
+  filter(!is.na(length) & !is.na(width) & width != 0) %>%
+  mutate(ratio = length / width) %>%
+  group_by(sample_name, color, one_month_date, site, batch, predation, temperature) %>%
+  summarise(
+    avg_ratio = mean(ratio, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Save ratio data
+write_csv(nucella_one_month_ratio, "~/Desktop/Repositories/Nucella_2025/data/nucella_one_month_ratio_measurements.csv")
+
+head(nucella_one_month_ratio)
+```
+
+```{r}
+# Stats for one month ratio
+options(contrasts = c("contr.sum","contr.poly"))
+
+m1_ratio_one_month <- lmer(avg_ratio ~ predation * temperature + (1|site) + (1|batch), 
+                           data = nucella_one_month_ratio, REML=TRUE)
+
+Anova(m1_ratio_one_month, test="F", type="III")
+summary(m1_ratio_one_month)
+
+# Site as factor instead of random
+m2_ratio_one_month <- lmer(avg_ratio ~ predation * temperature * site + (1|batch), 
+                           data = nucella_one_month_ratio, REML=TRUE)
+
+Anova(m2_ratio_one_month, test="F", type="III")
+summary(m2_ratio_one_month)
+```
+
+```{r}
+emm3_temp_one_ratio <- emmeans(m1_ratio_one_month,specs = pairwise ~ temperature, adjust="none")
+emm3_temp_one_ratio$emmeans
+emm3_temp_one_ratio$contrasts
+```
+
+
+
+```{r}
+# Plotting one month ratio
+nucella_one_month_ratio <- read_csv("~/Desktop/Repositories/Nucella_2025/data/nucella_one_month_ratio_measurements.csv")
+
+# Ensure factors are properly set
+nucella_one_month_ratio <- nucella_one_month_ratio %>%
+  mutate(
+    predation = factor(predation, levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated"))
+  )
+
+# Summary statistics
+summary_stats_ratio_one_month <- nucella_one_month_ratio %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_ratio = mean(avg_ratio, na.rm = TRUE),
+    se_ratio = std.error(avg_ratio, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+print(summary_stats_ratio_one_month)
+
+# Plot
+ggplot(summary_stats_ratio_one_month,
+       aes(x = predation, y = mean_ratio, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_ratio - se_ratio, ymax = mean_ratio + se_ratio),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 5, position = position_dodge(width = 0.4)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Risk",
+       y = "Emergence Length : Width (mm)",
+       color = "Temperature") +
+    #scale_y_continuous(expand = expansion(add = 0.1))+  
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+
+# Save figure
+ggsave(filename = "~/Desktop/Repositories/Nucella_2025/figures/One_month_ratio.jpeg",
+       width = 8, 
+       height = 6, 
+       dpi = 300)
+```
+
+#Time to emergence
+```{r}
+
+# Add this code after you create the master dataframe with metadata
+
+# Add collection date based on batch number
+master <- master %>%
+  mutate(
+    collection_date = case_when(
+      batch %in% 1:4 ~ as.Date("2025-05-29"),
+      batch %in% 5:6 ~ as.Date("2025-05-31"),
+      TRUE ~ NA_Date_
+    ),
+    # Convert emergence_date from YYYYMMDD format to Date
+    emergence_date_converted = as.Date(emergence_date, format = "%Y%m%d"),
+    # Calculate days to emergence
+    days_to_emergence = as.numeric(emergence_date_converted - collection_date)
+  )
+
+# Check the results
+master %>%
+  select(sample_name, batch, collection_date, emergence_date_converted, days_to_emergence) %>%
+  distinct() %>%
+  arrange(batch)
+
+# Plot time to emergence - point plot
+ggplot(master, aes(x = interaction(predation, temperature), y = days_to_emergence, 
+                   color = site)) +
+  geom_point(alpha = 0.6, size = 2, position = position_jitter(width = 0.2, height = 0)) +
+  labs(
+    title = "Time to Emergence by Treatment",
+    x = "Treatment",
+   y = "Days from Collection to Emergence",
+    color = "Site"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+# Summary statistics
+master %>%
+  group_by(predation, temperature, site) %>%
+  summarise(
+    mean_days = mean(days_to_emergence, na.rm = TRUE),
+    sd_days = sd(days_to_emergence, na.rm = TRUE),
+    n_samples = n_distinct(sample_name),
+    .groups = "drop"
+  )
+```
+```{r}
+
+# Adding collection date based on batch number
+master <- master %>%
+  mutate(
+    collection_date = case_when(
+      batch %in% 1:4 ~ as.Date("2025-05-29"),
+      batch %in% 5:6 ~ as.Date("2025-05-31"),
+      TRUE ~ NA_Date_
+    ),
+    # Convert emergence_date from YYYYMMDD format to Date
+    emergence_date_converted = as.Date(emergence_date, format = "%Y%m%d"),
+    # Calculate days to emergence
+    days_to_emergence = as.numeric(emergence_date_converted - collection_date)
+  )
+
+#Checkign results
+master %>%
+  select(sample_name, batch, collection_date, emergence_date_converted, days_to_emergence) %>%
+  distinct() %>%
+  arrange(batch)
+
+# Summary statistics for emergence time (by sample_name to get one value per replicate)
+summary_stats_emergence <- master %>%
+  group_by(sample_name, predation, temperature) %>%
+  summarise(
+    days_to_emergence = first(days_to_emergence),
+    .groups = "drop"
+  ) %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_days = mean(days_to_emergence, na.rm = TRUE),
+    sd_days = sd(days_to_emergence, na.rm = TRUE),
+    n = n(),
+    se_days = sd_days / sqrt(n),
+    .groups = "drop"
+  )
+
+# Reverse the order of predation levels
+summary_stats_emergence <- summary_stats_emergence %>%
+  mutate(predation = factor(predation, levels = c("No crab", "Crab")))
+
+# Plot time to emergence with error bars
+ggplot(summary_stats_emergence,
+       aes(x = predation, y = mean_days, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_days - se_days, ymax = mean_days + se_days),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 5, position = position_dodge(width = 0.4)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Risk",
+       y = "Days to Emergence",
+       color = "Temperature") +
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+# Summary statistics
+#master %>%
+ # group_by(predation, temperature, site) %>%
+ # summarise(
+  #  mean_days = mean(days_to_emergence, na.rm = TRUE),
+   # sd_days = sd(days_to_emergence, na.rm = TRUE),
+  #  n_samples = n_distinct(sample_name),
+  #  .groups = "drop"
+ # )
+```
+
+```{r}
+#Stats for emergence time
+
+emergence_data <- master %>%
+  group_by(sample_name, predation, temperature, site, batch) %>%
+  summarise(
+    days_to_emergence = first(days_to_emergence),
+    .groups = "drop"
+  ) %>%
+  filter(!is.na(days_to_emergence))
+
+#site as random effect
+model1 <- lmer(days_to_emergence ~ predation * temperature + (1|site), 
+               data = emergence_data)
+
+anova(model1)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#OLD CODE!
+
+
+```{r}
+# Function to process each CSV
+process_file <- function(file) {
+  # ADD THESE LIBRARY CALLS HERE AT THE TOP:
+  library(dplyr)
+  library(readr)
+  library(tidyr)
+  library(stringr)
+  
+  # Extract metadata from filename
+  fname <- basename(file)
+  parts <- strsplit(fname, "_")[[1]]
+  emergence_date <- parts[1]
+  sample_name <- parts[2]
+  photo_number <- gsub("\\.csv", "", parts[3])
+  
+  # Read CSV and keep only Length and Comment
+  df <- read_csv(file, show_col_types = FALSE) %>%
+    select(`Length [mm]`, Comment) %>%
+    filter(!is.na(Comment)) %>%
+    mutate(`Length [mm]` = as.numeric(`Length [mm]`))
+  
+  # Separate length vs width and extract snail_number
+  df <- df %>%
+    mutate(
+      type = ifelse(grepl("_L_", Comment), "length", "width"),
+      snail_number = as.numeric(str_extract(Comment, "\\d+$"))
+    ) %>%
+    select(snail_number, type, value = `Length [mm]`)
+  
+  # ... rest of your function stays the same
+```
+
+
+#One Month Post Emergence data
+#What worked for the first half of the table- creating the master spreadsheet 
+
+```{r}
+# Getting to folder with CSVs
+path <- "~/Desktop/repositories/Nucella_2025/data/2025_OneMonth_measurements_csv"
+files <- list.files(path, pattern = "\\.csv$", full.names = TRUE)
+
+# Function to process each CSV
+process_file <- function(file) {
+  # Extract metadata from filename
+  fname <- basename(file)
+  parts <- strsplit(fname, "_")[[1]]
+  emergence_date <- parts[1]
+  sample_name <- parts[2]
+  photo_number <- gsub("\\.csv", "", parts[3])
+  
+  # Read CSV and keep only Length and Comment
+  df <- read_csv(file, show_col_types = FALSE) %>%
+    select(`Length [mm]`, Comment) %>%
+    filter(!is.na(Comment)) %>%
+    mutate(`Length [mm]` = as.numeric(`Length [mm]`))
+  
+  # Separate length vs width and extract snail_number
+  df <- df %>%
+    mutate(
+      type = ifelse(grepl("_L_", Comment), "length", "width"),
+      snail_number = as.numeric(str_extract(Comment, "\\d+$"))
+    ) %>%
+    select(snail_number, type, value = `Length [mm]`)
+  
+  # Resolve duplicates: keep only first measurement per snail_number & type
+  df <- df %>%
+    group_by(snail_number, type) %>%
+    slice(1) %>%
+    ungroup()
+  
+  # Pivot wider so each snail has length & width in one row
+  df_wide <- df %>%
+    pivot_wider(names_from = type, values_from = value)
+  
+  # Add metadata columns
+  df_wide <- df_wide %>%
+    mutate(
+      sample_name = sample_name,
+      emergence_date = emergence_date,
+      photo_number = photo_number
+    ) %>%
+    select(sample_name, emergence_date, photo_number, snail_number, length, width)
+  
+  return(df_wide)
+}
+
+# Combine all CSVs
+master_OneMonth <- purrr::map_dfr(files, process_file)
+
+# Save initial master CSV
+write_csv(master_OneMonth, "~/Desktop/repositories/Nucella_2025/data/2025_OneMonth_measurements.csv")
+
+# Example filename breakdown
+fname <- basename(files[1])
+parts <- strsplit(fname, "_")[[1]]
+emergence_date <- parts[1]
+sample_name <- parts[2]   # e.g. "RIP4"
+photo_number <- gsub("\\.csv", "", parts[3])
+
+# Parse metadata from sample name
+site_code <- substr(sample_name, 1, 2)    # RI, CR, BR
+color_code <- substr(sample_name, 3, 3)   # P, R, B, G
+batch <- as.numeric(substr(sample_name, 4, 4))  # renamed from replicate
+
+# Decode site
+site <- case_when(
+  site_code == "RI" ~ "Ram Island",
+  site_code == "CR" ~ "Castle Rock",
+  site_code == "BR" ~ "Bass Rock"
+)
+
+# Decode color
+color <- case_when(
+  color_code == "P" ~ "Pink",
+  color_code == "R" ~ "Red",
+  color_code == "B" ~ "Blue",
+  color_code == "G" ~ "Green"
+)
+
+# Decode Predator 
+predation <- case_when(
+  color_code %in% c("R", "B") ~ "Crab",
+  color_code %in% c("P", "G") ~ "No crab"
+)
+
+# Decode temperature
+temperature <- case_when(
+  color_code %in% c("P", "R") ~ "Heated",
+  color_code %in% c("B", "G") ~ "Ambient"
+)
+
+# Print extracted metadata
+cat(emergence_date, sample_name, photo_number, site, color, predation, temperature, batch, "\n")
+
+write_csv(master_OneMonth, "~/Desktop/repositories/Nucella_2025/data/2025_OneMonth_measurements.csv")
+
+```
+
+```{r}
+master_OneMonth <- master_OneMonth %>%
+  mutate(
+    # Parse site, color, and batch from sample_name
+    site_code = substr(sample_name, 1, 2),
+    color_code = substr(sample_name, 3, 3),
+    batch = as.numeric(substr(sample_name, 4, 4)),
+
+    # Map codes to full labels
+    site = case_when(
+      site_code == "RI" ~ "Ram Island",
+      site_code == "CR" ~ "Castle Rock",
+      site_code == "BR" ~ "Bass Rock",
+      TRUE ~ NA_character_
+    ),
+    color = case_when(
+      color_code == "P" ~ "Pink",
+      color_code == "R" ~ "Red",
+      color_code == "B" ~ "Blue",
+      color_code == "G" ~ "Green",
+      TRUE ~ NA_character_
+    ),
+    predation = case_when(
+      color_code %in% c("R", "B") ~ "Crab",
+      color_code %in% c("P", "G") ~ "No crab",
+      TRUE ~ NA_character_
+    ),
+    temperature = case_when(
+      color_code %in% c("P", "R") ~ "Heated",
+      color_code %in% c("B", "G") ~ "Ambient",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  select(sample_name, emergence_date, site, color, batch,
+         predation, temperature, photo_number, snail_number, length, width)
+
+main_path <- "~/Desktop/repositories/Nucella_2025/data"
+write_csv(master_OneMonth, "~/Desktop/repositories/Nucella_2025/data/2025_OneMonth_measurements.csv")
+```
+
+
+#Part two
+
+```{r}
+nucella_emergence_meas_OneMonth <- read_csv("~/Desktop/Repositories/Nucella_2025/data/2025_OneMonth_measurements.csv")
+
+#Convert all character columns to factors
+nucella_emergence_meas_OneMonth <- nucella_emergence_meas_OneMonth %>%
+  mutate(
+    across(where(is.character), as.factor),
+    length = as.numeric(length),
+    width = as.numeric(width)
+  )
+```
+
+```{r}
+# Calculate the average of snail 1–10 for each sample_name
+#nucella_emergence_OneMonth_averages <- nucella_emergence_meas_OneMonth %>%
+  #group_by(sample_name, color, emergence_date, site, batch, predation, temperature) %>%
+  #summarise(
+   # avg_length = mean(length, na.rm = TRUE),
+   # avg_width = mean(width, na.rm = TRUE),
+   # n_snails = n(),  # optional: shows how many snails per sample
+   # .groups = "drop"
+ # )
+```
+
+```{r}
+#Trying new averages code
+nucella_OneMonth_averages <- nucella_OneMonth_meas %>%
+  group_by(sample_name, color, emergence_date, site, batch, predation, temperature) %>%
+  summarise(
+    avg_length = mean(length, na.rm = TRUE),
+    avg_width  = mean(width, na.rm = TRUE),
+    n_snails = n(),
+    .groups = "drop"
+  )
+```
+
+```{r}
+# Check what treatment combinations exist
+table(nucella_OneMonth_averages$predation, nucella_OneMonth_averages$temperature)
+
+# Check unique sample names
+unique(nucella_OneMonth_averages$sample_name)
+```
+
+
+```{r}
+# Join the averages back to the main dataset
+#nucella_emergence_meas  <- nucella_emergence_meas  %>%
+  #left_join(snail_avg, by = "sample_name")
+```
+
+```{r}
+# new CSV
+write_csv(nucella_emergence_OneMonth_averages, "~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_OneMonth_averages.csv")
+```
+
+
+
+```{r}
+#keep this every time
+options(contrasts = c("contr.sum","contr.poly"))
+getOption("contrasts")
+
+
+m1 <- lmer(avg_length ~ predation * temperature + (1|site) + (1|batch), 
+           data = nucella_emergence_OneMonth_averages, REML=TRUE)
+
+Anova(m1, test="F", type="III")
+summary(m1)
+
+#site as factor instead of random
+m2 <- lmer(avg_length ~ predation * temperature * site + (1|batch), 
+           data = nucella_emergence_OneMonth_averages, REML=TRUE)
+
+Anova(m2, test="F", type="III")
+summary(m1)
+```
+
+
+
+#Trying to debug code for One month length
+
+#Making master data for One Month
+```{r}
+
+# Getting to folder with CSVs
+path <- "~/Desktop/repositories/Nucella_2025/data/2025_OneMonth_measurements_csv"
+files <- list.files(path, pattern = "\\.csv$", full.names = TRUE)
+
+# Function to process each CSV
+process_file <- function(file) {
+  # Load libraries inside function
+  library(dplyr)
+  library(readr)
+  library(tidyr)
+  library(stringr)
+  
+  # Extract metadata from filename
+  fname <- basename(file)
+  parts <- strsplit(fname, "_")[[1]]
+  emergence_date <- parts[1]
+  sample_name <- parts[2]
+  photo_number <- gsub("\\.csv", "", parts[3])
+  
+  # Read CSV and keep only Length and Comment
+  df <- read_csv(file, show_col_types = FALSE) %>%
+    select(`Length [mm]`, Comment) %>%
+    filter(!is.na(Comment)) %>%
+    mutate(`Length [mm]` = as.numeric(`Length [mm]`))
+  
+  # Separate length vs width and extract snail_number
+  df <- df %>%
+    mutate(
+      type = ifelse(grepl("_L_", Comment), "length", "width"),
+      snail_number = as.numeric(str_extract(Comment, "\\d+$"))
+    ) %>%
+    select(snail_number, type, value = `Length [mm]`)
+  
+  # Resolve duplicates: keep only first measurement per snail_number & type
+  df <- df %>%
+    group_by(snail_number, type) %>%
+    slice(1) %>%
+    ungroup()
+  
+  # Pivot wider so each snail has length & width in one row
+  df_wide <- df %>%
+    pivot_wider(names_from = type, values_from = value)
+  
+  # Add metadata columns
+  df_wide <- df_wide %>%
+    mutate(
+      sample_name = sample_name,
+      emergence_date = emergence_date,
+      photo_number = photo_number
+    ) %>%
+    select(sample_name, emergence_date, photo_number, snail_number, length, width)
+  
+  return(df_wide)
+}
+
+# Combine all CSVs
+master_OneMonth <- purrr::map_dfr(files, process_file)
+
+# Save initial master CSV
+write_csv(master_OneMonth, "~/Desktop/repositories/Nucella_2025/data/2025_OneMonth_master_measurements.csv")
+```
+
+#Adding treatment and temperature metadata
+```{r}
+master_OneMonth <- master_OneMonth %>%
+  mutate(
+    # Parse site, color, and batch from sample_name
+    site_code = substr(sample_name, 1, 2),
+    color_code = substr(sample_name, 3, 3),
+    batch = as.numeric(substr(sample_name, 4, 4)),
+
+    # Map codes to full labels
+    site = case_when(
+      site_code == "RI" ~ "Ram Island",
+      site_code == "CR" ~ "Castle Rock",
+      site_code == "BR" ~ "Bass Rock",
+      TRUE ~ NA_character_
+    ),
+    color = case_when(
+      color_code == "P" ~ "Pink",
+      color_code == "R" ~ "Red",
+      color_code == "B" ~ "Blue",
+      color_code == "G" ~ "Green",
+      TRUE ~ NA_character_
+    ),
+    predation = case_when(
+      color_code %in% c("R", "B") ~ "Crab",
+      color_code %in% c("P", "G") ~ "No crab",
+      TRUE ~ NA_character_
+    ),
+    temperature = case_when(
+      color_code %in% c("P", "R") ~ "Heated",
+      color_code %in% c("B", "G") ~ "Ambient",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  select(sample_name, emergence_date, site, color, batch,
+         predation, temperature, photo_number, snail_number, length, width)
+```
+
+#Exporting complete table with all measurements
+```{r}
+write_csv(master_OneMonth, "~/Desktop/repositories/Nucella_2025/data/2025_OneMonth_measurements_with_metadata.csv")
+```
+
+
+
+
+
+#Taking averages of one month length
+```{r}
+#Loading One Month csv's with metadata and measurements
+nucella_OneMonth_meas <- read_csv("~/Desktop/Repositories/Nucella_2025/data/2025_OneMonth_measurements_with_metadata.csv")
+options(contrasts = c("contr.sum","contr.poly"))
+getOption("contrasts")
+
+
+# Convert all character columns to factors
+nucella_OneMonth_meas <- nucella_OneMonth_meas %>%
+  mutate(
+    across(where(is.character), as.factor),
+    length = as.numeric(length),
+    width = as.numeric(width)
+  )
+
+nucella_OneMonth_averages <- nucella_OneMonth_meas %>%
+  group_by(sample_name, color, emergence_date, site, batch, predation, temperature) %>%
+  summarise(
+    avg_length = mean(length, na.rm = TRUE),
+    avg_width  = mean(width, na.rm = TRUE),
+    n_snails = n(),  # optional: shows how many snails per sample
+    .groups = "drop"
+  )
+
+# Save new CSV
+write_csv(nucella_OneMonth_averages, "~/Desktop/Repositories/Nucella_2025/data/nucella_OneMonth_average_measurements.csv")
+```
+
+#Stats for One Month Nucella length
+```{r}
+# Keep this every time
+options(contrasts = c("contr.sum","contr.poly"))
+getOption("contrasts")
+
+m1_OneMonth <- lmer(avg_length ~ predation * temperature + (1|site) + (1|batch), 
+                    data = nucella_OneMonth_averages, REML=TRUE)
+
+Anova(m1_OneMonth, test="F", type="III")
+summary(m1_OneMonth)
+
+# Site as factor instead of random
+m2_OneMonth <- lmer(avg_length ~ predation * temperature * site + (1|batch), 
+                    data = nucella_OneMonth_averages, REML=TRUE)
+
+Anova(m2_OneMonth, test="F", type="III")
+summary(m2_OneMonth)
+```
+
+#Plotting One Month length
+```{r}
+# Define standard error function
+std.error <- function(x, na.rm = TRUE) {
+  x <- if (na.rm) x[!is.na(x)] else x
+  sd(x) / sqrt(length(x))
+}
+
+# Ensure factors are properly set
+nucella_OneMonth_averages <- nucella_OneMonth_averages %>%
+  mutate(
+    predation = factor(predation, levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated"))
+  )
+
+# Summary statistics
+summary_stats_length_OneMonth <- nucella_OneMonth_averages %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_length = mean(avg_length, na.rm = TRUE),
+    se_length = std.error(avg_length, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Check the summary - should have 4 rows
+print(summary_stats_length_OneMonth)
+
+```
+
+
+
+#DEBUGGING
+
+# Check if dplyr is working correctly
+library(dplyr)
+
+# Simple test with built-in data
+test <- mtcars %>%
+  group_by(cyl) %>%
+  summarise(avg_mpg = mean(mpg))
+
+print(test)
+print(nrow(test))  # Should be 3
+
+# Now check your actual data step by step
+nucella_emergence_meas <- read_csv("~/Desktop/Repositories/Nucella_2025/data/NL_2025_master_measurements_with_metadata.csv")
+
+# Check the raw data
+print("Raw data dimensions:")
+print(dim(nucella_emergence_meas))
+
+# Check distinct sample names
+print("Unique sample names:")
+print(unique(nucella_emergence_meas$sample_name))
+
+# Try grouping by ONLY sample_name
+test_simple <- nucella_emergence_meas %>%
+  group_by(sample_name) %>%
+  summarise(
+    avg_length = mean(length, na.rm = TRUE),
+    avg_width = mean(width, na.rm = TRUE)
+  )
+
+print("Simple grouping by sample_name only:")
+print(dim(test_simple))
+print(test_simple)
+```
+
+# Check if you have a weird dplyr version or conflict
+sessionInfo()
+
+# Also try detaching and reloading dplyr
+detach("package:dplyr", unload = TRUE)
+library(dplyr)
+
+# Now try again with fresh session
+nucella_emergence_meas <- read_csv("~/Desktop/Repositories/Nucella_2025/data/NL_2025_master_measurements_with_metadata.csv")
+
+# Try base R to confirm the data is real
+table(nucella_emergence_meas$sample_name)
+
+# Now try dplyr again
+test_simple <- nucella_emergence_meas %>%
+  group_by(sample_name) %>%
+  summarise(
+    avg_length = mean(length, na.rm = TRUE),
+    avg_width = mean(width, na.rm = TRUE)
+  )
+
+print(dim(test_simple))
+```
+
+
+# Check if sample_name has consistent metadata
+nucella_emergence_meas %>%
+  group_by(sample_name) %>%
+  summarise(
+    n_colors = n_distinct(color),
+    n_dates = n_distinct(emergence_date),
+    n_sites = n_distinct(site),
+    n_batches = n_distinct(batch),
+    n_predation = n_distinct(predation),
+    n_temp = n_distinct(temperature)
+  ) %>%
+  filter(n_colors > 1 | n_dates > 1 | n_sites > 1 | 
+         n_batches > 1 | n_predation > 1 | n_temp > 1)
+```
+
+# Check for NAs in your grouping variables
+nucella_emergence_meas %>%
+  summarise(
+    na_sample = sum(is.na(sample_name)),
+    na_color = sum(is.na(color)),
+    na_date = sum(is.na(emergence_date)),
+    na_site = sum(is.na(site)),
+    na_batch = sum(is.na(batch)),
+    na_pred = sum(is.na(predation)),
+    na_temp = sum(is.na(temperature))
+  )
+
+# Also check the class of sample_name
+class(nucella_emergence_meas$sample_name)
+
+# Try viewing the first few rows
+head(nucella_emergence_meas %>% select(sample_name, color, length, width), 20)
+```
+
+# Check for NAs in grouping variables
+nucella_emergence_meas %>%
+  summarise(
+    na_sample = sum(is.na(sample_name)),
+    na_color = sum(is.na(color)),
+    na_date = sum(is.na(emergence_date)),
+    na_site = sum(is.na(site)),
+    na_batch = sum(is.na(batch)),
+    na_pred = sum(is.na(predation)),
+    na_temp = sum(is.na(temperature))
+  )
+```
+
+# Check unique values in each grouping variable
+nucella_emergence_meas %>%
+  summarise(
+    n_samples = n_distinct(sample_name),
+    n_colors = n_distinct(color),
+    n_dates = n_distinct(emergence_date),
+    n_sites = n_distinct(site),
+    n_batches = n_distinct(batch),
+    n_pred = n_distinct(predation),
+    n_temp = n_distinct(temperature),
+    total_rows = n()
+  )
+```
+
+# Check unique values
+nucella_emergence_meas %>%
+  summarise(
+    n_samples = n_distinct(sample_name),
+    n_colors = n_distinct(color),
+    n_dates = n_distinct(emergence_date),
+    n_sites = n_distinct(site),
+    n_batches = n_distinct(batch),
+    n_pred = n_distinct(predation),
+    n_temp = n_distinct(temperature)
+  )
+
+# Total rows
+nrow(nucella_emergence_meas)
+
+# Step by step grouping check
+test1 <- nucella_emergence_meas %>%
+  group_by(sample_name)
+
+n_groups(test1)
+
+test2 <- nucella_emergence_meas %>%
+  group_by(sample_name, color, emergence_date, site, batch, predation, temperature)
+
+n_groups(test2)
+
+# Distinct combinations
+nucella_emergence_meas %>%
+  distinct(sample_name, color, emergence_date, site, batch, predation, temperature) %>%
+  nrow()
+```
+
+
+# Check how many unique sample_names you have in the original data
+length(unique(nucella_emergence_meas$sample_name))
+table(nucella_emergence_meas$sample_name)
+
+# Check the structure of your data
+str(nucella_emergence_meas)
+
+# Look at the first 20 rows
+head(nucella_emergence_meas, 20)
+
+# Check if sample_name is actually being read correctly
+unique(nucella_emergence_meas$sample_name)
+```
+
+
+
+#Sarah code plotting
+
+```{r}
+plot <- ggplot(na.omit(avgs), aes(x=early_salinity, y=tot_avg,color = as.factor(late_salinity), shape=late_salinity, fill = late_salinity))
+plot2 <- plot+geom_errorbar(aes(ymin=tot_avg-SE, ymax=tot_avg+SE), width=0.1) +
+  geom_point(size=8, stroke=1) + theme_grey() +scale_color_manual(values=c("#660066", "#99CC99"))+scale_shape_manual(values=c(22, 21))+ scale_fill_manual(values=c("#660066", "#99CC99"))+
+  theme(legend.text=element_text(size=14),strip.text.x = element_text(size = 14), strip.background = element_blank(),panel.border = element_rect(fill= NA, colour = "black"),
+        axis.ticks = element_line(colour = "black", size = 1), axis.line = element_line(colour = "black", size=.25), axis.text.x = element_text(size=14, color="black"), axis.text.y = element_text(size=14, color="black"), axis.title=element_text(size=18, color="black")) +
+          scale_x_discrete(name="Early Salinity (psu)") + scale_y_continuous(name="No. total nauplii")+ guides(fill = FALSE)
+plot2
+```
+
+#Sophie plotting code
+```{r}
+#Didn't work
+
+std.error <- function(x, na.rm = TRUE) {
+  x <- if (na.rm) x[!is.na(x)] else x
+  sd(x) / sqrt(length(x))
+}
+
+#mean and SE by predation × temperature
+summary_stats_length <- nucella_emergence_averages %>%
+  group_by(predation, temperature) %>%
+  mutate(
+    mean_length = mean(avg_length, na.rm = TRUE),
+    se_length = std.error(avg_length, na.rm = TRUE)
+    #.groups = "drop"
+  )
+
+
+# reorder factors?
+#summary_stats_length$predation <- factor(summary_stats_length$predation,
+                                     #    levels = c("No crab", "Crab"))
+#summary_stats_length$temperature <- factor(summary_stats_length$temperature,
+                                         #  levels = c("Ambient", "Heated"))
+
+
+ggplot(summary_stats_length,
+       aes(x = predation, y = mean_length, color = temperature)) +
+  geom_errorbar(aes(ymin = mean_length - se_length, ymax = mean_length + se_length),
+                width = 0.1, position = position_dodge(0.3)) +
+  geom_point(size = 5, stroke = 1, position = position_dodge(0.3)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Treatment",
+       y = "Mean Snail Length (mm)",
+       color = "Temperature") +
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+
+
+```
+
+```{r}
+#Didn't work
+#Summary statistics
+summary_stats <- nucella_emergence_averages %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_length = mean(avg_length, na.rm = TRUE),
+    se_length = sd(avg_length, na.rm = TRUE) / sqrt(length(avg_length[!is.na(avg_length)])),
+    .groups = "drop"
+  )
+
+ggplot() +
+  # individual points
+  geom_jitter(data = nucella_emergence_averages,
+              aes(x = predation, y = avg_length, color = temperature),
+              width = 0.15, size = 2, alpha = 0.7) +
+  # mean points with error bars
+  geom_point(data = summary_stats,
+             aes(x = predation, y = mean_length, color = temperature),
+             position = position_dodge(width = 0.3), size = 4) +
+  geom_errorbar(data = summary_stats,
+                aes(x = predation, ymin = mean_length - se_length,
+                    ymax = mean_length + se_length, color = temperature),
+                width = 0.2, position = position_dodge(width = 0.3), linewidth = 1) +
+  # Colors for temperature
+  scale_color_manual(values = c("Ambient" = "blue", "Heated" = "red")) +
+  labs(x = "Predation", y = "Snail Length (mm)", color = "Temperature") +
+  theme_classic(base_size = 14) +
+  theme(legend.position = "top")
+```
+
+```{r}
+#Didn't work
+nucella_emergence_averages <- nucella_emergence_averages %>%
+  mutate(
+    predation = factor(predation, levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated"))
+  )
+
+# Create summary stats
+summary_stats_length <- nucella_emergence_averages %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_length = mean(avg_length, na.rm = TRUE),
+    se_length = std.error(avg_length, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Check the summary
+print(summary_stats_length)
+
+ggplot(summary_stats, aes(x = predation, y = mean_length, color = temperature)) +
+  geom_point(position = position_dodge(width = 0.4), size = 4) +
+  geom_errorbar(aes(ymin = mean_length - se_length, ymax = mean_length + se_length),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  scale_color_manual(values = c("Ambient" = "blue", "Heated" = "red")) +
+  labs(x = "Predation", y = "Average Snail Length (mm)", color = "Temperature") +
+  theme_classic(base_size = 14) +
+  theme(legend.position = "top")
+
+```
+
+
