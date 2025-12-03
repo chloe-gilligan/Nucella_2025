@@ -1,0 +1,23 @@
+Item,Source,Length [mm],ND.T,ND.Z,ND.M,Time [s],Velocity [mm/s],Comment
+1,Live,6.26,N/A,N/A,N/A,N/A,N/A,RIP4_L_1
+2,Live,4.01,N/A,N/A,N/A,N/A,N/A,RIP4_W_1
+3,Live,10.57,N/A,N/A,N/A,N/A,N/A,RIP4_L_2
+4,Live,6.77,N/A,N/A,N/A,N/A,N/A,RIP4_W_2
+5,Live,12.88,N/A,N/A,N/A,N/A,N/A,RIP4_L_3
+6,Live,8.36,N/A,N/A,N/A,N/A,N/A,RIP4_W_3
+7,Live,9.86,N/A,N/A,N/A,N/A,N/A,RIP4_L_4
+8,Live,6.36,N/A,N/A,N/A,N/A,N/A,RIP4_W_4
+9,Live,10.96,N/A,N/A,N/A,N/A,N/A,RIP4_L_5
+10,Live,6.93,N/A,N/A,N/A,N/A,N/A,RIP4_W_5
+11,Live,12.19,N/A,N/A,N/A,N/A,N/A,RIP4_L_6
+12,Live,8.06,N/A,N/A,N/A,N/A,N/A,RIP4_W_6
+13,Live,7.01,N/A,N/A,N/A,N/A,N/A,RIP4_L_7
+14,Live,4.78,N/A,N/A,N/A,N/A,N/A,RIP4_W_7
+15,Live,5.93,N/A,N/A,N/A,N/A,N/A,RIP4_L_8
+16,Live,4.1,N/A,N/A,N/A,N/A,N/A,RIP4_W_8
+17,Live,8.22,N/A,N/A,N/A,N/A,N/A,RIP4_L_9
+18,Live,5.14,N/A,N/A,N/A,N/A,N/A,RIP4_W_9
+19,Live,12.01,N/A,N/A,N/A,N/A,N/A,RIP4_L_10
+20,Live,7.47,N/A,N/A,N/A,N/A,N/A,RIP4_W_10
+Feature,Mean,St.Dev,Minimum,Maximum,Sum,,,
+Length [mm],7.89,2.64,4.01,12.88,157.85,,,

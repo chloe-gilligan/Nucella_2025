@@ -1172,7 +1172,434 @@ anova(model1)
 
 
 
+#Four Month Data
 
+```{r}
+library(readr)
+library(lme4)
+library(car) 
+library(ggplot2)
+library(tidyr)
+library(readxl)
+library(tidyverse) 
+library(dplyr)
+library(lmerTest)
+library(emmeans)
+```
+
+# Making master data for 4-month measurements
+```{r}
+# Getting to folder with CSVs
+path <- "~/Desktop/repositories/Nucella_2025/data/2025_FourMonth_measurements_csv"
+files <- list.files(path, pattern = "\\.csv$", full.names = TRUE)
+
+# Function to process each CSV
+process_file <- function(file) {
+  # Extract metadata from filename
+  fname <- basename(file)
+  parts <- strsplit(fname, "_")[[1]]
+  measurement_date <- parts[1]
+  sample_name <- parts[2]
+  photo_number <- gsub("\\.csv", "", parts[3])
+  
+  # Read CSV and keep only Length and Comment
+  df <- read_csv(file, show_col_types = FALSE) %>%
+    select(`Length [mm]`, Comment) %>%
+    filter(!is.na(Comment)) %>%
+    mutate(`Length [mm]` = as.numeric(`Length [mm]`))
+  
+  # Separate length vs width and extract snail_number
+  df <- df %>%
+    mutate(
+      type = ifelse(grepl("_L_", Comment), "length", "width"),
+      snail_number = as.numeric(str_extract(Comment, "\\d+$"))
+    ) %>%
+    select(snail_number, type, value = `Length [mm]`)
+  
+  # Resolve duplicates: keep only first measurement per snail_number & type
+  df <- df %>%
+    group_by(snail_number, type) %>%
+    slice(1) %>%
+    ungroup()
+  
+  # Pivot wider so each snail has length & width in one row
+  df_wide <- df %>%
+    pivot_wider(names_from = type, values_from = value)
+  
+  # Add metadata columns
+  df_wide <- df_wide %>%
+    mutate(
+      sample_name = sample_name,
+      measurement_date = measurement_date,
+      photo_number = photo_number
+    ) %>%
+    select(sample_name, measurement_date, photo_number, snail_number, length, width)
+  
+  return(df_wide)
+}
+
+# Combine all CSVs
+master_4month <- purrr::map_dfr(files, process_file)
+
+# Save initial master CSV
+write_csv(master_4month, "~/Desktop/repositories/Nucella_2025/data/NL_2025_master_4month_measurements.csv")
+```
+
+# Adding treatment and temperature metadata
+```{r}
+master_4month <- master_4month %>%
+  mutate(
+    # Parse site, color, and batch from sample_name
+    site_code = substr(sample_name, 1, 2),
+    color_code = substr(sample_name, 3, 3),
+    batch = as.numeric(substr(sample_name, 4, 4)),
+
+    # Map codes to full labels
+    site = case_when(
+      site_code == "RI" ~ "Ram Island",
+      site_code == "CR" ~ "Castle Rock",
+      site_code == "BR" ~ "Bass Rock",
+      TRUE ~ NA_character_
+    ),
+    color = case_when(
+      color_code == "P" ~ "Pink",
+      color_code == "R" ~ "Red",
+      color_code == "B" ~ "Blue",
+      color_code == "G" ~ "Green",
+      TRUE ~ NA_character_
+    ),
+    predation = case_when(
+      color_code %in% c("R", "B") ~ "Crab",
+      color_code %in% c("P", "G") ~ "No crab",
+      TRUE ~ NA_character_
+    ),
+    temperature = case_when(
+      color_code %in% c("P", "R") ~ "Heated",
+      color_code %in% c("B", "G") ~ "Ambient",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  select(sample_name, measurement_date, site, color, batch,
+         predation, temperature, photo_number, snail_number, length, width)
+```
+
+# Exporting complete table with all measurements
+```{r}
+main_path <- "~/Desktop/repositories/Nucella_2025/data"
+write_csv(master_4month, file.path(main_path, "NL_2025_master_4month_measurements_with_metadata.csv"))
+```
+
+# Loading 4-month csv total metadata and measurements
+```{r}
+# Load the raw data fresh
+nucella_4month_meas <- read_csv("~/Desktop/repositories/Nucella_2025/data/NL_2025_master_4month_measurements_with_metadata.csv")
+
+# Check the structure
+str(nucella_4month_meas)
+head(nucella_4month_meas, 20)
+
+# Convert character columns to factors BUT keep length and width as numeric
+nucella_4month_meas <- nucella_4month_meas %>%
+  mutate(
+    sample_name = as.factor(sample_name),
+    measurement_date = as.factor(measurement_date),
+    site = as.factor(site),
+    color = as.factor(color),
+    batch = as.factor(batch),
+    predation = as.factor(predation),
+    temperature = as.factor(temperature),
+    photo_number = as.factor(photo_number),
+    length = as.numeric(length),
+    width = as.numeric(width)
+  )
+
+# Now calculate averages - group by sample_name (and other metadata)
+nucella_4month_averages <- nucella_4month_meas %>%
+  group_by(sample_name, color, measurement_date, site, batch, predation, temperature) %>%
+  summarise(
+    avg_length = mean(length, na.rm = TRUE),
+    avg_width  = mean(width, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Save new CSV
+write_csv(nucella_4month_averages, "~/Desktop/repositories/Nucella_2025/data/nucella_4month_average_measurements.csv")
+```
+
+# Stats for Averaged 4-month Nucella length
+```{r}
+# Read your CSV
+nucella_4month_averages <- read_csv("~/Desktop/repositories/Nucella_2025/data/nucella_4month_average_measurements.csv",
+                         col_types = cols(
+                           sample_name = col_factor(),
+                           color = col_factor(),
+                           site = col_factor(),
+                           predation = col_factor(),
+                           temperature = col_factor(),
+                           batch = col_factor()
+                         ))
+
+# Check structure
+str(nucella_4month_averages)
+View(nucella_4month_averages)
+
+# Set contrasts
+options(contrasts = c("contr.sum","contr.poly"))
+getOption("contrasts")
+
+m1_4month <- lmer(avg_length ~ predation * temperature + (1|site) + (1|batch), 
+           data = nucella_4month_averages, REML=TRUE)
+
+Anova(m1_4month, test="F", type="III")
+summary(m1_4month)
+
+# Site as factor instead of random
+m2_4month <- lmer(avg_length ~ predation * temperature * site + (1|batch), 
+           data = nucella_4month_averages, REML=TRUE)
+
+Anova(m2_4month, test="F", type="III")
+summary(m2_4month)
+```
+
+# Plotting Nucella 4-month length averages
+```{r}
+nucella_4month_averages <- read_csv("~/Desktop/repositories/Nucella_2025/data/nucella_4month_average_measurements.csv")
+
+# Define standard error 
+std.error <- function(x, na.rm = TRUE) {
+  x <- if (na.rm) x[!is.na(x)] else x
+  sd(x) / sqrt(length(x))
+}
+
+# Ensure factors are properly set
+nucella_4month_averages <- nucella_4month_averages %>%
+  mutate(
+    predation = factor(predation, levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated"))
+  )
+
+# Summary statistics
+summary_stats_length_4month <- nucella_4month_averages %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_length = mean(avg_length, na.rm = TRUE),
+    se_length = std.error(avg_length, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Check the summary - should have 4 rows
+print(summary_stats_length_4month)
+
+# Plotting
+ggplot(summary_stats_length_4month,
+       aes(x = predation, y = mean_length, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_length - se_length, ymax = mean_length + se_length),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 5, position = position_dodge(width = 0.4)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = c(0.05, 0.05))) +
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Risk",
+       y = "4-Month Length (mm)",
+       color = "Temperature") +
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+
+# Save figure
+ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/FourMonth_length.jpeg",
+       width = 8, 
+       height = 6, 
+       dpi = 300)
+```
+
+# Stats for 4-month Nucella width
+```{r}
+# Width statistics - using the same model structure as length
+m1_width_4month <- lmer(avg_width ~ predation * temperature + (1|site) + (1|batch), 
+                 data = nucella_4month_averages, REML=TRUE)
+
+Anova(m1_width_4month, test="F", type="III")
+summary(m1_width_4month)
+
+# Site as factor instead of random
+m2_width_4month <- lmer(avg_width ~ predation * temperature * site + (1|batch), 
+                 data = nucella_4month_averages, REML=TRUE)
+
+Anova(m2_width_4month, test="F", type="III")
+summary(m2_width_4month)
+```
+
+```{r}
+# Post-hocs for width
+emm3_4month <- emmeans(m2_width_4month, specs = pairwise ~ site, adjust="none")
+emm3_4month$emmeans
+emm3_4month$contrasts
+
+# Predation by site
+emm3_pred_site_4month <- emmeans(m2_width_4month, specs = pairwise ~ site * predation, adjust="none")
+emm3_pred_site_4month$emmeans
+emm3_pred_site_4month$contrasts
+
+# Temperature
+emm3_temp_4month <- emmeans(m1_width_4month, specs = pairwise ~ temperature, adjust="none")
+emm3_temp_4month$emmeans
+emm3_temp_4month$contrasts
+```
+
+# Plotting width 4-month averages
+```{r}
+# Summary statistics for width
+summary_stats_width_4month <- nucella_4month_averages %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_width = mean(avg_width, na.rm = TRUE),
+    se_width = std.error(avg_width, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Check the summary - should have 4 rows
+print(summary_stats_width_4month)
+
+# Create the width plot
+ggplot(summary_stats_width_4month,
+       aes(x = predation, y = mean_width, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_width - se_width, ymax = mean_width + se_width),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 5, position = position_dodge(width = 0.4)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = 0.05)) +  
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Risk",
+       y = "4-Month Width (mm)",
+       color = "Temperature") +
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+
+# Save the width figure
+ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/FourMonth_width.jpeg",
+       width = 8, 
+       height = 6, 
+       dpi = 300)
+```
+
+# Length to width ratio for 4-month measurements
+```{r}
+# Load 4-month data
+nucella_4month_meas <- read_csv("~/Desktop/repositories/Nucella_2025/data/NL_2025_master_4month_measurements_with_metadata.csv")
+
+# Convert to factors
+nucella_4month_meas <- nucella_4month_meas %>%
+  mutate(
+    sample_name = as.factor(sample_name),
+    measurement_date = as.factor(measurement_date),
+    site = as.factor(site),
+    color = as.factor(color),
+    batch = as.factor(batch),
+    predation = as.factor(predation),
+    temperature = as.factor(temperature),
+    photo_number = as.factor(photo_number),
+    length = as.numeric(length),
+    width = as.numeric(width)
+  )
+
+# Calculate ratio averages by sample
+nucella_4month_ratio <- nucella_4month_meas %>%
+  filter(!is.na(length) & !is.na(width) & width != 0) %>%
+  mutate(ratio = length / width) %>%
+  group_by(sample_name, color, measurement_date, site, batch, predation, temperature) %>%
+  summarise(
+    avg_ratio = mean(ratio, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Save ratio data
+write_csv(nucella_4month_ratio, "~/Desktop/repositories/Nucella_2025/data/nucella_4month_ratio_measurements.csv")
+
+# View the data
+head(nucella_4month_ratio)
+```
+
+```{r}
+# Stats for 4-month ratio
+options(contrasts = c("contr.sum","contr.poly"))
+
+m1_ratio_4month <- lmer(avg_ratio ~ predation * temperature + (1|site) + (1|batch), 
+                 data = nucella_4month_ratio, REML=TRUE)
+
+Anova(m1_ratio_4month, test="F", type="III")
+summary(m1_ratio_4month)
+
+# Site as factor instead of random
+m2_ratio_4month <- lmer(avg_ratio ~ predation * temperature * site + (1|batch), 
+                 data = nucella_4month_ratio, REML=TRUE)
+
+Anova(m2_ratio_4month, test="F", type="III")
+summary(m2_ratio_4month)
+```
+
+```{r}
+# Temperature post-hoc
+emm3_temp_ratio_4month <- emmeans(m1_ratio_4month, specs = pairwise ~ temperature, adjust="none")
+emm3_temp_ratio_4month$emmeans
+emm3_temp_ratio_4month$contrasts
+```
+
+```{r}
+# Plotting 4-month ratio
+nucella_4month_ratio <- read_csv("~/Desktop/repositories/Nucella_2025/data/nucella_4month_ratio_measurements.csv")
+
+# Ensure factors are properly set
+nucella_4month_ratio <- nucella_4month_ratio %>%
+  mutate(
+    predation = factor(predation, levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated"))
+  )
+
+# Summary statistics
+summary_stats_ratio_4month <- nucella_4month_ratio %>%
+  group_by(predation, temperature) %>%
+  summarise(
+    mean_ratio = mean(avg_ratio, na.rm = TRUE),
+    se_ratio = std.error(avg_ratio, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+print(summary_stats_ratio_4month)
+
+# Plot
+ggplot(summary_stats_ratio_4month,
+       aes(x = predation, y = mean_ratio, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_ratio - se_ratio, ymax = mean_ratio + se_ratio),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 5, position = position_dodge(width = 0.4)) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  theme_classic(base_size = 18) +
+  labs(x = "Predation Risk",
+       y = "4-Month Length : Width (mm)",
+       color = "Temperature") +
+  scale_y_continuous(expand = expansion(add = 0.05)) +  
+  theme(
+    axis.text = element_text(size = 14, color = "black"),
+    axis.title = element_text(size = 16, color = "black"),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)
+  )
+
+# Save figure
+ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/FourMonth_ratio.jpeg",
+       width = 8, 
+       height = 6, 
+       dpi = 300)
+```
+```
 
 
 

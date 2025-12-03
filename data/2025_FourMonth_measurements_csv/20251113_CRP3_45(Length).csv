@@ -1,0 +1,23 @@
+Item,Source,Length [mm],ND.T,ND.Z,ND.M,Time [s],Velocity [mm/s],Comment
+1,Frozen,8.9,N/A,N/A,N/A,N/A,N/A,CRP3_L_1
+2,Frozen,5.35,N/A,N/A,N/A,N/A,N/A,CRP3_W_1
+3,Frozen,8.31,N/A,N/A,N/A,N/A,N/A,CRP3_L_2
+4,Frozen,5.29,N/A,N/A,N/A,N/A,N/A,CRP3_W_2
+5,Frozen,8.49,N/A,N/A,N/A,N/A,N/A,CRP3_L_3
+6,Frozen,5.44,N/A,N/A,N/A,N/A,N/A,CRP3_W_3
+7,Frozen,8.75,N/A,N/A,N/A,N/A,N/A,CRP3_L_4
+8,Frozen,5.46,N/A,N/A,N/A,N/A,N/A,CRP3_W_4
+9,Frozen,10.38,N/A,N/A,N/A,N/A,N/A,CRP3_L_5
+10,Frozen,6.19,N/A,N/A,N/A,N/A,N/A,CRP3_W_5
+11,Frozen,9.73,N/A,N/A,N/A,N/A,N/A,CRP3_L_6
+12,Frozen,5.76,N/A,N/A,N/A,N/A,N/A,CRP3_W_6
+13,Frozen,9.61,N/A,N/A,N/A,N/A,N/A,CRP3_L_7
+14,Frozen,6.31,N/A,N/A,N/A,N/A,N/A,CRP3_W_7
+15,Frozen,8.8,N/A,N/A,N/A,N/A,N/A,CRP3_L_8
+16,Frozen,5.89,N/A,N/A,N/A,N/A,N/A,CRP3_W_8
+17,Frozen,8.57,N/A,N/A,N/A,N/A,N/A,CRP3_L_9
+18,Frozen,5.32,N/A,N/A,N/A,N/A,N/A,CRP3_W_9
+19,Frozen,10.49,N/A,N/A,N/A,N/A,N/A,CRP3_L_10
+20,Frozen,7.07,N/A,N/A,N/A,N/A,N/A,CRP3_W_10
+Feature,Mean,St.Dev,Minimum,Maximum,Sum,,,
+Length [mm],7.51,1.82,5.29,10.49,150.12,,,

@@ -1,0 +1,23 @@
+Item,Source,Length [mm],ND.T,ND.Z,ND.M,Time [s],Velocity [mm/s],Comment
+19,Captured,10.15,N/A,N/A,N/A,N/A,N/A,BRR3_L_1
+20,Captured,6.29,N/A,N/A,N/A,N/A,N/A,BRR3_W_1
+17,Captured 1,9.55,N/A,N/A,N/A,N/A,N/A,BRR3_L_2
+18,Captured 1,5.89,N/A,N/A,N/A,N/A,N/A,BRR3_W_2
+15,Captured 2,8.78,N/A,N/A,N/A,N/A,N/A,BRR3_L_3
+16,Captured 2,5.53,N/A,N/A,N/A,N/A,N/A,BRR3_W_3
+13,Captured 3,8.91,N/A,N/A,N/A,N/A,N/A,BRR3_L_4
+14,Captured 3,5.78,N/A,N/A,N/A,N/A,N/A,BRR3_W_4
+11,Captured 4,7.64,N/A,N/A,N/A,N/A,N/A,BRR3_L_5
+12,Captured 4,4.95,N/A,N/A,N/A,N/A,N/A,BRR3_W_5
+9,Captured 5,10.39,N/A,N/A,N/A,N/A,N/A,BRR3_L_6
+10,Captured 5,6.14,N/A,N/A,N/A,N/A,N/A,BRR3_W_6
+7,Captured 6,6.77,N/A,N/A,N/A,N/A,N/A,BRR3_L_7
+8,Captured 6,4.07,N/A,N/A,N/A,N/A,N/A,BRR3_W_7
+5,Captured 7,10.16,N/A,N/A,N/A,N/A,N/A,BRR3_L_8
+6,Captured 7,5.65,N/A,N/A,N/A,N/A,N/A,BRR3_W_8
+3,Captured 8,10.41,N/A,N/A,N/A,N/A,N/A,BRR3_L_9
+4,Captured 8,6.22,N/A,N/A,N/A,N/A,N/A,BRR3_W_9
+1,Captured 9,8.81,N/A,N/A,N/A,N/A,N/A,BRR3_L_10
+2,Captured 9,5.22,N/A,N/A,N/A,N/A,N/A,BRR3_W_10
+Feature,Mean,St.Dev,Minimum,Maximum,Sum,,,
+Length [mm],7.37,2.02,4.07,10.41,147.31,,,
