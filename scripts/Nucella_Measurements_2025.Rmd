@@ -26,17 +26,6 @@ library(lmerTest)
 # Remove library(Rmisc) and library(plyr) unless you absolutely need them
 ```
 
-```{r}
-# Detach plyr and Rmisc
-#detach("package:Rmisc", unload = TRUE)
-#detach("package:plyr", unload = TRUE)
-
-# Now reload dplyr to make sure it's on top
-#library(dplyr)
-```
-
-
-
 #Making master data
 ```{r}
 #What worked for the first half of the table- creating the master spreadsheet 
@@ -180,16 +169,6 @@ master <- master %>%
   select(sample_name, emergence_date, site, color, batch,
          predation, temperature, photo_number, snail_number, length, width)
 
-
-#trying to make replicate numbers
-#master <- master %>%
- # distinct(sample_name, color, .keep_all = TRUE) %>%
-  #arrange(color, sample_name) %>%
-  #mutate(replicate = ave(seq_along(sample_name), color, FUN = seq_along)) %>%
- # select(sample_name, color, replicate) %>%
- # right_join(master, by = c("sample_name", "color")) %>%
- # relocate(replicate, .after = width)
-
 ```
 
 
@@ -204,14 +183,10 @@ write_csv(master, "~/Desktop/repositories/Nucella_2025/data/NL_2025_master_measu
 
 
 #Loading Emergence csv total metadata and measurements
-
 ```{r}
 # Load the raw data fresh
 nucella_emergence_meas <- read_csv("~/Desktop/Repositories/Nucella_2025/data/NL_2025_master_measurements_with_metadata.csv")
 
-# Check the structure
-str(nucella_emergence_meas)
-head(nucella_emergence_meas, 20)
 
 # Convert character columns to factors BUT keep length and width as numeric
 nucella_emergence_meas <- nucella_emergence_meas %>%
@@ -257,27 +232,35 @@ nucella_emergence_measurement <- read_csv("~/Desktop/Repositories/Nucella_2025/d
                            batch = col_factor()
                          ))
 
-# Check structure
-str(nucella_emergence_measurement)
-View(nucella_emergence_measurement)
-
 #keep this every time
 options(contrasts = c("contr.sum","contr.poly"))
 getOption("contrasts")
 
+# Levene's test
 
+leveneTest(avg_length ~ predation*temperature, nucella_emergence_averages)
+
+# Run the model
 m1 <- lmer(avg_length ~ predation * temperature + (1|site) + (1|batch), 
            data = nucella_emergence_averages, REML=TRUE)
 
+# QQ plot
+qqnorm(residuals(m1), main = "QQ Plot - Emergence Length Model 1")
+qqline(residuals(m1), col = "red", lwd = 2)
+
+# Run ANOVA
 Anova(m1, test="F", type="III")
 summary(m1)
 
-#site as factor instead of random
+# Site as factor model
 m2 <- lmer(avg_length ~ predation * temperature * site + (1|batch), 
            data = nucella_emergence_averages, REML=TRUE)
 
+# QQ plot for model 2
+qqnorm(residuals(m2), main = "QQ Plot - Emergence Length Model 2")
+qqline(residuals(m2), col = "red", lwd = 2)
+
 Anova(m2, test="F", type="III")
-summary(m1)
 
 
 ```
@@ -309,8 +292,6 @@ summary_stats_length <- nucella_emergence_averages %>%
     .groups = "drop"
   )
 
-# Check the summary - should have 4 rows
-print(summary_stats_length)
 
 # Plotting
 ggplot(summary_stats_length,
@@ -345,19 +326,31 @@ ggsave(filename = "~/Desktop/Repositories/Nucella_2025/figures/Emerged_length.jp
 
 #Stats for emerged Nucella width
 ```{r}
-# Width statistics - using the same model structure as length
+# Levene's test
+
+leveneTest(avg_width ~ predation*temperature, nucella_emergence_averages)
+
+# Width statistics
 m1_width <- lmer(avg_width ~ predation * temperature + (1|site) + (1|batch), 
                  data = nucella_emergence_averages, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m1_width), main = "QQ Plot - Emergence Width Model 1")
+qqline(residuals(m1_width), col = "red", lwd = 2)
+
 
 Anova(m1_width, test="F", type="III")
 summary(m1_width)
 
-# Site as factor instead of random (if you want to compare)
+# Site as factor
 m2_width <- lmer(avg_width ~ predation * temperature * site + (1|batch), 
                  data = nucella_emergence_averages, REML=TRUE)
 
+# QQ plot
+qqnorm(residuals(m2_width), main = "QQ Plot - Emergence Width Model 2")
+qqline(residuals(m2_width), col = "red", lwd = 2)
+
 Anova(m2_width, test="F", type="III")
-summary(m2_width)
 ```
 
 ```{r}
@@ -394,9 +387,6 @@ summary_stats_width <- nucella_emergence_averages %>%
     se_width = std.error(avg_width, na.rm = TRUE),
     .groups = "drop"
   )
-
-# Check the summary - should have 4 rows
-print(summary_stats_width)
 
 # Create the width plot
 #my_breaks <- seq(0.6, 1.4, by = 0.05)
@@ -470,26 +460,37 @@ nucella_emergence_ratio <- nucella_emergence_meas %>%
 # Save ratio data
 write_csv(nucella_emergence_ratio, "~/Desktop/Repositories/Nucella_2025/data/nucella_emergence_ratio_measurements.csv")
 
-# View the data
-head(nucella_emergence_ratio)
 ```
-
+#Stats for Emergence Ratio
 ```{r}
-# Stats for emergence ratio
+
 options(contrasts = c("contr.sum","contr.poly"))
 
+# Levene's test
+leveneTest(avg_ratio ~ predation*temperature, nucella_emergence_ratio)
+
+# Stats for emergence ratio
 m1_ratio <- lmer(avg_ratio ~ predation * temperature + (1|site) + (1|batch), 
                  data = nucella_emergence_ratio, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m1_ratio), main = "QQ Plot - Emergence Ratio Model 1")
+qqline(residuals(m1_ratio), col = "red", lwd = 2)
+
 
 Anova(m1_ratio, test="F", type="III")
 summary(m1_ratio)
 
-# Site as factor instead of random
+# Site as factor
 m2_ratio <- lmer(avg_ratio ~ predation * temperature * site + (1|batch), 
                  data = nucella_emergence_ratio, REML=TRUE)
 
+# QQ plot
+qqnorm(residuals(m2_ratio), main = "QQ Plot - Emergence Ratio Model 2")
+qqline(residuals(m2_ratio), col = "red", lwd = 2)
+
+
 Anova(m2_ratio, test="F", type="III")
-summary(m2_ratio)
 ```
 
 
@@ -712,10 +713,6 @@ write_csv(master_one_month, file.path(main_path, "NL_2025_one_month_master_measu
 # Load the raw data fresh
 nucella_one_month_meas <- read_csv("~/Desktop/Repositories/Nucella_2025/data/NL_2025_one_month_master_measurements_with_metadata.csv")
 
-# Check the structure
-str(nucella_one_month_meas)
-head(nucella_one_month_meas, 20)
-
 # Convert character columns to factors BUT keep length and width as numeric
 nucella_one_month_meas <- nucella_one_month_meas %>%
   mutate(
@@ -757,23 +754,34 @@ nucella_one_month_measurement <- read_csv("~/Desktop/Repositories/Nucella_2025/d
                            batch = col_factor()
                          ))
 
-# Check structure
-str(nucella_one_month_measurement)
-View(nucella_one_month_measurement)
 
 #keep this every time
 options(contrasts = c("contr.sum","contr.poly"))
 getOption("contrasts")
 
+# Levene's test
+
+leveneTest(avg_length ~ predation*temperature, nucella_one_month_averages)
+
+# One month length model
 m1_one_month <- lmer(avg_length ~ predation * temperature + (1|site) + (1|batch), 
-           data = nucella_one_month_averages, REML=TRUE)
+                     data = nucella_one_month_averages, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m1_one_month), main = "QQ Plot - One Month Length Model 1")
+qqline(residuals(m1_one_month), col = "red", lwd = 2)
+
 
 Anova(m1_one_month, test="F", type="III")
 summary(m1_one_month)
 
-#site as factor instead of random
+# Site as factor
 m2_one_month <- lmer(avg_length ~ predation * temperature * site + (1|batch), 
-           data = nucella_one_month_averages, REML=TRUE)
+                     data = nucella_one_month_averages, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m2_one_month), main = "QQ Plot - One Month Length Model 2")
+qqline(residuals(m2_one_month), col = "red", lwd = 2)
 
 Anova(m2_one_month, test="F", type="III")
 ```
@@ -847,18 +855,31 @@ ggsave(filename = "~/Desktop/Repositories/Nucella_2025/figures/One_month_length.
 #Stats for one month Nucella width
 ```{r}
 # Width statistics - using the same model structure as length
+# Levene's test
+
+leveneTest(avg_width ~ predation*temperature, nucella_one_month_averages)
+
+# Width statistics
 m1_width_one_month <- lmer(avg_width ~ predation * temperature + (1|site) + (1|batch), 
-                 data = nucella_one_month_averages, REML=TRUE)
+                           data = nucella_one_month_averages, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m1_width_one_month), main = "QQ Plot - One Month Width Model 1")
+qqline(residuals(m1_width_one_month), col = "red", lwd = 2)
 
 Anova(m1_width_one_month, test="F", type="III")
 summary(m1_width_one_month)
 
-# Site as factor instead of random (if you want to compare)
+# Site as factor
 m2_width_one_month <- lmer(avg_width ~ predation * temperature * site + (1|batch), 
-                 data = nucella_one_month_averages, REML=TRUE)
+                           data = nucella_one_month_averages, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m2_width_one_month), main = "QQ Plot - One Month Width Model 2")
+qqline(residuals(m2_width_one_month), col = "red", lwd = 2)
+
 
 Anova(m2_width_one_month, test="F", type="III")
-summary(m2_width_one_month)
 ```
 
 ```{r}
@@ -879,9 +900,6 @@ summary_stats_width_one_month <- nucella_one_month_averages %>%
     se_width = std.error(avg_width, na.rm = TRUE),
     .groups = "drop"
   )
-
-# Check the summary - should have 4 rows
-print(summary_stats_width_one_month)
 
 # Create the width plot
 ggplot(summary_stats_width_one_month,
@@ -954,25 +972,36 @@ nucella_one_month_ratio <- nucella_one_month_meas %>%
 # Save ratio data
 write_csv(nucella_one_month_ratio, "~/Desktop/Repositories/Nucella_2025/data/nucella_one_month_ratio_measurements.csv")
 
-head(nucella_one_month_ratio)
 ```
 
 ```{r}
 # Stats for one month ratio
-options(contrasts = c("contr.sum","contr.poly"))
+# Levene's test
 
+leveneTest(avg_ratio ~ predation*temperature, nucella_one_month_ratio)
+
+# Stats for one month ratio
 m1_ratio_one_month <- lmer(avg_ratio ~ predation * temperature + (1|site) + (1|batch), 
                            data = nucella_one_month_ratio, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m1_ratio_one_month), main = "QQ Plot - One Month Ratio Model 1")
+qqline(residuals(m1_ratio_one_month), col = "red", lwd = 2)
+
 
 Anova(m1_ratio_one_month, test="F", type="III")
 summary(m1_ratio_one_month)
 
-# Site as factor instead of random
+# Site as factor
 m2_ratio_one_month <- lmer(avg_ratio ~ predation * temperature * site + (1|batch), 
                            data = nucella_one_month_ratio, REML=TRUE)
 
+# QQ plot
+qqnorm(residuals(m2_ratio_one_month), main = "QQ Plot - One Month Ratio Model 2")
+qqline(residuals(m2_ratio_one_month), col = "red", lwd = 2)
+
+
 Anova(m2_ratio_one_month, test="F", type="III")
-summary(m2_ratio_one_month)
 ```
 
 ```{r}
@@ -1003,7 +1032,6 @@ summary_stats_ratio_one_month <- nucella_one_month_ratio %>%
     .groups = "drop"
   )
 
-print(summary_stats_ratio_one_month)
 
 # Plot
 ggplot(summary_stats_ratio_one_month,
@@ -1081,6 +1109,8 @@ master %>%
     .groups = "drop"
   )
 ```
+
+
 ```{r}
 
 # Adding collection date based on batch number
@@ -1173,19 +1203,6 @@ anova(model1)
 
 
 #Four Month Data
-
-```{r}
-library(readr)
-library(lme4)
-library(car) 
-library(ggplot2)
-library(tidyr)
-library(readxl)
-library(tidyverse) 
-library(dplyr)
-library(lmerTest)
-library(emmeans)
-```
 
 # Making master data for 4-month measurements
 ```{r}
@@ -1294,9 +1311,6 @@ write_csv(master_4month, file.path(main_path, "NL_2025_master_4month_measurement
 # Load the raw data fresh
 nucella_4month_meas <- read_csv("~/Desktop/repositories/Nucella_2025/data/NL_2025_master_4month_measurements_with_metadata.csv")
 
-# Check the structure
-str(nucella_4month_meas)
-head(nucella_4month_meas, 20)
 
 # Convert character columns to factors BUT keep length and width as numeric
 nucella_4month_meas <- nucella_4month_meas %>%
@@ -1339,26 +1353,36 @@ nucella_4month_averages <- read_csv("~/Desktop/repositories/Nucella_2025/data/nu
                            batch = col_factor()
                          ))
 
-# Check structure
-str(nucella_4month_averages)
-View(nucella_4month_averages)
-
 # Set contrasts
 options(contrasts = c("contr.sum","contr.poly"))
 getOption("contrasts")
 
+# Levene's test
+
+leveneTest(avg_length ~ predation*temperature, nucella_4month_averages)
+
+# 4-month length model
 m1_4month <- lmer(avg_length ~ predation * temperature + (1|site) + (1|batch), 
-           data = nucella_4month_averages, REML=TRUE)
+                  data = nucella_4month_averages, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m1_4month), main = "QQ Plot - Four Month Length Model 1")
+qqline(residuals(m1_4month), col = "red", lwd = 2)
+
 
 Anova(m1_4month, test="F", type="III")
 summary(m1_4month)
 
-# Site as factor instead of random
+# Site as factor
 m2_4month <- lmer(avg_length ~ predation * temperature * site + (1|batch), 
-           data = nucella_4month_averages, REML=TRUE)
+                  data = nucella_4month_averages, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m2_4month), main = "QQ Plot - Four Month Length Model 2")
+qqline(residuals(m2_4month), col = "red", lwd = 2)
+
 
 Anova(m2_4month, test="F", type="III")
-summary(m2_4month)
 ```
 
 # Plotting Nucella 4-month length averages
@@ -1386,9 +1410,6 @@ summary_stats_length_4month <- nucella_4month_averages %>%
     se_length = std.error(avg_length, na.rm = TRUE),
     .groups = "drop"
   )
-
-# Check the summary - should have 4 rows
-print(summary_stats_length_4month)
 
 # Plotting
 ggplot(summary_stats_length_4month,
@@ -1418,19 +1439,38 @@ ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/FourMonth_length.
 
 # Stats for 4-month Nucella width
 ```{r}
-# Width statistics - using the same model structure as length
+
+# Set contrasts
+options(contrasts = c("contr.sum","contr.poly"))
+getOption("contrasts")
+
+# Levene's test
+
+leveneTest(avg_width ~ predation*temperature, nucella_4month_averages)
+
+# Width statistics
 m1_width_4month <- lmer(avg_width ~ predation * temperature + (1|site) + (1|batch), 
-                 data = nucella_4month_averages, REML=TRUE)
+                        data = nucella_4month_averages, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m1_width_4month), main = "QQ Plot - Four Month Width Model 1")
+qqline(residuals(m1_width_4month), col = "red", lwd = 2)
+
 
 Anova(m1_width_4month, test="F", type="III")
 summary(m1_width_4month)
 
-# Site as factor instead of random
+# Site as factor
 m2_width_4month <- lmer(avg_width ~ predation * temperature * site + (1|batch), 
-                 data = nucella_4month_averages, REML=TRUE)
+                        data = nucella_4month_averages, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m2_width_4month), main = "QQ Plot - Four Month Width Model 2")
+qqline(residuals(m2_width_4month), col = "red", lwd = 2)
+
 
 Anova(m2_width_4month, test="F", type="III")
-summary(m2_width_4month)
+
 ```
 
 ```{r}
@@ -1461,8 +1501,6 @@ summary_stats_width_4month <- nucella_4month_averages %>%
     .groups = "drop"
   )
 
-# Check the summary - should have 4 rows
-print(summary_stats_width_4month)
 
 # Create the width plot
 ggplot(summary_stats_width_4month,
@@ -1523,26 +1561,37 @@ nucella_4month_ratio <- nucella_4month_meas %>%
 # Save ratio data
 write_csv(nucella_4month_ratio, "~/Desktop/repositories/Nucella_2025/data/nucella_4month_ratio_measurements.csv")
 
-# View the data
-head(nucella_4month_ratio)
 ```
 
 ```{r}
 # Stats for 4-month ratio
 options(contrasts = c("contr.sum","contr.poly"))
 
+# Levene's test
+
+leveneTest(avg_ratio ~ predation*temperature, nucella_4month_ratio)
+
+# Stats for 4-month ratio
 m1_ratio_4month <- lmer(avg_ratio ~ predation * temperature + (1|site) + (1|batch), 
-                 data = nucella_4month_ratio, REML=TRUE)
+                        data = nucella_4month_ratio, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m1_ratio_4month), main = "QQ Plot - Four Month Ratio Model 1")
+qqline(residuals(m1_ratio_4month), col = "red", lwd = 2)
 
 Anova(m1_ratio_4month, test="F", type="III")
 summary(m1_ratio_4month)
 
-# Site as factor instead of random
+# Site as factor
 m2_ratio_4month <- lmer(avg_ratio ~ predation * temperature * site + (1|batch), 
-                 data = nucella_4month_ratio, REML=TRUE)
+                        data = nucella_4month_ratio, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m2_ratio_4month), main = "QQ Plot - Four Month Ratio Model 2")
+qqline(residuals(m2_ratio_4month), col = "red", lwd = 2)
+
 
 Anova(m2_ratio_4month, test="F", type="III")
-summary(m2_ratio_4month)
 ```
 
 ```{r}
@@ -1599,7 +1648,11 @@ ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/FourMonth_ratio.j
        height = 6, 
        dpi = 300)
 ```
-```
+
+
+
+
+
 
 
 

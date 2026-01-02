@@ -13,18 +13,69 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+# Snail AFDW Data Organization Script
+
+```{r}
+library(tidyverse)
+
+# Set file path
+data <- "~/Desktop/Repositories/Nucella_2025/data/2025_Snail_AFDW_data.csv"
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+## Read and Explore Data
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+# Read the data
+AFDW_data <- read.csv(data)
+
+# View the structure of the data
+str(AFDW_data)
+head(AFDW_data)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Extract Pairing Information
+
+```{r}
+# Extract base group name and pair number
+AFDW_data <- AFDW_data %>%
+  mutate(
+    # Extract the base name (e.g., "RIR5" from "RIR5_1")
+    Base_Group = str_extract(Full.Sample.ID, "^[A-Z]+[0-9]+"),
+    # Extract the pair number (e.g., "1" from "RIR5_1")
+    Pair_Number = str_extract(Full.Sample.ID, "(?<=_)[0-9]+$")
+  )
+```
+
+## Create Paired Dataset (Long Format)
+
+```{r}
+# Create a paired dataset where each row contains both members of a pair
+AFDW_paired_data <- AFDW_data %>%
+  filter(!is.na(Base_Group) & !is.na(Pair_Number)) %>%
+  arrange(Base_Group, Pair_Number) %>%
+  group_by(Base_Group) %>%
+  filter(n() == 2) %>%  # Keep only complete pairs
+  mutate(Pair_ID = paste0(Base_Group, "_pair")) %>%
+  ungroup()
+
+# View the organized data
+print(AFDW_paired_data)
+```
+
+
+## Save Organized Data
+
+```{r}
+# Save the organized data in long format
+write.csv(AFDW_paired_data, 
+          "~/Desktop/Repositories/Nucella_2025/data/paired_snail_data_long.csv", 
+          row.names = FALSE)
+
+
+```
+
+
+
+
