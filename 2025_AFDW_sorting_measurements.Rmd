@@ -1,5 +1,5 @@
 ---
-title: "2025_AFDW_sorting_measurements"
+title: "2025_AFDW_measurements"
 author: "Chloé Gilligan"
 date: "2025-11-21"
 output: html_document
@@ -17,64 +17,126 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 # Snail AFDW Data Organization Script
 
 ```{r}
-library(tidyverse)
-
-# Set file path
-data <- "~/Desktop/Repositories/Nucella_2025/data/2025_Snail_AFDW_data.csv"
+library(dplyr)
+library(ggplot2)
+library(car)
+library(lme4)
+library(lmerTest)
 ```
 
 
-## Read and Explore Data
 
 ```{r}
-# Read the data
-AFDW_data <- read.csv(data)
+file_path <- "~/Desktop/Repositories/Nucella_2025/data/2025_AFDW_sorted_filtered.csv"
+afdw <- read.csv(file_path)
+afdw_clean <- afdw %>%
+  filter(!is.na(Tissue.Mass), !is.na(Shell.Mass))
 
-# View the structure of the data
-str(AFDW_data)
-head(AFDW_data)
 ```
 
-## Extract Pairing Information
+#Setting treatments
+```{r}
+afdw_clean$Color <- factor(
+  afdw_clean$Color,
+  levels = c("B", "G", "R", "P"),
+  labels = c("Ambient + Crab", "Ambient + No Crab",
+             "Heated + Crab", "Heated + No Crab"))
+```
 
 ```{r}
-# Extract base group name and pair number
-AFDW_data <- AFDW_data %>%
+table(afdw_clean$predation)
+table(afdw_clean$temperature)
+table(afdw_clean$Color)
+```
+
+
+
+```{r}
+afdw_clean <- afdw_clean %>%
   mutate(
-    # Extract the base name (e.g., "RIR5" from "RIR5_1")
-    Base_Group = str_extract(Full.Sample.ID, "^[A-Z]+[0-9]+"),
-    # Extract the pair number (e.g., "1" from "RIR5_1")
-    Pair_Number = str_extract(Full.Sample.ID, "(?<=_)[0-9]+$")
+    temperature = ifelse(grepl("Heated", Color), "Heated", "Ambient"),
+    predation   = ifelse(grepl("Crab", Color), "Crab", "No Crab")
+  )
+
+afdw_clean$temperature <- factor(afdw_clean$temperature)
+afdw_clean$predation   <- factor(afdw_clean$predation)
+
+```
+
+
+#Plotting Tissue Mass
+```{r}
+ggplot(afdw_clean, aes(x = Color, y = Tissue.Mass, fill = Color)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "Ambient + Crab" = "blue",
+    "Ambient + No Crab" = "green",
+    "Heated + Crab" = "red",
+    "Heated + No Crab" = "pink"
+  )) +
+  theme_bw() +
+  labs(
+    title = "Tissue Mass by Treatment",
+    x = "Treatment",
+    y = "Tissue Mass (g)"
   )
 ```
 
-## Create Paired Dataset (Long Format)
-
+#Tissue Mass- Stats
 ```{r}
-# Create a paired dataset where each row contains both members of a pair
-AFDW_paired_data <- AFDW_data %>%
-  filter(!is.na(Base_Group) & !is.na(Pair_Number)) %>%
-  arrange(Base_Group, Pair_Number) %>%
-  group_by(Base_Group) %>%
-  filter(n() == 2) %>%  # Keep only complete pairs
-  mutate(Pair_ID = paste0(Base_Group, "_pair")) %>%
-  ungroup()
 
-# View the organized data
-print(AFDW_paired_data)
+leveneTest(Tissue.Mass ~ predation * temperature, data = afdw_clean)
+
+
+m1_ratio_4month <- lmer(Tissue.Mass ~ predation * temperature + (1|site) + (1|batch), 
+                        data = afdw_clean, REML=TRUE)
+
+# QQ plot
+qqnorm(residuals(m_tissue), main = "QQ Plot - Tissue Mass Model")
+qqline(residuals(m_tissue), col = "red", lwd = 2)
+
+Anova(m_tissue, test = "F", type = "III")
+
 ```
 
 
-## Save Organized Data
 
+
+#Plotting Shell Mass
 ```{r}
-# Save the organized data in long format
-write.csv(AFDW_paired_data, 
-          "~/Desktop/Repositories/Nucella_2025/data/paired_snail_data_long.csv", 
-          row.names = FALSE)
+ggplot(afdw_clean, aes(x = Color, y = Shell.Mass, fill = Color)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "Ambient + Crab" = "blue",
+    "Ambient + No Crab" = "green",
+    "Heated + Crab" = "red",
+    "Heated + No Crab" = "pink"
+  )) +
+  theme_bw() +
+  labs(
+    title = "Shell Mass by Treatment",
+    x = "Treatment",
+    y = "Shell Mass (g)"
+  )
+```
+
+
+#Shell Mass- Stats
+```{r}
+leveneTest(Shell.Mass ~ predation * temperature, data = afdw_clean)
+
+m_shell <- lmer(Shell.Mass ~ predation * temperature + (1 | batch),
+                data = afdw_clean, REML = TRUE)
+
+qqnorm(residuals(m_shell), main = "QQ Plot - Shell Mass Model")
+qqline(residuals(m_shell), col = "red", lwd = 2)
+
+Anova(m_shell, test = "F", type = "III")
 
 
 ```
+
+
 
 
 
