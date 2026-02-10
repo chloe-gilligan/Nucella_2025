@@ -1,0 +1,296 @@
+---
+title: "Temp_HighTide_2025-2026"
+author: "Chloé Gilligan"
+date: "2026-02-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(knitr)
+```
+
+```{r}
+# Read the tide height CSV
+tide_data <- read_csv("../data/Tide_height_2025-2026.csv")
+
+```
+
+```{r}
+## Clean and Prepare Tide Data
+# Clean column names and prepare tide data
+tide_clean <- tide_data %>%
+  rename(
+    Date = 1,
+    Day = 2,
+    High_Tide_AM = 3,
+    High_Feet_AM = 4,
+    High_Tide_PM = 5,
+    High_Feet_PM = 6,
+    Low_Tide_AM = 7,
+    Low_Feet_AM = 8,
+    Low_Tide_PM = 9,
+    Low_Feet_PM = 10,
+    Sunrise = 11,
+    Sunset = 12,
+    Moon = 13
+  ) %>%
+  mutate(
+    # Parse the date (format: YYYY-MM-DD)
+    Date_parsed = ymd(Date),
+    # Convert tide times to proper time format
+    High_Tide_AM_time = parse_date_time(High_Tide_AM, orders = c("HM", "H:M", "HMS", "H:M:S"), quiet = TRUE),
+    High_Tide_PM_time = parse_date_time(High_Tide_PM, orders = c("HM", "H:M", "HMS", "H:M:S"), quiet = TRUE)
+  )
+
+# Extract just hour and minute for tide times
+tide_clean <- tide_clean %>%
+  mutate(
+    High_Tide_AM_hour = hour(High_Tide_AM_time),
+    High_Tide_AM_min = minute(High_Tide_AM_time),
+    High_Tide_PM_hour = hour(High_Tide_PM_time),
+    High_Tide_PM_min = minute(High_Tide_PM_time)
+  )
+
+head(tide_clean)
+```
+
+## Read Temperature Logger Data
+```{r read-logger-data}
+# Get list of all logger files
+logger_files <- list.files(
+  path = "../Field_Temp_Loggers",
+  pattern = "\\.xlsx$",  # Just look for .xlsx files
+  full.names = TRUE
+)
+
+# Remove any temporary Excel files (starting with ~$)
+logger_files <- logger_files[!grepl("~\\$", logger_files)]
+
+# Display available files
+cat("Logger files found:\n")
+print(logger_files)
+
+# Read all logger files and combine
+read_logger_file <- function(file_path) {
+  # Extract logger ID from filename
+  logger_id <- basename(file_path) %>%
+    str_extract("^[^\\s-]+")  # Get everything before first space or dash
+  
+  # Read the Excel file
+  data <- read_excel(file_path, skip = 0)
+  
+  # Rename columns to clean names
+  colnames(data) <- c("Record_Number", "DateTime", "Temperature_C")
+  
+  # Add logger ID column
+  data$Logger_ID <- logger_id
+  
+  return(data)
+}
+
+# Read and combine all logger files
+logger_data_raw <- map_df(logger_files, read_logger_file)
+
+# Display structure
+str(logger_data_raw)
+head(logger_data_raw)
+```
+
+
+## Clean Temperature Logger Data
+```{r clean-logger-data}
+# Clean logger data
+logger_clean <- logger_data_raw %>%
+  mutate(
+    # The DateTime is already parsed, so just use it directly
+    DateTime_parsed = DateTime,
+    # Extract date only
+    Date_only = as_date(DateTime_parsed),
+    # Extract time components
+    Hour = hour(DateTime_parsed),
+    Minute = minute(DateTime_parsed),
+    Time_decimal = Hour + Minute/60
+  ) %>%
+  filter(!is.na(DateTime_parsed), !is.na(Temperature_C))
+
+head(logger_clean)
+summary(logger_clean$Temperature_C)
+
+# Let's also see how many loggers we have
+logger_clean %>%
+  group_by(Logger_ID) %>%
+  summarise(n_readings = n(), 
+            date_range = paste(min(Date_only), "to", max(Date_only)))
+```
+
+```
+
+## Define High Tide Periods
+
+We'll consider a reading to be during "high tide" if it falls within a window around the high tide time. A typical approach is to use ±2 hours around each high tide.
+```{r}
+# Function to check if a time is during high tide
+is_high_tide <- function(time_hour, tide_am_hour, tide_am_min, tide_pm_hour, tide_pm_min, 
+                         window_hours = 2) {
+  # Convert times to decimal hours for easier comparison
+  tide_am_decimal <- tide_am_hour + tide_am_min/60
+  tide_pm_decimal <- tide_pm_hour + tide_pm_min/60
+  
+  # Check if time is within window of AM high tide
+  am_match <- abs(time_hour - tide_am_decimal) <= window_hours
+  
+  # Check if time is within window of PM high tide
+  pm_match <- abs(time_hour - tide_pm_decimal) <= window_hours
+  
+  return(am_match | pm_match)
+}
+```
+
+## Filter Logger Data for High Tide Only
+```{r filter-high-tide}
+# Merge logger data with tide data by date
+logger_with_tides <- logger_clean %>%
+  left_join(
+    tide_clean %>% 
+      select(Date_parsed, Day, High_Tide_AM, High_Feet_AM, High_Tide_PM, High_Feet_PM,
+             High_Tide_AM_hour, High_Tide_AM_min, High_Tide_PM_hour, High_Tide_PM_min),
+    by = c("Date_only" = "Date_parsed")
+  )
+
+# Filter for high tide periods only
+logger_high_tide <- logger_with_tides %>%
+  filter(!is.na(High_Tide_AM_hour)) %>%  # Remove dates without tide data
+  rowwise() %>%
+  filter(is_high_tide(Time_decimal, High_Tide_AM_hour, High_Tide_AM_min, 
+                      High_Tide_PM_hour, High_Tide_PM_min, window_hours = 2)) %>%
+  ungroup()
+
+cat(sprintf("Original logger readings: %d\n", nrow(logger_clean)))
+cat(sprintf("High tide readings only: %d\n", nrow(logger_high_tide)))
+cat(sprintf("Percentage retained: %.1f%%\n", 
+            100 * nrow(logger_high_tide) / nrow(logger_clean)))
+```
+
+
+## Create Final Merged Dataset
+```{r create-final-dataset}
+# Create the final output dataset
+final_data <- logger_high_tide %>%
+  select(
+    Date = Date_only,
+    Day,
+    High_Tide_AM,
+    High_Feet_AM,
+    High_Tide_PM,
+    High_Feet_PM,
+    DateTime = DateTime_parsed,
+    Temperature_C,
+    Logger_ID
+  ) %>%
+  arrange(Logger_ID, DateTime)
+
+# Display summary
+head(final_data, 20)
+summary(final_data)
+```
+
+## Summary Statistics by Logger
+```{r summary-by-logger}
+# Calculate summary statistics by logger
+logger_summary <- final_data %>%
+  group_by(Logger_ID) %>%
+  summarise(
+    N_readings = n(),
+    N_days = n_distinct(Date),
+    Mean_Temp_C = mean(Temperature_C, na.rm = TRUE),
+    SD_Temp_C = sd(Temperature_C, na.rm = TRUE),
+    Min_Temp_C = min(Temperature_C, na.rm = TRUE),
+    Max_Temp_C = max(Temperature_C, na.rm = TRUE),
+    Date_range = paste(min(Date), "to", max(Date))
+  )
+
+kable(logger_summary, digits = 2, 
+      caption = "Summary Statistics by Logger (High Tide Only)")
+```
+
+## Visualize Temperature Data
+```{r visualize-temps, fig.width=10, fig.height=6}
+# Plot temperature over time by logger
+ggplot(final_data, aes(x = DateTime, y = Temperature_C, color = Logger_ID)) +
+  geom_line(alpha = 0.6) +
+  geom_point(size = 0.5, alpha = 0.4) +
+  facet_wrap(~Logger_ID, ncol = 1) +
+  labs(
+    title = "High Tide Water Temperature by Logger",
+    x = "Date/Time",
+    y = "Temperature (°C)",
+    color = "Logger ID"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+```{r temp-distribution, fig.width=10, fig.height=6}
+# Temperature distribution by logger
+ggplot(final_data, aes(x = Temperature_C, fill = Logger_ID)) +
+  geom_histogram(bins = 30, alpha = 0.7) +
+  facet_wrap(~Logger_ID, ncol = 1, scales = "free_y") +
+  labs(
+    title = "Temperature Distribution During High Tide",
+    x = "Temperature (°C)",
+    y = "Frequency",
+    fill = "Logger ID"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+## Daily Temperature Patterns
+```{r daily-patterns, fig.width=10, fig.height=6}
+# Add hour of day for pattern analysis
+daily_pattern <- final_data %>%
+  mutate(Hour_of_Day = hour(DateTime))
+
+ggplot(daily_pattern, aes(x = Hour_of_Day, y = Temperature_C, color = Logger_ID)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(se = TRUE) +
+  facet_wrap(~Logger_ID, ncol = 1) +
+  labs(
+    title = "Temperature by Hour of Day (High Tide Only)",
+    x = "Hour of Day",
+    y = "Temperature (°C)",
+    color = "Logger ID"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+
+## Export Final Dataset
+```{r export-data}
+# Export to CSV
+write_csv(final_data, "data/merged_tide_temperature_data.csv")
+
+# Export summary statistics
+write_csv(logger_summary, "data/logger_summary_statistics.csv")
+
+cat("Data exported successfully!\n")
+cat("- merged_tide_temperature_data.csv\n")
+cat("- logger_summary_statistics.csv\n")
+```
+
+
+
