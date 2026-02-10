@@ -18,12 +18,11 @@ library(knitr)
 
 ```{r}
 # Read the tide height CSV
-tide_data <- read_csv("data/Tide_height_2025-2026.csv")
+tide_data <- read_csv("../data/Tide_height_2025-2026.csv")
 
 ```
-
-```{r}
 ## Clean and Prepare Tide Data
+```{r}
 # Clean column names and prepare tide data
 tide_clean <- tide_data %>%
   rename(
@@ -62,10 +61,10 @@ head(tide_clean)
 ```
 
 ## Read Temperature Logger Data
-```{r read-logger-data}
+```{r}
 # Get list of all logger files
 logger_files <- list.files(
-  path = "Field_Temp_Loggers",
+  path = "../Field_Temp_Loggers",
   pattern = "\\.xlsx$",  # Just look for .xlsx files
   full.names = TRUE
 )
@@ -105,8 +104,8 @@ head(logger_data_raw)
 
 
 ## Clean Temperature Logger Data
-```{r clean-logger-data}
-# Clean logger data
+```{r}
+# Cleaning logger data
 logger_clean <- logger_data_raw %>%
   mutate(
     # The DateTime is already parsed, so just use it directly
@@ -123,7 +122,7 @@ logger_clean <- logger_data_raw %>%
 head(logger_clean)
 summary(logger_clean$Temperature_C)
 
-# Let's also see how many loggers we have
+#Total logger number
 logger_clean %>%
   group_by(Logger_ID) %>%
   summarise(n_readings = n(), 
@@ -149,7 +148,7 @@ is_high_tide <- function(time_hour, tide_am_hour, tide_am_min, tide_pm_hour, tid
 ```
 
 ## Filter Logger Data for High Tide Only
-```{r filter-high-tide}
+```{r}
 # Merge logger data with tide data by date
 logger_with_tides <- logger_clean %>%
   left_join(
@@ -173,8 +172,8 @@ cat(sprintf("Percentage retained: %.1f%%\n",
             100 * nrow(logger_high_tide) / nrow(logger_clean)))
 ```
 
-```{r}
 ## Create Final Merged Dataset
+```{r}
 # Create the final output dataset
 final_data <- logger_high_tide %>%
   select(
@@ -268,16 +267,27 @@ ggplot(daily_pattern, aes(x = Hour_of_Day, y = Temperature_C, color = Logger_ID)
 
 
 ## Export Final Dataset
-```{r export-data}
+```{r}
+# Create the final output dataset
+final_data <- logger_high_tide %>%
+  select(
+    Date = Date_only,
+    Day,
+    High_Tide_AM,
+    High_Feet_AM,
+    High_Tide_PM,
+    High_Feet_PM,
+    DateTime = DateTime_parsed,
+    Temperature_C,
+    Logger_ID
+  ) %>%
+  arrange(Logger_ID, DateTime)
+
+# Display summary to verify
+head(final_data, 20)
+summary(final_data)
+
 # Export to CSV
-#write_csv(final_data, "data/merged_tide_temperature_data.csv")
-
-# Export summary statistics
-#write_csv(logger_summary, "data/logger_summary_statistics.csv")
-
-#cat("Data exported successfully!\n")
-#cat("- merged_tide_temperature_data.csv\n")
-#cat("- logger_summary_statistics.csv\n")
+write_csv(final_data, "../data/merged_tide_temperature_data.csv")
 ```
-
 
