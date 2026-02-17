@@ -137,7 +137,3 @@ Anova(m_shell, test = "F", type = "III")
 ```
 
 
-
-
-
-
