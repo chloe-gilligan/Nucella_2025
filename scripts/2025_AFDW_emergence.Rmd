@@ -88,19 +88,6 @@ write_csv(merged, "../data/2025_AFDW_merged.csv")
 ```
 
 
-#Tissue mass stats
-```{r}
-summary(aov(Tissue.Mass ~ Treatment, data = merged))
-TukeyHSD(aov(Tissue.Mass ~ Treatment, data = merged))
-
-```
-
-#shell mass
-```{r}
-summary(aov(Shell.Mass ~ Treatment, data = merged))
-TukeyHSD(aov(Shell.Mass ~ Treatment, data = merged))
-```
-
 ```{r}
 #Plotting
 pal <- c("Ambient + Crab" = "#1C86EE", "Ambient + No Crab" = "#B3EE3A",
@@ -122,9 +109,23 @@ p_shell <- ggplot(merged, aes(x = Treatment, y = Shell.Mass, fill = Treatment)) 
 
 ggarrange(p_tissue, p_shell, ncol = 2, labels = c("A", "B"))
 ```
-```
 
 #stats
+#Tissue mass stats
+
+```{r}
+summary(aov(Tissue.Mass ~ Treatment, data = merged))
+TukeyHSD(aov(Tissue.Mass ~ Treatment, data = merged))
+
+```
+
+#shell mass
+```{r}
+summary(aov(Shell.Mass ~ Treatment, data = merged))
+TukeyHSD(aov(Shell.Mass ~ Treatment, data = merged))
+```
+
+#Mean, SD, and n for each treatment group
 ```{r}
 stats <- merged %>%
   group_by(Treatment) %>%
@@ -138,12 +139,13 @@ stats <- merged %>%
 print(stats)
 ```
 
-#stats
+#Stats
 ```{r}
 # Tissue Mass
 tissue_aov <- lm(Tissue.Mass ~ Treatment, data = merged)
 Anova(tissue_aov, type = 3)
 
+#Shell Mass
 shell_aov <- lm(Shell.Mass ~ Treatment, data = merged)
 Anova(shell_aov, type = 3)
 
@@ -159,6 +161,8 @@ shapiro.test(merged$Shell.Mass)
 leveneTest(Tissue.Mass ~ Treatment, data = merged)
 leveneTest(Shell.Mass ~ Treatment, data = merged)
 ```
+
+
 ```{r}
 # Kruskal-Wallis
 kruskal.test(Tissue.Mass ~ Treatment, data = merged)
