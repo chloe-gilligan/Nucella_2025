@@ -1,0 +1,170 @@
+---
+title: "2025_AFDW_emergence"
+author: "Chloé Gilligan"
+date: "2026-03-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(readr)
+library(lme4)
+library(car) 
+library(ggplot2)
+library(tidyr)
+library(readxl)
+library(tidyverse) 
+library(dplyr)
+library(lmerTest)
+library(tidyverse)
+library(ggpubr)
+library(dunn.test)
+```
+
+#Load data
+```{r}
+afdw <- read_csv("../data/2025_AFDW_sorted_filtered.csv")
+meas <- read_csv("../data/NL_2025_master_measurements.csv")
+```
+
+#Merge
+```{r}
+afdw <- afdw %>%
+  mutate(
+    Sample_Code = str_extract(Full.Sample.ID, "^[^_]+"),
+    Snail_Num   = as.integer(str_extract(Full.Sample.ID, "(?<=_)\\d+$"))
+  )
+
+meas_clean <- meas %>%
+  select(Sample_Code = sample_name, Snail_Num = snail_number, length, width) %>%
+  mutate(Snail_Num = as.integer(Snail_Num))
+
+merged <- left_join(afdw, meas_clean, by = c("Sample_Code", "Snail_Num"))
+```
+
+#Decode color labels
+```{r}
+merged <- merged %>%
+mutate(Treatment = recode(Color,
+    "B" = "Ambient + Crab",
+    "G" = "Ambient + No Crab",
+    "R" = "Heated + Crab",
+    "P" = "Heated + No Crab"
+  ))
+```
+
+#RIG4- outlier in the 4's when everything else is a 1
+```{r}
+merged <- merged %>% filter(Full.Sample.ID != "RIG4_1")
+```
+
+
+```{r}
+names(merged)
+```
+
+
+#Reorganizing columns
+```{r}
+merged <- merged %>%
+  select(Tin, Full.Sample.ID, Sample_Code, Snail_Num, Treatment = Color_Label, Color,
+         Pre.burned.pan, Dry.Snail.Weight, Ashed.Snails.Ashed.Tin,
+         Date.weighed, Date.ashed, Tissue.Mass, Shell.Mass, length, width)
+
+```
+
+#Exporting merged data
+```{r}
+write_csv(merged, "../data/2025_AFDW_merged.csv")
+```
+
+
+#Tissue mass stats
+```{r}
+summary(aov(Tissue.Mass ~ Treatment, data = merged))
+TukeyHSD(aov(Tissue.Mass ~ Treatment, data = merged))
+
+```
+
+#shell mass
+```{r}
+summary(aov(Shell.Mass ~ Treatment, data = merged))
+TukeyHSD(aov(Shell.Mass ~ Treatment, data = merged))
+```
+
+```{r}
+#Plotting
+pal <- c("Ambient + Crab" = "#1C86EE", "Ambient + No Crab" = "#B3EE3A",
+         "Heated + Crab"  = "#EE0000", "Heated + No Crab"  = "#FFB6C1")
+
+p_tissue <- ggplot(merged, aes(x = Treatment, y = Tissue.Mass, fill = Treatment)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  geom_jitter(width = 0.15, size = 1.5, alpha = 0.6) +
+  scale_fill_manual(values = pal) +
+  labs(title = "Tissue Mass by Treatment", x = NULL, y = "Tissue Mass (g)") +
+  theme_classic() + theme(legend.position = "none", axis.text.x = element_text(angle = 25, hjust = 1))
+
+p_shell <- ggplot(merged, aes(x = Treatment, y = Shell.Mass, fill = Treatment)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  geom_jitter(width = 0.15, size = 1.5, alpha = 0.6) +
+  scale_fill_manual(values = pal) +
+  labs(title = "Shell Mass by Treatment", x = NULL, y = "Shell Mass (g)") +
+  theme_classic() + theme(legend.position = "none", axis.text.x = element_text(angle = 25, hjust = 1))
+
+ggarrange(p_tissue, p_shell, ncol = 2, labels = c("A", "B"))
+```
+```
+
+#stats
+```{r}
+stats <- merged %>%
+  group_by(Treatment) %>%
+  summarise(
+    n           = n(),
+    mean_tissue = mean(Tissue.Mass, na.rm = TRUE),
+    sd_tissue   = sd(Tissue.Mass, na.rm = TRUE),
+    mean_shell  = mean(Shell.Mass, na.rm = TRUE),
+    sd_shell    = sd(Shell.Mass, na.rm = TRUE)
+  )
+print(stats)
+```
+
+#stats
+```{r}
+# Tissue Mass
+tissue_aov <- lm(Tissue.Mass ~ Treatment, data = merged)
+Anova(tissue_aov, type = 3)
+
+shell_aov <- lm(Shell.Mass ~ Treatment, data = merged)
+Anova(shell_aov, type = 3)
+
+TukeyHSD(aov(Tissue.Mass ~ Treatment, data = merged))
+TukeyHSD(aov(Shell.Mass ~ Treatment, data = merged))
+```
+
+```{r}
+# Check normality
+shapiro.test(merged$Tissue.Mass)
+shapiro.test(merged$Shell.Mass)
+
+leveneTest(Tissue.Mass ~ Treatment, data = merged)
+leveneTest(Shell.Mass ~ Treatment, data = merged)
+```
+```{r}
+# Kruskal-Wallis
+kruskal.test(Tissue.Mass ~ Treatment, data = merged)
+kruskal.test(Shell.Mass ~ Treatment, data = merged)
+
+dunn.test(merged$Tissue.Mass, merged$Treatment, method = "bonferroni")
+dunn.test(merged$Shell.Mass, merged$Treatment, method = "bonferroni")
+```
+
