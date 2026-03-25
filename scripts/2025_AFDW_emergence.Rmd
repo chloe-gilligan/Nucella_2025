@@ -51,36 +51,60 @@ meas_clean <- meas %>%
 merged <- left_join(afdw, meas_clean, by = c("Sample_Code", "Snail_Num"))
 ```
 
-#Decode color labels
+#Decode merged labels into separate Temperature and Risk factors
+
 ```{r}
+
 merged <- merged %>%
-mutate(Treatment = recode(Color,
-    "B" = "Ambient + Crab",
-    "G" = "Ambient + No Crab",
-    "R" = "Heated + Crab",
-    "P" = "Heated + No Crab"
-  ))
+  mutate(
+    Temperature = recode(Color,
+      "B" = "Ambient",
+      "G" = "Ambient",
+      "R" = "Warming",
+      "P" = "Warming"
+    ),
+    Risk = recode(Color,
+      "B" = "Present",
+      "G" = "Absent",
+      "R" = "Present",
+      "P" = "Absent"
+    ),
+    Treatment = recode(Color,
+      "B" = "Ambient + Crab",
+      "G" = "Ambient + No Crab",
+      "R" = "Heated + Crab",
+      "P" = "Heated + No Crab"
+    ),
+    Temperature = factor(Temperature, levels = c("Ambient", "Warming")),
+    Risk        = factor(Risk,        levels = c("Absent", "Present"))
+  )
+
 ```
+
 
 #RIG4- outlier in the 4's when everything else is a 1
 ```{r}
 merged <- merged %>% filter(Full.Sample.ID != "RIG4_1")
 ```
 
-
+#Removing negative outliers
 ```{r}
-names(merged)
+# BRR1_2 and RIR1_2 - negative tissue mass
+# RIG4_1 and BRP2_1 - negative shell mass
+merged <- merged %>%
+  filter(!Full.Sample.ID %in% c("BRR1_2", "RIR1_2", "RIG4_1", "BRP2_1"))
 ```
 
 
 #Reorganizing columns
 ```{r}
 merged <- merged %>%
-  select(Tin, Full.Sample.ID, Sample_Code, Snail_Num, Treatment = Color_Label, Color,
+  select(Tin, Full.Sample.ID, Sample_Code, Snail_Num,
+         Treatment, Temperature, Risk, Color,
          Pre.burned.pan, Dry.Snail.Weight, Ashed.Snails.Ashed.Tin,
          Date.weighed, Date.ashed, Tissue.Mass, Shell.Mass, length, width)
-
 ```
+
 
 #Exporting merged data
 ```{r}
@@ -88,8 +112,10 @@ write_csv(merged, "../data/2025_AFDW_merged.csv")
 ```
 
 
+#Updated plots
 ```{r}
-#Plotting
+
+# Plots
 pal <- c("Ambient + Crab" = "#1C86EE", "Ambient + No Crab" = "#B3EE3A",
          "Heated + Crab"  = "#EE0000", "Heated + No Crab"  = "#FFB6C1")
 
@@ -110,31 +136,52 @@ p_shell <- ggplot(merged, aes(x = Treatment, y = Shell.Mass, fill = Treatment)) 
 ggarrange(p_tissue, p_shell, ncol = 2, labels = c("A", "B"))
 ```
 
+
+```{r}
+#Plotting
+pal_temp <- c("Ambient" = "#1C86EE", "Warming" = "#EE0000")
+
+# Tissue Mass
+p_tissue <- ggplot(merged, aes(x = Risk, y = Tissue.Mass, color = Temperature)) +
+  stat_summary(fun = mean, geom = "point", size = 4,
+               position = position_dodge(0.4)) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.15, linewidth = 0.8,
+               position = position_dodge(0.4)) +
+  scale_color_manual(values = pal_temp) +
+  scale_x_discrete(labels = c("Absent" = "No Crab", "Present" = "Crab")) +
+  labs(x = "Predation Risk", y = "Tissue Mass (g)", color = "Temperature") +
+  theme_classic() +
+  theme(legend.position = "right")
+
+# Shell Mass
+p_shell <- ggplot(merged, aes(x = Risk, y = Shell.Mass, color = Temperature)) +
+  stat_summary(fun = mean, geom = "point", size = 4,
+               position = position_dodge(0.4)) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.15, linewidth = 0.8,
+               position = position_dodge(0.4)) +
+  scale_color_manual(values = pal_temp) +
+  scale_x_discrete(labels = c("Absent" = "No Crab", "Present" = "Crab")) +
+  labs(x = "Predation Risk", y = "Shell Mass (g)", color = "Temperature") +
+  theme_classic() +
+  theme(legend.position = "right")
+
+ggarrange(p_tissue, p_shell, ncol = 2, labels = c("A", "B"),
+          common.legend = TRUE, legend = "right")
+```
+
+
 #stats
-#Tissue mass stats
-
-```{r}
-summary(aov(Tissue.Mass ~ Treatment, data = merged))
-TukeyHSD(aov(Tissue.Mass ~ Treatment, data = merged))
-
-```
-
-#shell mass
-```{r}
-summary(aov(Shell.Mass ~ Treatment, data = merged))
-TukeyHSD(aov(Shell.Mass ~ Treatment, data = merged))
-```
 
 #Mean, SD, and n for each treatment group
 ```{r}
 stats <- merged %>%
-  group_by(Treatment) %>%
+  group_by(Temperature, Risk) %>%
   summarise(
     n           = n(),
     mean_tissue = mean(Tissue.Mass, na.rm = TRUE),
-    sd_tissue   = sd(Tissue.Mass, na.rm = TRUE),
-    mean_shell  = mean(Shell.Mass, na.rm = TRUE),
-    sd_shell    = sd(Shell.Mass, na.rm = TRUE)
+    sd_tissue   = sd(Tissue.Mass,   na.rm = TRUE),
+    mean_shell  = mean(Shell.Mass,  na.rm = TRUE),
+    sd_shell    = sd(Shell.Mass,    na.rm = TRUE)
   )
 print(stats)
 ```
@@ -149,26 +196,69 @@ Anova(tissue_aov, type = 3)
 shell_aov <- lm(Shell.Mass ~ Treatment, data = merged)
 Anova(shell_aov, type = 3)
 
-TukeyHSD(aov(Tissue.Mass ~ Treatment, data = merged))
-TukeyHSD(aov(Shell.Mass ~ Treatment, data = merged))
+#TukeyHSD(aov(Tissue.Mass ~ Treatment, data = merged))
+#TukeyHSD(aov(Shell.Mass ~ Treatment, data = merged))
 ```
 
+# Stats
 ```{r}
-# Check normality
+options(contrasts = c("contr.sum", "contr.poly"))
+
+leveneTest(Tissue.Mass ~ Temperature * Risk, data = merged)
+leveneTest(Shell.Mass  ~ Temperature * Risk, data = merged)
+
 shapiro.test(merged$Tissue.Mass)
 shapiro.test(merged$Shell.Mass)
-
-leveneTest(Tissue.Mass ~ Treatment, data = merged)
-leveneTest(Shell.Mass ~ Treatment, data = merged)
 ```
-
 
 ```{r}
-# Kruskal-Wallis
-kruskal.test(Tissue.Mass ~ Treatment, data = merged)
-kruskal.test(Shell.Mass ~ Treatment, data = merged)
+# Tissue Mass
+m1_tissue <- lmer(Tissue.Mass ~ Temperature * Risk + (1|Sample_Code),
+                  data = merged, REML = TRUE)
+qqnorm(residuals(m1_tissue), main = "QQ Plot - Tissue Mass")
+qqline(residuals(m1_tissue), col = "red", lwd = 2)
+Anova(m1_tissue, test = "F", type = "III")
+summary(m1_tissue)
 
-dunn.test(merged$Tissue.Mass, merged$Treatment, method = "bonferroni")
-dunn.test(merged$Shell.Mass, merged$Treatment, method = "bonferroni")
+# Shell Mass
+m1_shell <- lmer(Shell.Mass ~ Temperature * Risk + (1|Sample_Code),
+                 data = merged, REML = TRUE)
+qqnorm(residuals(m1_shell), main = "QQ Plot - Shell Mass")
+qqline(residuals(m1_shell), col = "red", lwd = 2)
+Anova(m1_shell, test = "F", type = "III")
+summary(m1_shell)
 ```
+
+
+#Updated stats with Temperature and Risk as separate factors
+```{r}
+# Set contrasts
+options(contrasts = c("contr.sum", "contr.poly"))
+
+# Levene's test
+leveneTest(Tissue.Mass ~ Temperature * Risk, data = merged)
+leveneTest(Shell.Mass  ~ Temperature * Risk, data = merged)
+
+# --- Tissue Mass ---
+# Model 1: random effects for site and batch
+m1_tissue <- lmer(Tissue.Mass ~ Temperature * Risk + (1|Sample_Code),
+                  data = merged, REML = TRUE)
+qqnorm(residuals(m1_tissue), main = "QQ Plot - Tissue Mass Model 1")
+qqline(residuals(m1_tissue), col = "red", lwd = 2)
+Anova(m1_tissue, test = "F", type = "III")
+summary(m1_tissue)
+
+# --- Shell Mass ---
+m1_shell <- lmer(Shell.Mass ~ Temperature * Risk + (1|Sample_Code),
+                 data = merged, REML = TRUE)
+qqnorm(residuals(m1_shell), main = "QQ Plot - Shell Mass Model 1")
+qqline(residuals(m1_shell), col = "red", lwd = 2)
+Anova(m1_shell, test = "F", type = "III")
+summary(m1_shell)
+```
+
+
+
+
+
 

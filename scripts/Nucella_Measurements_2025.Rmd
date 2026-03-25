@@ -23,6 +23,9 @@ library(readxl)
 library(tidyverse) 
 library(dplyr)
 library(lmerTest)
+library(tidyverse)
+library(emmeans)
+
 # Remove library(Rmisc) and library(plyr) unless you absolutely need them
 ```
 
@@ -1648,6 +1651,457 @@ ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/FourMonth_ratio.j
        height = 6, 
        dpi = 300)
 ```
+
+
+#Site stats
+
+#Site as a factor for emergence data
+
+```{r}
+
+# --- Emergence Length post-hocs by site ---
+emm_length_site_emerge <- emmeans(m2, specs = pairwise ~ site, adjust = "none")
+emm_length_site_emerge$emmeans
+emm_length_site_emerge$contrasts
+
+emm_length_pred_site_emerge <- emmeans(m2, specs = pairwise ~ site * predation, adjust = "none")
+emm_length_pred_site_emerge$emmeans
+emm_length_pred_site_emerge$contrasts
+
+emm_length_temp_site_emerge <- emmeans(m2, specs = pairwise ~ site * temperature, adjust = "none")
+emm_length_temp_site_emerge$emmeans
+emm_length_temp_site_emerge$contrasts
+
+# --- Emergence Width post-hocs by site ---
+emm_width_site_emerge <- emmeans(m2_width, specs = pairwise ~ site, adjust = "none")
+emm_width_site_emerge$emmeans
+emm_width_site_emerge$contrasts
+
+emm_width_pred_site_emerge <- emmeans(m2_width, specs = pairwise ~ site * predation, adjust = "none")
+emm_width_pred_site_emerge$emmeans
+emm_width_pred_site_emerge$contrasts
+
+emm_width_temp_site_emerge <- emmeans(m2_width, specs = pairwise ~ site * temperature, adjust = "none")
+emm_width_temp_site_emerge$emmeans
+emm_width_temp_site_emerge$contrasts
+
+# --- Emergence Ratio post-hocs by site ---
+emm_ratio_site_emerge <- emmeans(m2_ratio, specs = pairwise ~ site, adjust = "none")
+emm_ratio_site_emerge$emmeans
+emm_ratio_site_emerge$contrasts
+
+emm_ratio_pred_site_emerge <- emmeans(m2_ratio, specs = pairwise ~ site * predation, adjust = "none")
+emm_ratio_pred_site_emerge$emmeans
+emm_ratio_pred_site_emerge$contrasts
+
+emm_ratio_temp_site_emerge <- emmeans(m2_ratio, specs = pairwise ~ site * temperature, adjust = "none")
+emm_ratio_temp_site_emerge$emmeans
+emm_ratio_temp_site_emerge$contrasts
+
+# --- Set factor levels ---
+nucella_emergence_averages <- nucella_emergence_averages %>%
+  mutate(
+    predation   = factor(predation,   levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated")),
+    site        = factor(site,        levels = c("Ram Island", "Castle Rock", "Bass Rock"))
+  )
+
+nucella_emergence_ratio <- nucella_emergence_ratio %>%
+  mutate(
+    predation   = factor(predation,   levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated")),
+    site        = factor(site,        levels = c("Ram Island", "Castle Rock", "Bass Rock"))
+  )
+
+std.error <- function(x, na.rm = TRUE) {
+  x <- if (na.rm) x[!is.na(x)] else x
+  sd(x) / sqrt(length(x))
+}
+```
+
+```{r}
+# --- Plot: Emergence length by site ---
+summary_length_site_emerge <- nucella_emergence_averages %>%
+  group_by(predation, temperature, site) %>%
+  summarise(mean_length = mean(avg_length, na.rm = TRUE),
+            se_length   = std.error(avg_length), .groups = "drop")
+
+ggplot(summary_length_site_emerge,
+       aes(x = predation, y = mean_length, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_length - se_length, ymax = mean_length + se_length),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 4, position = position_dodge(width = 0.4)) +
+  facet_wrap(~ site, nrow = 1) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = 0.1)) +
+  theme_classic(base_size = 16) +
+  labs(x = "Predation Risk", y = "Emergence Length (mm)", color = "Temperature") +
+  theme(axis.text = element_text(size = 12, color = "black"),
+        axis.title = element_text(size = 14, color = "black"),
+        legend.title = element_text(size = 13), legend.text = element_text(size = 11),
+        strip.text = element_text(size = 13, face = "bold"), strip.background = element_blank())
+
+ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/Emerged_length_by_site.jpeg",
+       width = 12, height = 6, dpi = 300)
+
+# --- Plot: Emergence width by site ---
+summary_width_site_emerge <- nucella_emergence_averages %>%
+  group_by(predation, temperature, site) %>%
+  summarise(mean_width = mean(avg_width, na.rm = TRUE),
+            se_width   = std.error(avg_width), .groups = "drop")
+
+ggplot(summary_width_site_emerge,
+       aes(x = predation, y = mean_width, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_width - se_width, ymax = mean_width + se_width),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 4, position = position_dodge(width = 0.4)) +
+  facet_wrap(~ site, nrow = 1) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = 0.05)) +
+  theme_classic(base_size = 16) +
+  labs(x = "Predation Risk", y = "Emergence Width (mm)", color = "Temperature") +
+  theme(axis.text = element_text(size = 12, color = "black"),
+        axis.title = element_text(size = 14, color = "black"),
+        legend.title = element_text(size = 13), legend.text = element_text(size = 11),
+        strip.text = element_text(size = 13, face = "bold"), strip.background = element_blank())
+
+ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/Emerged_width_by_site.jpeg",
+       width = 12, height = 6, dpi = 300)
+
+# --- Plot: Emergence ratio by site ---
+summary_ratio_site_emerge <- nucella_emergence_ratio %>%
+  group_by(predation, temperature, site) %>%
+  summarise(mean_ratio = mean(avg_ratio, na.rm = TRUE),
+            se_ratio   = std.error(avg_ratio), .groups = "drop")
+
+ggplot(summary_ratio_site_emerge,
+       aes(x = predation, y = mean_ratio, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_ratio - se_ratio, ymax = mean_ratio + se_ratio),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 4, position = position_dodge(width = 0.4)) +
+  facet_wrap(~ site, nrow = 1) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = 0.05)) +
+  theme_classic(base_size = 16) +
+  labs(x = "Predation Risk", y = "Emergence Length : Width", color = "Temperature") +
+  theme(axis.text = element_text(size = 12, color = "black"),
+        axis.title = element_text(size = 14, color = "black"),
+        legend.title = element_text(size = 13), legend.text = element_text(size = 11),
+        strip.text = element_text(size = 13, face = "bold"), strip.background = element_blank())
+
+ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/Emerged_ratio_by_site.jpeg",
+       width = 12, height = 6, dpi = 300)
+```
+
+
+# Stats for one month by site
+
+```{r}
+# --- One Month Length post-hocs by site ---
+emm_length_site_one <- emmeans(m2_one_month, specs = pairwise ~ site, adjust = "none")
+emm_length_site_one$emmeans
+emm_length_site_one$contrasts
+
+emm_length_pred_site_one <- emmeans(m2_one_month, specs = pairwise ~ site * predation, adjust = "none")
+emm_length_pred_site_one$emmeans
+emm_length_pred_site_one$contrasts
+
+emm_length_temp_site_one <- emmeans(m2_one_month, specs = pairwise ~ site * temperature, adjust = "none")
+emm_length_temp_site_one$emmeans
+emm_length_temp_site_one$contrasts
+
+# --- One Month Width post-hocs by site ---
+emm_width_site_one <- emmeans(m2_width_one_month, specs = pairwise ~ site, adjust = "none")
+emm_width_site_one$emmeans
+emm_width_site_one$contrasts
+
+emm_width_pred_site_one <- emmeans(m2_width_one_month, specs = pairwise ~ site * predation, adjust = "none")
+emm_width_pred_site_one$emmeans
+emm_width_pred_site_one$contrasts
+
+emm_width_temp_site_one <- emmeans(m2_width_one_month, specs = pairwise ~ site * temperature, adjust = "none")
+emm_width_temp_site_one$emmeans
+emm_width_temp_site_one$contrasts
+
+# --- One Month Ratio post-hocs by site ---
+emm_ratio_site_one <- emmeans(m2_ratio_one_month, specs = pairwise ~ site, adjust = "none")
+emm_ratio_site_one$emmeans
+emm_ratio_site_one$contrasts
+
+emm_ratio_pred_site_one <- emmeans(m2_ratio_one_month, specs = pairwise ~ site * predation, adjust = "none")
+emm_ratio_pred_site_one$emmeans
+emm_ratio_pred_site_one$contrasts
+
+emm_ratio_temp_site_one <- emmeans(m2_ratio_one_month, specs = pairwise ~ site * temperature, adjust = "none")
+emm_ratio_temp_site_one$emmeans
+emm_ratio_temp_site_one$contrasts
+
+# --- Set factor levels ---
+nucella_one_month_averages <- nucella_one_month_averages %>%
+  mutate(
+    predation   = factor(predation,   levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated")),
+    site        = factor(site,        levels = c("Ram Island", "Castle Rock", "Bass Rock"))
+  )
+
+nucella_one_month_ratio <- nucella_one_month_ratio %>%
+  mutate(
+    predation   = factor(predation,   levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated")),
+    site        = factor(site,        levels = c("Ram Island", "Castle Rock", "Bass Rock"))
+  )
+```
+
+```{r}
+# --- Plot: One month length by site ---
+summary_length_site_one <- nucella_one_month_averages %>%
+  group_by(predation, temperature, site) %>%
+  summarise(mean_length = mean(avg_length, na.rm = TRUE),
+            se_length   = std.error(avg_length), .groups = "drop")
+
+ggplot(summary_length_site_one,
+       aes(x = predation, y = mean_length, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_length - se_length, ymax = mean_length + se_length),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 4, position = position_dodge(width = 0.4)) +
+  facet_wrap(~ site, nrow = 1) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = 0.1)) +
+  theme_classic(base_size = 16) +
+  labs(x = "Predation Risk", y = "One Month Length (mm)", color = "Temperature") +
+  theme(axis.text = element_text(size = 12, color = "black"),
+        axis.title = element_text(size = 14, color = "black"),
+        legend.title = element_text(size = 13), legend.text = element_text(size = 11),
+        strip.text = element_text(size = 13, face = "bold"), strip.background = element_blank())
+
+ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/One_month_length_by_site.jpeg",
+       width = 12, height = 6, dpi = 300)
+
+# --- Plot: One month width by site ---
+summary_width_site_one <- nucella_one_month_averages %>%
+  group_by(predation, temperature, site) %>%
+  summarise(mean_width = mean(avg_width, na.rm = TRUE),
+            se_width   = std.error(avg_width), .groups = "drop")
+
+ggplot(summary_width_site_one,
+       aes(x = predation, y = mean_width, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_width - se_width, ymax = mean_width + se_width),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 4, position = position_dodge(width = 0.4)) +
+  facet_wrap(~ site, nrow = 1) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = 0.05)) +
+  theme_classic(base_size = 16) +
+  labs(x = "Predation Risk", y = "One Month Width (mm)", color = "Temperature") +
+  theme(axis.text = element_text(size = 12, color = "black"),
+        axis.title = element_text(size = 14, color = "black"),
+        legend.title = element_text(size = 13), legend.text = element_text(size = 11),
+        strip.text = element_text(size = 13, face = "bold"), strip.background = element_blank())
+
+ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/One_month_width_by_site.jpeg",
+       width = 12, height = 6, dpi = 300)
+
+# --- Plot: One month ratio by site ---
+summary_ratio_site_one <- nucella_one_month_ratio %>%
+  group_by(predation, temperature, site) %>%
+  summarise(mean_ratio = mean(avg_ratio, na.rm = TRUE),
+            se_ratio   = std.error(avg_ratio), .groups = "drop")
+
+ggplot(summary_ratio_site_one,
+       aes(x = predation, y = mean_ratio, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_ratio - se_ratio, ymax = mean_ratio + se_ratio),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 4, position = position_dodge(width = 0.4)) +
+  facet_wrap(~ site, nrow = 1) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = 0.05)) +
+  theme_classic(base_size = 16) +
+  labs(x = "Predation Risk", y = "One Month Length : Width", color = "Temperature") +
+  theme(axis.text = element_text(size = 12, color = "black"),
+        axis.title = element_text(size = 14, color = "black"),
+        legend.title = element_text(size = 13), legend.text = element_text(size = 11),
+        strip.text = element_text(size = 13, face = "bold"), strip.background = element_blank())
+
+ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/One_month_ratio_by_site.jpeg",
+       width = 12, height = 6, dpi = 300)
+```
+
+
+
+
+#Site as factor for 4-month length
+
+```{r}
+# Length post-hocs - site main effect
+emm_length_site <- emmeans(m2_4month, specs = pairwise ~ site, adjust = "none")
+emm_length_site$emmeans
+emm_length_site$contrasts
+
+# Predation by site for length
+emm_length_pred_site <- emmeans(m2_4month, specs = pairwise ~ site * predation, adjust = "none")
+emm_length_pred_site$emmeans
+emm_length_pred_site$contrasts
+
+# Temperature by site for length
+emm_length_temp_site <- emmeans(m2_4month, specs = pairwise ~ site * temperature, adjust = "none")
+emm_length_temp_site$emmeans
+emm_length_temp_site$contrasts
+```
+
+#4 month length by site
+```{r}
+nucella_4month_averages <- nucella_4month_averages %>%
+  mutate(
+    predation   = factor(predation,   levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated")),
+    site        = factor(site,        levels = c("Ram Island", "Castle Rock", "Bass Rock"))
+  )
+
+std.error <- function(x, na.rm = TRUE) {
+  x <- if (na.rm) x[!is.na(x)] else x
+  sd(x) / sqrt(length(x))
+}
+
+summary_length_site <- nucella_4month_averages %>%
+  group_by(predation, temperature, site) %>%
+  summarise(
+    mean_length = mean(avg_length, na.rm = TRUE),
+    se_length   = std.error(avg_length),
+    .groups = "drop"
+  )
+
+ggplot(summary_length_site,
+       aes(x = predation, y = mean_length, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_length - se_length, ymax = mean_length + se_length),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 4, position = position_dodge(width = 0.4)) +
+  facet_wrap(~ site, nrow = 1) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = 0.1)) +
+  theme_classic(base_size = 16) +
+  labs(x = "Predation Risk",
+       y = "4-Month Length (mm)",
+       color = "Temperature") +
+  theme(
+    axis.text        = element_text(size = 12, color = "black"),
+    axis.title       = element_text(size = 14, color = "black"),
+    legend.title     = element_text(size = 13),
+    legend.text      = element_text(size = 11),
+    strip.text       = element_text(size = 13, face = "bold"),
+    strip.background = element_blank()
+  )
+
+ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/FourMonth_length_by_site.jpeg",
+       width = 12, height = 6, dpi = 300)
+```
+
+#Post-hocs for width by site
+```{r}
+# Temperature by site for width (site main effect + pred*site already in your script)
+emm_width_temp_site <- emmeans(m2_width_4month, specs = pairwise ~ site * temperature, adjust = "none")
+emm_width_temp_site$emmeans
+emm_width_temp_site$contrasts
+```
+
+#Plotting width by site
+```{r}
+summary_width_site <- nucella_4month_averages %>%
+  group_by(predation, temperature, site) %>%
+  summarise(
+    mean_width = mean(avg_width, na.rm = TRUE),
+    se_width   = std.error(avg_width),
+    .groups = "drop"
+  )
+
+ggplot(summary_width_site,
+       aes(x = predation, y = mean_width, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_width - se_width, ymax = mean_width + se_width),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 4, position = position_dodge(width = 0.4)) +
+  facet_wrap(~ site, nrow = 1) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = 0.05)) +
+  theme_classic(base_size = 16) +
+  labs(x = "Predation Risk",
+       y = "4-Month Width (mm)",
+       color = "Temperature") +
+  theme(
+    axis.text        = element_text(size = 12, color = "black"),
+    axis.title       = element_text(size = 14, color = "black"),
+    legend.title     = element_text(size = 13),
+    legend.text      = element_text(size = 11),
+    strip.text       = element_text(size = 13, face = "bold"),
+    strip.background = element_blank()
+  )
+
+ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/FourMonth_width_by_site.jpeg",
+       width = 12, height = 6, dpi = 300)
+```
+
+# Post-hocs for 4-month RATIO by site
+```{r}
+
+# Ratio post-hocs - site main effect
+emm_ratio_site <- emmeans(m2_ratio_4month, specs = pairwise ~ site, adjust = "none")
+emm_ratio_site$emmeans
+emm_ratio_site$contrasts
+
+# Predation by site for ratio
+emm_ratio_pred_site <- emmeans(m2_ratio_4month, specs = pairwise ~ site * predation, adjust = "none")
+emm_ratio_pred_site$emmeans
+emm_ratio_pred_site$contrasts
+
+# Temperature by site for ratio
+emm_ratio_temp_site <- emmeans(m2_ratio_4month, specs = pairwise ~ site * temperature, adjust = "none")
+emm_ratio_temp_site$emmeans
+emm_ratio_temp_site$contrasts
+```
+
+# Plotting 4-month ratio by site
+
+```{r}
+
+nucella_4month_ratio <- nucella_4month_ratio %>%
+  mutate(
+    predation   = factor(predation,   levels = c("No crab", "Crab")),
+    temperature = factor(temperature, levels = c("Ambient", "Heated")),
+    site        = factor(site,        levels = c("Ram Island", "Castle Rock", "Bass Rock"))
+  )
+
+summary_ratio_site <- nucella_4month_ratio %>%
+  group_by(predation, temperature, site) %>%
+  summarise(
+    mean_ratio = mean(avg_ratio, na.rm = TRUE),
+    se_ratio   = std.error(avg_ratio),
+    .groups = "drop"
+  )
+
+ggplot(summary_ratio_site,
+       aes(x = predation, y = mean_ratio, color = temperature, group = temperature)) +
+  geom_errorbar(aes(ymin = mean_ratio - se_ratio, ymax = mean_ratio + se_ratio),
+                width = 0.2, position = position_dodge(width = 0.4), linewidth = 1) +
+  geom_point(size = 4, position = position_dodge(width = 0.4)) +
+  facet_wrap(~ site, nrow = 1) +
+  scale_color_manual(values = c("Ambient" = "#00B2EE", "Heated" = "#EE2C2C")) +
+  scale_y_continuous(expand = expansion(add = 0.05)) +
+  theme_classic(base_size = 16) +
+  labs(x = "Predation Risk",
+       y = "4-Month Length : Width",
+       color = "Temperature") +
+  theme(
+    axis.text        = element_text(size = 12, color = "black"),
+    axis.title       = element_text(size = 14, color = "black"),
+    legend.title     = element_text(size = 13),
+    legend.text      = element_text(size = 11),
+    strip.text       = element_text(size = 13, face = "bold"),
+    strip.background = element_blank()
+  )
+
+ggsave(filename = "~/Desktop/repositories/Nucella_2025/figures/FourMonth_ratio_by_site.jpeg",
+       width = 12, height = 6, dpi = 300)
+```
+
+
 
 
 
