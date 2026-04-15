@@ -1,0 +1,168 @@
+---
+title: "Buoyant_Weighing_March2026"
+author: "Chloé Gilligan"
+date: "2026-04-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+```{r}
+library(readr)
+library(lme4)
+library(car) 
+library(ggplot2)
+library(tidyr)
+library(readxl)
+library(tidyverse) 
+library(dplyr)
+library(lmerTest)
+library(tidyverse)
+library(ggpubr)
+library(dunn.test)
+```
+
+# Load data
+```{r}
+tissue <- read_csv("../data/20260319_BuoyantWeighing_Measurements.csv")
+```
+
+# Clean + extract treatment info
+```{r}
+tissue <- tissue %>%
+  rename(Sample_ID = `Sample ID`,
+         Tissue_Weight = `Tissue weight`) %>%
+  mutate(
+    Sample_Code = str_extract(Sample_ID, "^[A-Z]{2}[A-Z]"),  # e.g. CRB
+    Color = str_extract(Sample_Code, "[A-Z]$"),              # B, G, R, P
+    Site = str_extract(Sample_Code, "^[A-Z]{2}"),            # CR, BR, RI
+  )
+
+tissue <- tissue %>%
+  mutate(
+    Tissue_Weight = as.numeric(Tissue_Weight)
+  )
+
+# Decode treatments (same logic as your AFDW script)
+tissue <- tissue %>%
+  mutate(
+    Temperature = recode(Color,
+      "B" = "Ambient",
+      "G" = "Ambient",
+      "R" = "Warming",
+      "P" = "Warming"
+    ),
+    Risk = recode(Color,
+      "B" = "Present",
+      "G" = "Absent",
+      "R" = "Present",
+      "P" = "Absent"
+    ),
+    Temperature = factor(Temperature, levels = c("Ambient", "Warming")),
+    Risk        = factor(Risk, levels = c("Absent", "Present"))
+  )
+
+```
+
+# Remove bad values
+```{r}
+tissue <- tissue %>%
+  filter(!is.na(Tissue_Weight)) %>%
+  filter(Tissue_Weight > 0)
+```
+
+
+```{r}
+#Plotting
+# Color palette (same as before)
+pal_temp <- c("Ambient" = "#1C86EE", "Warming" = "#EE0000")
+
+p_tissue <- ggplot(tissue, aes(x = Risk, y = Tissue_Weight, color = Temperature)) +
+  
+  # Mean point
+  stat_summary(
+    fun = mean,
+    geom = "point",
+    size = 4,
+    position = position_dodge(width = 0.3)
+  ) +
+  
+  # SE error bars
+  stat_summary(
+    fun.data = mean_se,
+    geom = "errorbar",
+    width = 0.15,
+    linewidth = 0.8,
+    position = position_dodge(width = 0.3)
+  ) +
+  
+  scale_color_manual(values = pal_temp) +
+  scale_x_discrete(labels = c("Absent" = "No Crab", "Present" = "Crab")) +
+  
+  labs(
+    x = "Predation Risk",
+    y = "Tissue Weight",
+    color = "Temperature"
+  ) +
+  
+  theme_classic() +
+  theme(legend.position = "right")
+
+p_tissue
+```
+
+```{r}
+pal_temp <- c("Ambient" = "#1C86EE", "Warming" = "#EE0000")
+
+p_tissue <- ggplot(tissue, aes(x = Risk, y = Tissue_Weight, color = Temperature)) +
+  stat_summary(fun = mean, geom = "point", size = 4,
+               position = position_dodge(0.3)) +
+  stat_summary(fun.data = mean_se, geom = "errorbar",
+               width = 0.15, linewidth = 0.8,
+               position = position_dodge(0.3)) +
+  scale_color_manual(values = pal_temp) +
+  scale_x_discrete(labels = c("Absent" = "No Crab", "Present" = "Crab")) +
+  labs(x = "Predation Risk", y = "Tissue Weight", color = "Temperature") +
+  theme_classic()
+
+p_tissue
+```
+
+
+```{r}
+# Set contrasts
+options(contrasts = c("contr.sum", "contr.poly"))
+
+# Levene's test
+leveneTest(Tissue_Weight ~ Temperature * Risk, data = tissue)
+```
+
+
+```{r}
+# Random effect = Sample_Code 
+m1_tissue <- lmer(Tissue_Weight ~ Temperature * Risk + (1|Sample_Code),
+                  data = tissue, REML = TRUE)
+
+# QQ plot
+qqnorm(residuals(m1_tissue), main = "QQ Plot - Tissue Weight")
+qqline(residuals(m1_tissue), col = "red", lwd = 2)
+
+# ANOVA 
+Anova(m1_tissue, test = "F", type = "III")
+
+# Model summary
+summary(m1_tissue)
+```
+
+
+
+
