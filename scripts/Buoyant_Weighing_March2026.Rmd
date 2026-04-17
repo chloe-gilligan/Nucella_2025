@@ -29,6 +29,7 @@ library(lmerTest)
 library(tidyverse)
 library(ggpubr)
 library(dunn.test)
+library(emmeans)
 ```
 
 # Load data
@@ -39,36 +40,31 @@ tissue <- read_csv("../data/20260319_BuoyantWeighing_Measurements.csv")
 # Clean + extract treatment info
 ```{r}
 tissue <- tissue %>%
-  rename(Sample_ID = `Sample ID`,
-         Tissue_Weight = `Tissue weight`) %>%
+  rename(
+    Sample_ID     = `Sample ID`,
+    Tissue_Weight = `Tissue weight`
+  ) %>%
   mutate(
-    Sample_Code = str_extract(Sample_ID, "^[A-Z]{2}[A-Z]"),  # e.g. CRB
-    Color = str_extract(Sample_Code, "[A-Z]$"),              # B, G, R, P
-    Site = str_extract(Sample_Code, "^[A-Z]{2}"),            # CR, BR, RI
+    Tissue_Weight = as.numeric(Tissue_Weight),
+    Sample_Code   = str_extract(Sample_ID, "^[A-Z]{3}"),   # e.g. CRB
+    Color         = str_sub(Sample_Code, 3, 3),             # 3rd letter: B, G, R, P
+    Site          = str_sub(Sample_Code, 1, 2),             # first 2 letters: CR, BR, RI
   )
 
+# Decode treatments 
 tissue <- tissue %>%
   mutate(
-    Tissue_Weight = as.numeric(Tissue_Weight)
-  )
-
-# Decode treatments (same logic as your AFDW script)
-tissue <- tissue %>%
-  mutate(
-    Temperature = recode(Color,
-      "B" = "Ambient",
-      "G" = "Ambient",
-      "R" = "Warming",
-      "P" = "Warming"
+    Temperature = case_when(
+      Color %in% c("B", "G") ~ "Ambient",
+      Color %in% c("R", "P") ~ "Warming"
     ),
-    Risk = recode(Color,
-      "B" = "Present",
-      "G" = "Absent",
-      "R" = "Present",
-      "P" = "Absent"
+    Risk = case_when(
+      Color %in% c("B", "R") ~ "Present",
+      Color %in% c("G", "P") ~ "Absent"
     ),
     Temperature = factor(Temperature, levels = c("Ambient", "Warming")),
-    Risk        = factor(Risk, levels = c("Absent", "Present"))
+    Risk        = factor(Risk,        levels = c("Absent", "Present")),
+    Sample_Code = factor(Sample_Code)
   )
 
 ```
@@ -76,92 +72,152 @@ tissue <- tissue %>%
 # Remove bad values
 ```{r}
 tissue <- tissue %>%
-  filter(!is.na(Tissue_Weight)) %>%
-  filter(Tissue_Weight > 0)
+  filter(!is.na(Tissue_Weight), Tissue_Weight > 0)
 ```
 
-
+#just checking
 ```{r}
-#Plotting
-# Color palette (same as before)
+tissue %>% distinct(Sample_Code, Color, Site, Temperature, Risk) %>% arrange(Sample_Code)
+```
+
+#Plotting updated
+```{r}
 pal_temp <- c("Ambient" = "#1C86EE", "Warming" = "#EE0000")
 
 p_tissue <- ggplot(tissue, aes(x = Risk, y = Tissue_Weight, color = Temperature)) +
-  
-  # Mean point
   stat_summary(
-    fun = mean,
-    geom = "point",
-    size = 4,
+    fun = mean, geom = "point", size = 4,
     position = position_dodge(width = 0.3)
   ) +
-  
-  # SE error bars
   stat_summary(
-    fun.data = mean_se,
-    geom = "errorbar",
-    width = 0.15,
-    linewidth = 0.8,
+    fun.data = mean_se, geom = "errorbar",
+    width = 0.15, linewidth = 0.8,
     position = position_dodge(width = 0.3)
   ) +
-  
   scale_color_manual(values = pal_temp) +
   scale_x_discrete(labels = c("Absent" = "No Crab", "Present" = "Crab")) +
-  
   labs(
-    x = "Predation Risk",
-    y = "Tissue Weight",
+    x     = "Predation Risk",
+    y     = "Tissue Weight (g)",
     color = "Temperature"
   ) +
-  
   theme_classic() +
   theme(legend.position = "right")
 
 p_tissue
 ```
-
+#Basic stats
 ```{r}
-pal_temp <- c("Ambient" = "#1C86EE", "Warming" = "#EE0000")
-
-p_tissue <- ggplot(tissue, aes(x = Risk, y = Tissue_Weight, color = Temperature)) +
-  stat_summary(fun = mean, geom = "point", size = 4,
-               position = position_dodge(0.3)) +
-  stat_summary(fun.data = mean_se, geom = "errorbar",
-               width = 0.15, linewidth = 0.8,
-               position = position_dodge(0.3)) +
-  scale_color_manual(values = pal_temp) +
-  scale_x_discrete(labels = c("Absent" = "No Crab", "Present" = "Crab")) +
-  labs(x = "Predation Risk", y = "Tissue Weight", color = "Temperature") +
-  theme_classic()
-
-p_tissue
+stats <- tissue %>%
+  group_by(Temperature, Risk) %>%
+  summarise(
+    n           = n(),
+    mean_tissue = mean(Tissue_Weight, na.rm = TRUE),
+    sd_tissue   = sd(Tissue_Weight,   na.rm = TRUE),
+    se_tissue   = sd_tissue / sqrt(n),
+    .groups     = "drop"
+  )
+print(stats)
 ```
 
-
 ```{r}
-# Set contrasts
-options(contrasts = c("contr.sum", "contr.poly"))
-
-# Levene's test
+# Levene's test for homogeneity of variance
 leveneTest(Tissue_Weight ~ Temperature * Risk, data = tissue)
 ```
 
+#LMER
 
 ```{r}
-# Random effect = Sample_Code 
-m1_tissue <- lmer(Tissue_Weight ~ Temperature * Risk + (1|Sample_Code),
-                  data = tissue, REML = TRUE)
+options(contrasts = c("contr.sum", "contr.poly"))
 
-# QQ plot
+# Ensure Site and Date are factors before modelling
+tissue <- tissue %>%
+  mutate(
+    Site  = factor(Site),
+    Batch = factor(Date)   # Date used as batch
+  )
+
+m1_tissue <- lmer(
+  Tissue_Weight ~ Temperature * Risk + (1 | Sample_Code),
+  data = tissue,
+  REML = TRUE
+)
+```
+
+#Residuals
+```{r}
 qqnorm(residuals(m1_tissue), main = "QQ Plot - Tissue Weight")
 qqline(residuals(m1_tissue), col = "red", lwd = 2)
 
-# ANOVA 
-Anova(m1_tissue, test = "F", type = "III")
+plot(fitted(m1_tissue), residuals(m1_tissue),
+     xlab = "Fitted", ylab = "Residuals",
+     main = "Residuals vs Fitted")
+abline(h = 0, col = "red", lty = 2)
+```
 
-# Model summary
+#ANOVA
+```{r}
+Anova(m1_tissue, test = "F", type = "III")
 summary(m1_tissue)
 ```
+
+
+#post-hoc
+
+
+```{r}
+#Since not significant
+emmeans(m1_tissue, ~ Temperature)
+emmeans(m1_tissue, ~ Risk)
+emmeans(m1_tissue, ~ Temperature * Risk)
+```
+
+```{r}
+# Raw means 
+tissue %>%
+  group_by(Temperature, Risk) %>%
+  summarise(raw_mean = mean(Tissue_Weight, na.rm = TRUE), .groups = "drop")
+
+# Model-adjusted means 
+emmeans(m1_tissue, ~ Temperature * Risk)
+```
+```{r}
+# Look at variance components
+summary(m1_tissue)
+```
+
+```{r}
+options(contrasts = c("contr.sum", "contr.poly"))
+
+m1_tissue <- lmer(
+  Tissue_Weight ~ Temperature * Risk + Length + Width + (1 | Sample_Code),
+  data = tissue,
+  REML = TRUE
+)
+
+summary(m1_tissue)
+Anova(m1_tissue, test = "F", type = "III")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -113,29 +113,6 @@ write_csv(merged, "../data/2025_AFDW_merged.csv")
 
 
 #Updated plots
-```{r}
-
-# Plots
-pal <- c("Ambient + Crab" = "#1C86EE", "Ambient + No Crab" = "#B3EE3A",
-         "Heated + Crab"  = "#EE0000", "Heated + No Crab"  = "#FFB6C1")
-
-p_tissue <- ggplot(merged, aes(x = Treatment, y = Tissue.Mass, fill = Treatment)) +
-  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
-  geom_jitter(width = 0.15, size = 1.5, alpha = 0.6) +
-  scale_fill_manual(values = pal) +
-  labs(title = "Tissue Mass by Treatment", x = NULL, y = "Tissue Mass (g)") +
-  theme_classic() + theme(legend.position = "none", axis.text.x = element_text(angle = 25, hjust = 1))
-
-p_shell <- ggplot(merged, aes(x = Treatment, y = Shell.Mass, fill = Treatment)) +
-  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
-  geom_jitter(width = 0.15, size = 1.5, alpha = 0.6) +
-  scale_fill_manual(values = pal) +
-  labs(title = "Shell Mass by Treatment", x = NULL, y = "Shell Mass (g)") +
-  theme_classic() + theme(legend.position = "none", axis.text.x = element_text(angle = 25, hjust = 1))
-
-ggarrange(p_tissue, p_shell, ncol = 2, labels = c("A", "B"))
-```
-
 
 ```{r}
 #Plotting
